@@ -5,6 +5,7 @@
 WorkBuddy 是腾讯云 CodeBuddy 团队于 2026 年 3 月 9 日正式发布的**桌面级 AI 智能体工作台**，定位为"全场景职场 AI 智能体"。与 ChatGPT 等对话式 AI 不同，WorkBuddy 的核心范式是**本地执行**——用户用自然语言下达指令，Agent 直接在本地电脑上规划并完成多步骤任务（文档生成、数据分析、文件整理、信息采集等），无需手动操作。
 
 支持 Windows / macOS / Linux，兼容 OpenClaw 技能生态与 MCP 协议。
+<img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/5e01ca14-50e0-4002-867c-f26dc12be6bc" />
 
 ## 多用户协作
 
@@ -14,11 +15,15 @@ WorkBuddy 是腾讯云 CodeBuddy 团队于 2026 年 3 月 9 日正式发布的**
 - 企业管理员可通过企微"3 步接入"完成全员部署
 
 **局限**：协作模式偏向"单人多 Agent"而非"多人共享同一 Agent/上下文"。目前缺乏类似 Zylos 的团队共享记忆层或多用户权限隔离机制。
+<img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/8532a6ba-309f-423a-a99f-1f4c69b1b440" />
+<img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/8469172d-131d-405a-9554-8e808c010aba" />
+<img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/0f329033-e570-4687-82fd-18bb678309e2" />
 
 ## Agent 持久化 / Always-On
 
 - 支持**定时任务与后台自动化**：可设定周期性抓取数据、整理周报、监控竞品等，实现 7×24 小时"数字员工"模式
 - 任务分解后可跨多步骤持续执行，但无公开文档说明跨 session 的记忆持久化机制
+<img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/d33f28a5-d3b9-4a18-a332-2844aa0ecc21" />
 
 ## 共享记忆 / 上下文
 
