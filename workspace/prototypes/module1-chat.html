@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CODE-YI Module 1: 对话 — Interactive Prototype</title>
+<title>CODE-YI Module 1: 对话 — Interactive Prototype v2</title>
 <style>
 :root {
   --bg: #0f0f1a;
@@ -43,7 +43,7 @@ body {
   display: flex;
 }
 
-/* ============ MODULE SIDEBAR (leftmost) ============ */
+/* ============ MODULE SIDEBAR ============ */
 .module-sidebar {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
@@ -72,566 +72,310 @@ body {
   letter-spacing: 1px;
 }
 
-.logo-text {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-}
+.logo-text { font-size: 15px; font-weight: 600; color: var(--text); }
+.logo-version { font-size: 11px; color: var(--text3); font-weight: 400; }
 
-.logo-version {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 400;
-}
-
-.sidebar-section {
-  padding: 16px 0 4px;
-}
-
+.sidebar-section { padding: 16px 0 4px; }
 .sidebar-section-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  padding: 0 16px 8px;
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1.5px; padding: 0 16px 8px;
 }
 
 .sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: all 0.15s;
-  color: var(--text2);
-  font-size: 13.5px;
-  position: relative;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; cursor: pointer; transition: all 0.15s;
+  color: var(--text2); font-size: 13.5px; position: relative;
 }
 
-.sidebar-item:hover {
-  background: rgba(124, 92, 252, 0.06);
-  color: var(--text);
-}
-
+.sidebar-item:hover { background: rgba(124, 92, 252, 0.06); color: var(--text); }
 .sidebar-item.active {
-  background: rgba(124, 92, 252, 0.15);
-  color: white;
-  border-left: 3px solid var(--accent);
-  padding-left: 13px;
+  background: rgba(124, 92, 252, 0.15); color: white;
+  border-left: 3px solid var(--accent); padding-left: 13px;
 }
 
-.sidebar-item .icon {
-  width: 18px;
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.7;
-}
-
+.sidebar-item .icon { width: 18px; text-align: center; font-size: 14px; opacity: 0.7; }
 .sidebar-item.active .icon { opacity: 1; }
 
 .sidebar-badge {
-  margin-left: auto;
-  background: var(--accent);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 8px;
-  min-width: 18px;
-  text-align: center;
-}
-
-.sidebar-badge.muted {
-  background: var(--surface3);
-  color: var(--text2);
+  margin-left: auto; background: var(--accent); color: white;
+  font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
+  min-width: 18px; text-align: center;
 }
 
 .sidebar-spacer { flex: 1; }
 
 .sidebar-user {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  padding: 12px 16px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
 }
 
 .sidebar-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 32px; height: 32px; border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), #9b7dff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white;
 }
 
-.sidebar-username {
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 500;
+.sidebar-username { font-size: 13px; color: var(--text); font-weight: 500; }
+.sidebar-user-role { font-size: 11px; color: var(--text3); }
+
+.sidebar-cmd {
+  padding: 8px 16px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; color: var(--text3); font-size: 12px; transition: all 0.15s;
+}
+.sidebar-cmd:hover { color: var(--text); background: rgba(124, 92, 252, 0.06); }
+.sidebar-cmd kbd {
+  font-family: inherit; background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 5px; font-size: 10px;
 }
 
-.sidebar-user-role {
-  font-size: 11px;
-  color: var(--text3);
-}
-
-/* ============ CHANNEL LIST PANEL ============ */
+/* ============ CHANNEL PANEL ============ */
 .channel-panel {
-  width: var(--channel-width);
-  min-width: var(--channel-width);
-  background: var(--surface2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  width: var(--channel-width); min-width: var(--channel-width);
+  background: var(--surface2); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
 }
 
 .channel-header {
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  padding: 16px; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid var(--border);
 }
 
-.channel-header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-}
+.channel-header h2 { font-size: 16px; font-weight: 700; color: var(--text); }
 
 .channel-add-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text2); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; font-size: 18px;
   transition: all 0.15s;
 }
+.channel-add-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
 
-.channel-add-btn:hover {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
-
-.channel-search {
-  padding: 8px 16px 12px;
-}
-
+.channel-search { padding: 8px 16px 12px; }
 .channel-search input {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 12px;
-  color: var(--text);
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 12px; color: var(--text);
+  font-size: 13px; outline: none; transition: border-color 0.2s;
 }
-
 .channel-search input::placeholder { color: var(--text3); }
 .channel-search input:focus { border-color: var(--accent); }
 
-.channel-list {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 12px;
-}
-
+.channel-list { flex: 1; overflow-y: auto; padding-bottom: 12px; }
 .channel-list::-webkit-scrollbar { width: 4px; }
-.channel-list::-webkit-scrollbar-track { background: transparent; }
 .channel-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .channel-section-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 12px 16px 6px;
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1.2px; padding: 12px 16px 6px;
 }
 
 .channel-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
-  cursor: pointer;
-  transition: all 0.12s;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 16px; cursor: pointer; transition: all 0.12s;
   border-left: 3px solid transparent;
 }
-
-.channel-item:hover {
-  background: rgba(124, 92, 252, 0.06);
-}
-
-.channel-item.active {
-  background: rgba(124, 92, 252, 0.12);
-  border-left-color: var(--accent);
-}
+.channel-item:hover { background: rgba(124, 92, 252, 0.06); }
+.channel-item.active { background: rgba(124, 92, 252, 0.12); border-left-color: var(--accent); }
 
 .channel-item .ch-hash {
-  color: var(--text3);
-  font-size: 15px;
-  font-weight: 700;
-  width: 18px;
-  text-align: center;
-  flex-shrink: 0;
+  color: var(--text3); font-size: 15px; font-weight: 700;
+  width: 18px; text-align: center; flex-shrink: 0;
 }
-
 .channel-item .ch-name {
-  font-size: 13.5px;
-  color: var(--text2);
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 13.5px; color: var(--text2); flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
-.channel-item.active .ch-name,
-.channel-item.unread .ch-name {
-  color: var(--text);
-  font-weight: 600;
+.channel-item.active .ch-name, .channel-item.unread .ch-name {
+  color: var(--text); font-weight: 600;
 }
-
 .channel-item .ch-badge {
-  background: var(--red);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 8px;
-  min-width: 18px;
-  text-align: center;
+  background: var(--red); color: white; font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 8px; min-width: 18px; text-align: center;
 }
-
 .channel-item .ch-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
 }
-
 .ch-dot.green { background: var(--green); }
 .ch-dot.gray { background: var(--text3); }
-
 .channel-item .ch-icon {
-  font-size: 15px;
-  width: 18px;
-  text-align: center;
-  flex-shrink: 0;
+  font-size: 15px; width: 18px; text-align: center; flex-shrink: 0;
 }
 
 .dm-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-  position: relative;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: white;
+  flex-shrink: 0; position: relative;
 }
-
 .dm-avatar .dm-status {
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--surface2);
+  position: absolute; bottom: -1px; right: -1px;
+  width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface2);
 }
 
 .ai-badge-sm {
-  font-size: 8px;
-  font-weight: 800;
-  background: var(--accent);
-  color: white;
-  padding: 1px 3px;
-  border-radius: 3px;
-  margin-left: 4px;
-  flex-shrink: 0;
+  font-size: 8px; font-weight: 800; background: var(--accent);
+  color: white; padding: 1px 3px; border-radius: 3px; margin-left: 4px; flex-shrink: 0;
 }
-
 .qa-badge-sm {
-  font-size: 8px;
-  font-weight: 800;
-  background: var(--orange);
-  color: white;
-  padding: 1px 3px;
-  border-radius: 3px;
-  margin-left: 4px;
-  flex-shrink: 0;
+  font-size: 8px; font-weight: 800; background: var(--orange);
+  color: white; padding: 1px 3px; border-radius: 3px; margin-left: 4px; flex-shrink: 0;
 }
 
-/* ============ MAIN CHAT AREA ============ */
+/* ============ MAIN CONTENT ============ */
+.main-area {
+  flex: 1; display: flex; flex-direction: column; min-width: 0;
+}
+
+/* Scene tabs */
+.scene-tabs {
+  display: flex; align-items: center; gap: 0;
+  background: var(--surface2); border-bottom: 1px solid var(--border);
+  padding: 0 16px; min-height: 40px; overflow-x: auto;
+}
+.scene-tab {
+  padding: 8px 16px; font-size: 12px; font-weight: 600;
+  color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all 0.15s; user-select: none;
+}
+.scene-tab:hover { color: var(--text2); }
+.scene-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.scene-content { flex: 1; display: flex; overflow: hidden; }
+.scene-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.scene-panel.active { display: flex; }
+
+/* ============ CHAT AREA ============ */
 .chat-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  background: var(--bg);
+  flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--bg);
 }
 
 .chat-header {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(15, 15, 26, 0.95);
-  backdrop-filter: blur(8px);
-  min-height: 52px;
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(15, 15, 26, 0.95); backdrop-filter: blur(8px); min-height: 52px;
 }
-
-.chat-header-hash {
-  color: var(--text3);
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.chat-header-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.chat-header-meta {
-  font-size: 12px;
-  color: var(--text3);
-  margin-left: 4px;
-}
-
+.chat-header-hash { color: var(--text3); font-size: 20px; font-weight: 700; }
+.chat-header-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.chat-header-meta { font-size: 12px; color: var(--text3); margin-left: 4px; }
 .chat-header-spacer { flex: 1; }
 
-.chat-header-actions {
-  display: flex;
-  gap: 8px;
-}
-
+.chat-header-actions { display: flex; gap: 8px; align-items: center; }
 .header-action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text2); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; font-size: 14px;
   transition: all 0.15s;
 }
+.header-action-btn:hover { background: var(--surface); color: var(--text); }
+.header-action-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-.header-action-btn:hover {
-  background: var(--surface);
-  color: var(--text);
-}
-
-.header-action-btn.active {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
-
-/* Message visibility toggle */
-.visibility-toggle {
-  position: relative;
-}
-
-.visibility-tooltip {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--text2);
-  white-space: nowrap;
-  z-index: 100;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-}
-
-.visibility-toggle:hover .visibility-tooltip {
-  display: block;
-}
-
-/* Messages */
+/* Messages area */
 .chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex: 1; overflow-y: auto; padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 2px;
 }
-
 .chat-messages::-webkit-scrollbar { width: 6px; }
-.chat-messages::-webkit-scrollbar-track { background: transparent; }
 .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
 .message {
-  display: flex;
-  gap: 12px;
-  padding: 8px 0;
-  animation: msgIn 0.3s ease;
+  display: flex; gap: 12px; padding: 8px 0; animation: msgIn 0.3s ease;
 }
-
 @keyframes msgIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .message-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-  margin-top: 2px;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white;
+  flex-shrink: 0; margin-top: 2px;
 }
 
-.message-body {
-  flex: 1;
-  min-width: 0;
-}
-
+.message-body { flex: 1; min-width: 0; }
 .message-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 3px;
+  display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
 }
-
-.message-author {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--text);
-}
-
+.message-author { font-size: 13.5px; font-weight: 700; color: var(--text); }
 .message-role-tag {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 1px 5px;
-  border-radius: 3px;
-  text-transform: uppercase;
+  font-size: 9px; font-weight: 700; padding: 1px 5px;
+  border-radius: 3px; text-transform: uppercase;
 }
-
-.tag-admin {
-  background: rgba(124, 92, 252, 0.2);
-  color: var(--accent);
-}
-
+.tag-admin { background: rgba(124, 92, 252, 0.2); color: var(--accent); }
 .tag-ai {
-  background: rgba(124, 92, 252, 0.25);
-  color: #b8a4ff;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+  background: rgba(124, 92, 252, 0.25); color: #b8a4ff;
+  display: inline-flex; align-items: center; gap: 3px;
 }
-
-.tag-qa {
-  background: rgba(240, 160, 48, 0.2);
-  color: var(--orange);
-}
-
-.tag-member {
-  background: rgba(62, 207, 142, 0.15);
-  color: var(--green);
-}
-
-.tag-model {
-  font-size: 9px;
-  color: var(--text3);
-  font-weight: 400;
-}
-
-.message-time {
-  font-size: 11px;
-  color: var(--text3);
-}
+.tag-qa { background: rgba(240, 160, 48, 0.2); color: var(--orange); }
+.tag-member { background: rgba(62, 207, 142, 0.15); color: var(--green); }
+.tag-model { font-size: 9px; color: var(--text3); font-weight: 400; }
+.message-time { font-size: 11px; color: var(--text3); }
 
 .message-text {
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.6;
-  word-break: break-word;
+  font-size: 14px; color: var(--text); line-height: 1.6; word-break: break-word;
 }
-
-.message-text .mention {
-  color: var(--accent);
-  font-weight: 600;
-  cursor: pointer;
-}
-
+.message-text .mention { color: var(--accent); font-weight: 600; cursor: pointer; }
 .message-text .mention:hover { text-decoration: underline; }
-
-.message-text .link {
-  color: var(--cyan);
-  cursor: pointer;
-  text-decoration: none;
-}
-
+.message-text .link { color: var(--cyan); cursor: pointer; text-decoration: none; }
 .message-text .link:hover { text-decoration: underline; }
 
-/* Code block inside messages */
+/* Reactions */
+.message-reactions {
+  display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;
+}
+.reaction-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 2px 8px; font-size: 12px;
+  cursor: pointer; transition: all 0.15s;
+}
+.reaction-chip:hover { border-color: var(--accent); background: rgba(124,92,252,0.1); }
+.reaction-chip.active { border-color: var(--accent); background: rgba(124,92,252,0.15); }
+.reaction-count { font-size: 11px; color: var(--text2); }
+
+/* Quote */
+.message-quote {
+  border-left: 3px solid var(--border-light); padding: 6px 12px;
+  margin-bottom: 6px; background: rgba(255,255,255,0.02); border-radius: 0 6px 6px 0;
+}
+.message-quote .quote-author { font-size: 11px; color: var(--accent); font-weight: 600; }
+.message-quote .quote-text { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+/* Image preview */
+.message-image {
+  margin-top: 8px; border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--border); max-width: 400px;
+}
+.message-image .img-placeholder {
+  width: 100%; height: 200px;
+  background: linear-gradient(135deg, #1a1a3e 0%, #2a2a4e 50%, #1a1a3e 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3); font-size: 48px;
+}
+.message-image .img-meta {
+  padding: 6px 10px; background: var(--surface);
+  font-size: 11px; color: var(--text3);
+}
+
+/* Code block */
 .msg-code-block {
-  background: #0d0d18;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin: 8px 0 4px;
-  overflow: hidden;
+  background: #0d0d18; border: 1px solid var(--border);
+  border-radius: 8px; margin: 8px 0 4px; overflow: hidden;
 }
-
 .msg-code-header {
-  background: var(--surface);
-  padding: 6px 12px;
-  font-size: 11px;
-  color: var(--text3);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: var(--surface); padding: 6px 12px; font-size: 11px;
+  color: var(--text3); border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
 }
-
 .msg-code-body {
   padding: 12px 16px;
   font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: #c9d1d9;
-  overflow-x: auto;
+  font-size: 12.5px; line-height: 1.6; color: #c9d1d9; overflow-x: auto;
   white-space: pre;
 }
-
 .msg-code-body .kw { color: #ff7b72; }
 .msg-code-body .fn { color: #d2a8ff; }
 .msg-code-body .str { color: #a5d6ff; }
@@ -639,330 +383,404 @@ body {
 .msg-code-body .type { color: #79c0ff; }
 .msg-code-body .num { color: #79c0ff; }
 
-/* Bot-to-Bot banner */
+/* Bot banners */
 .bot-bot-banner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  margin: 6px 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px; margin: 6px 0;
   background: rgba(124, 92, 252, 0.06);
   border: 1px dashed rgba(124, 92, 252, 0.25);
-  border-radius: 8px;
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 600;
+  border-radius: 8px; font-size: 11px; color: var(--accent); font-weight: 600;
 }
+.bot-bot-banner .bb-icon { font-size: 14px; }
 
-.bot-bot-banner .bb-icon {
-  font-size: 14px;
-}
-
-.bot-bot-line {
-  width: 2px;
-  background: linear-gradient(180deg, transparent, var(--accent), transparent);
-  margin-left: 17px;
-  height: 20px;
-  border-radius: 1px;
-}
-
-/* Bot message subtle styling */
 .message.bot-message {
   border-left: 2px solid rgba(124, 92, 252, 0.2);
-  padding-left: 10px;
-  margin-left: -12px;
+  padding-left: 10px; margin-left: -12px;
 }
-
 .message.bot-bot {
-  background: rgba(124, 92, 252, 0.03);
-  border-radius: 8px;
-  padding: 8px 10px;
-  border-left: 2px solid var(--accent);
-  margin-left: -12px;
+  background: rgba(124, 92, 252, 0.03); border-radius: 8px;
+  padding: 8px 10px; border-left: 2px solid var(--accent); margin-left: -12px;
 }
 
-/* Internal bot message (hidden by default) */
-.message.bot-internal {
-  display: none;
-  opacity: 0.6;
-  border-left: 2px dashed var(--text3);
-  padding-left: 10px;
-  margin-left: -12px;
+.autonomous-banner {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; margin: 12px 0;
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.1), rgba(34, 211, 238, 0.08));
+  border: 1px solid rgba(124, 92, 252, 0.2); border-radius: 10px;
+  font-size: 12px; color: var(--purple); font-weight: 600;
 }
 
-.message.bot-internal.visible {
-  display: flex;
+/* Iteration counter */
+.iteration-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(124, 92, 252, 0.15); border: 1px solid rgba(124, 92, 252, 0.3);
+  border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--purple); font-weight: 600;
 }
 
-.internal-tag {
-  font-size: 9px;
-  background: rgba(102, 102, 136, 0.2);
-  color: var(--text3);
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-weight: 600;
+/* Token meter */
+.token-meter {
+  display: flex; align-items: center; gap: 8px; margin-top: 6px;
+  font-size: 11px; color: var(--text3);
 }
+.token-bar {
+  width: 120px; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden;
+}
+.token-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--green), var(--accent));
+  border-radius: 2px; transition: width 0.3s;
+}
+
+/* Checkpoint btn */
+.checkpoint-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(240, 160, 48, 0.15); border: 1px solid rgba(240, 160, 48, 0.3);
+  border-radius: 8px; padding: 6px 14px; font-size: 12px; color: var(--orange);
+  font-weight: 600; cursor: pointer; transition: all 0.15s; margin-top: 8px;
+}
+.checkpoint-btn:hover { background: rgba(240, 160, 48, 0.25); }
+
+/* Anti-loop indicator */
+.antiloop-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(62, 207, 142, 0.1); border: 1px solid rgba(62, 207, 142, 0.2);
+  border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--green); font-weight: 600;
+}
+
+/* Date separator */
+.date-separator {
+  display: flex; align-items: center; gap: 12px; padding: 8px 0; margin: 4px 0;
+}
+.date-separator::before, .date-separator::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.date-separator span {
+  font-size: 11px; color: var(--text3); font-weight: 600; white-space: nowrap;
+}
+
+/* Report embed */
+.report-embed {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; margin-top: 6px; font-size: 13px;
+}
+.report-embed .re-title {
+  font-weight: 700; color: var(--text); margin-bottom: 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.report-embed .re-stats { display: flex; gap: 16px; font-size: 12px; color: var(--text2); }
+.report-embed .re-stats .pass { color: var(--green); font-weight: 700; }
+.report-embed .re-stats .fail { color: var(--red); font-weight: 700; }
+.report-embed .re-stats .flaky { color: var(--orange); font-weight: 700; }
 
 /* Typing indicator */
 .typing-indicator {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0;
-  font-size: 12px;
-  color: var(--text3);
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 0; font-size: 12px; color: var(--text3);
 }
-
 .typing-indicator.visible { display: flex; }
-
-.typing-dots {
-  display: flex;
-  gap: 3px;
-}
-
+.typing-dots { display: flex; gap: 3px; }
 .typing-dots span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text3);
-  animation: typingBounce 1.4s infinite;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text3); animation: typingBounce 1.4s infinite;
 }
-
 .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
 .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
 @keyframes typingBounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
   30% { transform: translateY(-4px); opacity: 1; }
 }
 
-/* Autonomous banner */
-.autonomous-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  margin: 12px 0;
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.1), rgba(34, 211, 238, 0.08));
-  border: 1px solid rgba(124, 92, 252, 0.2);
-  border-radius: 10px;
-  font-size: 12px;
-  color: var(--purple);
-  font-weight: 600;
-}
-
-.autonomous-banner .ab-icon { font-size: 16px; }
-
 /* ============ INPUT BAR ============ */
 .chat-input-bar {
-  padding: 12px 20px 16px;
-  border-top: 1px solid var(--border);
-  background: var(--bg);
+  padding: 12px 20px 16px; border-top: 1px solid var(--border); background: var(--bg);
 }
-
 .chat-input-wrapper {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
+  display: flex; align-items: flex-end; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 8px 12px; transition: border-color 0.2s;
 }
+.chat-input-wrapper:focus-within { border-color: var(--accent); }
 
-.chat-input-wrapper:focus-within {
-  border-color: var(--accent);
-}
-
-.chat-input-actions {
-  display: flex;
-  gap: 4px;
-  padding-bottom: 2px;
-}
-
+.chat-input-actions { display: flex; gap: 4px; padding-bottom: 2px; }
 .input-action-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: transparent;
-  color: var(--text3);
-  cursor: pointer;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  transition: all 0.12s;
+  width: 30px; height: 30px; border: none; background: transparent;
+  color: var(--text3); cursor: pointer; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: all 0.12s;
 }
-
-.input-action-btn:hover {
-  background: var(--surface3);
-  color: var(--text2);
-}
+.input-action-btn:hover { background: var(--surface3); color: var(--text2); }
 
 .chat-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-size: 14px;
-  font-family: inherit;
-  resize: none;
-  min-height: 24px;
-  max-height: 120px;
-  line-height: 1.5;
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--text); font-size: 14px; font-family: inherit;
+  resize: none; min-height: 24px; max-height: 120px; line-height: 1.5;
 }
-
 .chat-input::placeholder { color: var(--text3); }
 
 .send-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  transition: all 0.15s;
-  flex-shrink: 0;
+  width: 36px; height: 36px; border: none; background: var(--accent);
+  color: white; cursor: pointer; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: all 0.15s; flex-shrink: 0;
 }
-
-.send-btn:hover {
-  background: var(--accent-dim);
-  transform: scale(1.05);
-}
+.send-btn:hover { background: var(--accent-dim); transform: scale(1.05); }
 
 /* ============ MEMBER PANEL ============ */
 .member-panel {
-  width: var(--member-width);
-  min-width: var(--member-width);
-  background: var(--surface2);
-  border-left: 1px solid var(--border);
-  overflow-y: auto;
-  padding: 16px 0;
+  width: var(--member-width); min-width: var(--member-width);
+  background: var(--surface2); border-left: 1px solid var(--border);
+  overflow-y: auto; padding: 16px 0; transition: width 0.2s, min-width 0.2s, opacity 0.2s;
 }
-
+.member-panel.hidden { width: 0; min-width: 0; padding: 0; border: none; overflow: hidden; opacity: 0; }
 .member-panel::-webkit-scrollbar { width: 4px; }
 .member-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .member-section-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 8px 16px 6px;
+  font-size: 11px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1px; padding: 8px 16px 6px;
 }
-
 .member-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 16px;
-  cursor: pointer;
-  transition: background 0.12s;
-  position: relative;
+  display: flex; align-items: center; gap: 10px; padding: 6px 16px;
+  cursor: pointer; transition: background 0.12s; position: relative;
 }
-
-.member-item:hover {
-  background: rgba(255,255,255,0.03);
-}
-
+.member-item:hover { background: rgba(255,255,255,0.03); }
 .member-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-  position: relative;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white; flex-shrink: 0; position: relative;
 }
-
 .member-status {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--surface2);
+  position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
+  border-radius: 50%; border: 2px solid var(--surface2);
 }
-
-.member-info {
-  flex: 1;
-  min-width: 0;
-}
-
+.member-info { flex: 1; min-width: 0; }
 .member-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 4px;
 }
-
-.member-role-text {
-  font-size: 11px;
-  color: var(--text3);
-}
-
+.member-role-text { font-size: 11px; color: var(--text3); }
 .member-tag {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
+  font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap;
 }
-
-.member-tag.executor {
-  background: rgba(124, 92, 252, 0.15);
-  color: var(--accent);
-}
-
-.member-tag.reviewer {
-  background: rgba(240, 160, 48, 0.15);
-  color: var(--orange);
-}
-
-.member-tag.observer {
-  background: rgba(102, 102, 136, 0.15);
-  color: var(--text3);
-  position: relative;
-}
-
-/* Observer tooltip */
+.member-tag.executor { background: rgba(124, 92, 252, 0.15); color: var(--accent); }
+.member-tag.reviewer { background: rgba(240, 160, 48, 0.15); color: var(--orange); }
+.member-tag.observer { background: rgba(102, 102, 136, 0.15); color: var(--text3); }
 .observer-tooltip {
-  display: none;
-  position: absolute;
-  left: -200px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 11px;
-  color: var(--text2);
-  width: 190px;
-  z-index: 100;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  line-height: 1.4;
+  display: none; position: absolute; left: -200px; top: 50%; transform: translateY(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 12px; font-size: 11px; color: var(--text2); width: 190px;
+  z-index: 100; box-shadow: 0 4px 16px rgba(0,0,0,0.4); line-height: 1.4;
+}
+.member-item:hover .observer-tooltip { display: block; }
+
+/* Streaming effect */
+.streaming-cursor {
+  display: inline-block; width: 2px; height: 14px;
+  background: var(--accent); animation: blink 0.8s infinite; vertical-align: middle; margin-left: 2px;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* Stop generating button */
+.stop-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 14px; font-size: 12px;
+  color: var(--red); cursor: pointer; transition: all 0.15s; margin-top: 8px;
+}
+.stop-btn:hover { background: rgba(240, 80, 80, 0.1); border-color: var(--red); }
+
+/* Context indicator */
+.context-indicator {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 11px; color: var(--text2);
 }
 
-.member-item:hover .observer-tooltip {
-  display: block;
+/* Collapsible bot messages */
+.bot-collapse-toggle {
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+  margin: 6px 0; background: rgba(124, 92, 252, 0.04);
+  border: 1px dashed rgba(124, 92, 252, 0.15); border-radius: 8px;
+  font-size: 12px; color: var(--accent); cursor: pointer; transition: all 0.15s;
+}
+.bot-collapse-toggle:hover { background: rgba(124, 92, 252, 0.08); }
+.bot-collapsed-messages { display: none; }
+.bot-collapsed-messages.visible { display: block; }
+
+/* ============ SEARCH OVERLAY ============ */
+.search-overlay {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(4px);
+  justify-content: center; padding-top: 80px;
+}
+.search-overlay.active { display: flex; }
+
+.search-modal {
+  width: 640px; max-height: 500px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.search-input-row {
+  display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.search-input-row .search-icon { font-size: 20px; color: var(--text3); }
+.search-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--text); font-size: 16px; font-family: inherit;
+}
+.search-input::placeholder { color: var(--text3); }
+.search-esc {
+  font-size: 10px; color: var(--text3); background: var(--surface3);
+  border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px;
+}
+
+.search-filters {
+  display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border);
+}
+.search-filter-chip {
+  padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text2); cursor: pointer; transition: all 0.15s;
+}
+.search-filter-chip:hover { border-color: var(--accent); color: var(--text); }
+.search-filter-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.search-results { flex: 1; overflow-y: auto; padding: 8px 0; }
+.search-result-item {
+  padding: 10px 20px; cursor: pointer; transition: background 0.12s;
+}
+.search-result-item:hover { background: rgba(124, 92, 252, 0.06); }
+.search-result-meta {
+  display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text3); margin-bottom: 4px;
+}
+.search-result-text {
+  font-size: 13px; color: var(--text2); line-height: 1.5;
+}
+.search-result-text mark {
+  background: rgba(124, 92, 252, 0.3); color: var(--text); border-radius: 2px; padding: 0 2px;
+}
+
+/* ============ SCENE 4: UMB ============ */
+.umb-container {
+  flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 30px;
+}
+.umb-diagram {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 30px; text-align: center;
+}
+.umb-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+.umb-flow {
+  display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+}
+.umb-node {
+  background: var(--surface3); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--text);
+  min-width: 100px; text-align: center;
+}
+.umb-node.accent { background: rgba(124, 92, 252, 0.2); border-color: var(--accent); color: var(--accent); }
+.umb-node.green-node { background: rgba(62, 207, 142, 0.15); border-color: var(--green); color: var(--green); }
+.umb-node.orange-node { background: rgba(240, 160, 48, 0.15); border-color: var(--orange); color: var(--orange); }
+.umb-arrow { font-size: 20px; color: var(--text3); }
+
+.visibility-demo {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+}
+.vis-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.vis-policies { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.vis-policy {
+  padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface2); cursor: pointer; transition: all 0.15s; flex: 1; min-width: 180px;
+}
+.vis-policy:hover { border-color: var(--accent); }
+.vis-policy.active { border-color: var(--accent); background: rgba(124, 92, 252, 0.1); }
+.vis-policy-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.vis-policy-desc { font-size: 11px; color: var(--text3); }
+
+.vis-chat-demo {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; max-height: 300px; overflow-y: auto;
+}
+
+.observer-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(102, 102, 136, 0.15); border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--text3);
+}
+
+/* ============ SCENE 5: WORKFLOW ============ */
+.workflow-container {
+  flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 30px;
+}
+.wf-state-machine {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 30px;
+}
+.wf-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+.wf-states {
+  display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+}
+.wf-state {
+  padding: 10px 20px; border-radius: 10px; border: 2px solid var(--border);
+  background: var(--surface2); font-size: 13px; font-weight: 600;
+  color: var(--text3); cursor: pointer; transition: all 0.3s;
+  min-width: 90px; text-align: center;
+}
+.wf-state.active-state { border-color: var(--accent); color: var(--accent); background: rgba(124, 92, 252, 0.1); box-shadow: 0 0 12px rgba(124, 92, 252, 0.2); }
+.wf-state.completed-state { border-color: var(--green); color: var(--green); background: rgba(62, 207, 142, 0.1); }
+.wf-arrow { font-size: 18px; color: var(--text3); }
+
+/* ClawMark */
+.clawmark-demo {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+}
+.clawmark-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.clawmark-doc {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+}
+.clawmark-doc-header {
+  padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2);
+}
+.clawmark-doc-body { padding: 16px; font-size: 13px; line-height: 1.8; }
+.clawmark-line {
+  padding: 4px 8px; border-radius: 4px; position: relative; margin: 2px 0; transition: background 0.15s;
+}
+.clawmark-line:hover { background: rgba(255,255,255,0.02); }
+.clawmark-line.annotated {
+  background: rgba(124, 92, 252, 0.08); border-left: 3px solid var(--accent); padding-left: 12px;
+}
+.annotation-bubble {
+  margin: 8px 0 8px 20px; padding: 10px 14px;
+  background: rgba(124, 92, 252, 0.06); border: 1px solid rgba(124, 92, 252, 0.2);
+  border-radius: 10px; font-size: 12px;
+}
+.annotation-header {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+}
+.annotation-author { font-weight: 700; font-size: 12px; }
+.annotation-text { color: var(--text2); line-height: 1.5; }
+.annotation-reply {
+  margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(124, 92, 252, 0.15);
+}
+
+/* Workflow definition card */
+.wf-definition-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; margin-top: 6px;
+}
+.wf-def-header {
+  padding: 10px 14px; background: var(--surface3); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text);
+}
+.wf-def-body { padding: 12px 14px; }
+.wf-def-step {
+  display: flex; align-items: center; gap: 10px; padding: 6px 0;
+  font-size: 12px; color: var(--text2);
+}
+.wf-def-step-num {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--accent);
+  color: white; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
 /* ============ SCROLLBAR GLOBAL ============ */
@@ -971,59 +789,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
 
-/* ============ DATE SEPARATOR ============ */
-.date-separator {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-  margin: 4px 0;
-}
-
-.date-separator::before,
-.date-separator::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.date-separator span {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* ============ REPORT EMBED ============ */
-.report-embed {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-top: 6px;
-  font-size: 13px;
-}
-
-.report-embed .re-title {
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.report-embed .re-stats {
-  display: flex;
-  gap: 16px;
-  font-size: 12px;
-  color: var(--text2);
-}
-
-.report-embed .re-stats .pass { color: var(--green); font-weight: 700; }
-.report-embed .re-stats .fail { color: var(--red); font-weight: 700; }
-.report-embed .re-stats .flaky { color: var(--orange); font-weight: 700; }
+code { background: var(--surface3); padding: 1px 5px; border-radius: 4px; font-size: 12px; font-family: "SF Mono", "Fira Code", monospace; }
 </style>
 </head>
 <body>
@@ -1037,55 +803,28 @@ body {
       <div class="logo-version">v0.1</div>
     </div>
   </div>
-
   <div class="sidebar-section">
     <div class="sidebar-section-title">工作区</div>
-    <div class="sidebar-item active">
-      <span class="icon">&#x1F4AC;</span>
-      <span>对话</span>
-      <span class="sidebar-badge">3</span>
-    </div>
-    <div class="sidebar-item">
-      <span class="icon">&#x2611;</span>
-      <span>任务</span>
-      <span class="sidebar-badge">12</span>
-    </div>
-    <div class="sidebar-item">
-      <span class="icon">&#x1F4C1;</span>
-      <span>项目</span>
-    </div>
-    <div class="sidebar-item">
-      <span class="icon">&#x1F465;</span>
-      <span>团队</span>
-    </div>
+    <div class="sidebar-item active"><span class="icon">&#x1F4AC;</span><span>对话</span><span class="sidebar-badge">3</span></div>
+    <div class="sidebar-item"><span class="icon">&#x2611;</span><span>任务</span><span class="sidebar-badge">12</span></div>
+    <div class="sidebar-item"><span class="icon">&#x1F4C1;</span><span>项目</span></div>
+    <div class="sidebar-item"><span class="icon">&#x1F465;</span><span>团队</span></div>
   </div>
-
   <div class="sidebar-section">
     <div class="sidebar-section-title">平台</div>
-    <div class="sidebar-item">
-      <span class="icon">&#x1F916;</span>
-      <span>Agent</span>
-    </div>
-    <div class="sidebar-item">
-      <span class="icon">&#x1F9F0;</span>
-      <span>工具箱</span>
-    </div>
+    <div class="sidebar-item"><span class="icon">&#x1F916;</span><span>Agent</span></div>
+    <div class="sidebar-item"><span class="icon">&#x1F9F0;</span><span>工具箱</span></div>
   </div>
-
   <div class="sidebar-section">
     <div class="sidebar-section-title">系统</div>
-    <div class="sidebar-item">
-      <span class="icon">&#x2699;</span>
-      <span>管理后台</span>
-    </div>
-    <div class="sidebar-item">
-      <span class="icon">&#x1F527;</span>
-      <span>设置</span>
-    </div>
+    <div class="sidebar-item"><span class="icon">&#x2699;</span><span>管理后台</span></div>
+    <div class="sidebar-item"><span class="icon">&#x1F527;</span><span>设置</span></div>
   </div>
-
   <div class="sidebar-spacer"></div>
-
+  <div class="sidebar-cmd" id="cmdkTrigger">
+    <span>&#x1F50D; 搜索</span>
+    <span style="margin-left:auto;"><kbd>Cmd</kbd> + <kbd>K</kbd></span>
+  </div>
   <div class="sidebar-user">
     <div class="sidebar-avatar">陈</div>
     <div>
@@ -1107,485 +846,453 @@ body {
   <div class="channel-list">
     <div class="channel-section-title">频道 Channels</div>
     <div class="channel-item active unread" data-channel="product-dev">
-      <span class="ch-hash">#</span>
-      <span class="ch-name">产品开发</span>
-      <span class="ch-badge">5</span>
+      <span class="ch-hash">#</span><span class="ch-name">产品开发</span><span class="ch-badge">5</span>
     </div>
     <div class="channel-item unread" data-channel="code-review">
-      <span class="ch-hash">#</span>
-      <span class="ch-name">代码审查</span>
-      <span class="ch-badge">2</span>
+      <span class="ch-hash">#</span><span class="ch-name">代码审查</span><span class="ch-badge">2</span>
     </div>
     <div class="channel-item" data-channel="ops-discuss">
-      <span class="ch-hash">#</span>
-      <span class="ch-name">运营讨论</span>
+      <span class="ch-hash">#</span><span class="ch-name">运营讨论</span>
     </div>
     <div class="channel-item" data-channel="announcements">
-      <span class="ch-hash">#</span>
-      <span class="ch-name">全员公告</span>
+      <span class="ch-hash">#</span><span class="ch-name">全员公告</span>
     </div>
-
     <div class="channel-section-title">Bot 工作流</div>
     <div class="channel-item" data-channel="pr-review-pipeline">
-      <span class="ch-icon">&#x1F916;</span>
-      <span class="ch-name">PR Review 流水线</span>
-      <span class="ch-dot green"></span>
+      <span class="ch-icon">&#x1F916;</span><span class="ch-name">PR Review 流水线</span><span class="ch-dot green"></span>
     </div>
     <div class="channel-item" data-channel="e2e-test-chain">
-      <span class="ch-icon">&#x1F916;</span>
-      <span class="ch-name">E2E 测试链</span>
-      <span class="ch-dot green"></span>
+      <span class="ch-icon">&#x1F916;</span><span class="ch-name">E2E 测试链</span><span class="ch-dot green"></span>
     </div>
-
     <div class="channel-section-title">私聊 DM</div>
     <div class="channel-item" data-channel="dm-lienqi">
-      <div class="dm-avatar" style="background: linear-gradient(135deg, #3ecf8e, #2da770);">
-        李
-        <div class="dm-status" style="background: var(--green);"></div>
-      </div>
+      <div class="dm-avatar" style="background:linear-gradient(135deg,#3ecf8e,#2da770);">李<div class="dm-status" style="background:var(--green);"></div></div>
       <span class="ch-name">李恩琪</span>
     </div>
     <div class="channel-item" data-channel="dm-zhangwei">
-      <div class="dm-avatar" style="background: linear-gradient(135deg, #6b7280, #4b5563);">
-        张
-        <div class="dm-status" style="background: var(--text3);"></div>
-      </div>
+      <div class="dm-avatar" style="background:linear-gradient(135deg,#6b7280,#4b5563);">张<div class="dm-status" style="background:var(--text3);"></div></div>
       <span class="ch-name">张伟</span>
     </div>
     <div class="channel-item" data-channel="dm-code-assistant">
-      <div class="dm-avatar" style="background: linear-gradient(135deg, var(--accent), #9b7dff);">
-        &#x1F916;
-        <div class="dm-status" style="background: var(--green);"></div>
-      </div>
-      <span class="ch-name">代码助手</span>
-      <span class="ai-badge-sm">AI</span>
+      <div class="dm-avatar" style="background:linear-gradient(135deg,var(--accent),#9b7dff);">&#x1F916;<div class="dm-status" style="background:var(--green);"></div></div>
+      <span class="ch-name">代码助手</span><span class="ai-badge-sm">AI</span>
     </div>
     <div class="channel-item" data-channel="dm-test-agent">
-      <div class="dm-avatar" style="background: linear-gradient(135deg, var(--orange), #c88520);">
-        &#x1F9EA;
-        <div class="dm-status" style="background: var(--green);"></div>
-      </div>
-      <span class="ch-name">测试 Agent</span>
-      <span class="qa-badge-sm">QA</span>
+      <div class="dm-avatar" style="background:linear-gradient(135deg,var(--orange),#c88520);">&#x1F9EA;<div class="dm-status" style="background:var(--green);"></div></div>
+      <span class="ch-name">测试 Agent</span><span class="qa-badge-sm">QA</span>
     </div>
   </div>
 </div>
 
-<!-- MAIN CHAT AREA -->
-<div class="chat-main">
-  <div class="chat-header" id="chatHeader">
-    <span class="chat-header-hash">#</span>
-    <span class="chat-header-name" id="chatHeaderName">产品开发</span>
-    <span class="chat-header-meta" id="chatHeaderMeta">6 位成员</span>
-    <div class="chat-header-spacer"></div>
-    <div class="chat-header-actions">
-      <div class="visibility-toggle">
-        <button class="header-action-btn" id="visibilityBtn" title="Bot 内部对话可见性">
-          &#x1F441;
-        </button>
-        <div class="visibility-tooltip" id="visibilityTooltip">点击切换: 显示/隐藏 Bot 内部对话</div>
-      </div>
-      <button class="header-action-btn" title="频道设置">&#x2699;</button>
-      <button class="header-action-btn" title="成员面板" id="toggleMembers">&#x1F465;</button>
-    </div>
+<!-- MAIN AREA -->
+<div class="main-area">
+  <div class="scene-tabs">
+    <div class="scene-tab active" data-scene="scene1">1. 基础 IM (H&#x2194;H)</div>
+    <div class="scene-tab" data-scene="scene2">2. H&#x2194;Bot 智能对话</div>
+    <div class="scene-tab" data-scene="scene3">3. Bot&#x2194;Bot 自主工作流</div>
+    <div class="scene-tab" data-scene="scene4">4. UMB 消息总线</div>
+    <div class="scene-tab" data-scene="scene5">5. 工作流 + ClawMark</div>
+    <div class="scene-tab" data-scene="scene6">6. 消息搜索</div>
   </div>
+  <div class="scene-content">
 
-  <div class="chat-messages" id="chatMessages">
-    <!-- Messages populated by JS -->
-  </div>
-
-  <div class="chat-input-bar">
-    <div class="chat-input-wrapper">
-      <div class="chat-input-actions">
-        <button class="input-action-btn" title="附件">&#x1F4CE;</button>
-        <button class="input-action-btn" title="表情">&#x1F600;</button>
-        <button class="input-action-btn" title="@提及">@</button>
+    <!-- SCENE 1: Basic IM -->
+    <div class="scene-panel active" id="scene1">
+      <div style="display:flex;flex:1;overflow:hidden;">
+        <div class="chat-main">
+          <div class="chat-header">
+            <span class="chat-header-hash">#</span>
+            <span class="chat-header-name">产品开发</span>
+            <span class="chat-header-meta">6 位成员 (4 人类 + 2 Bot)</span>
+            <div class="chat-header-spacer"></div>
+            <div class="chat-header-actions">
+              <button class="header-action-btn" id="s1VisBtn" title="Bot 内部对话可见性">&#x1F441;</button>
+              <button class="header-action-btn" title="频道设置">&#x2699;</button>
+              <button class="header-action-btn" id="s1MemberToggle" title="成员面板">&#x1F465;</button>
+            </div>
+          </div>
+          <div class="chat-messages" id="s1Messages"></div>
+          <div class="chat-input-bar">
+            <div class="chat-input-wrapper">
+              <div class="chat-input-actions">
+                <button class="input-action-btn" title="附件">&#x1F4CE;</button>
+                <button class="input-action-btn" title="表情">&#x1F600;</button>
+                <button class="input-action-btn" title="@提及">@</button>
+                <button class="input-action-btn" title="格式">&#x1D401;</button>
+              </div>
+              <textarea class="chat-input" id="s1Input" placeholder="发送消息到 #产品开发..." rows="1"></textarea>
+              <button class="send-btn" title="发送">&#x27A4;</button>
+            </div>
+          </div>
+        </div>
+        <div class="member-panel" id="s1MemberPanel"></div>
       </div>
-      <textarea class="chat-input" id="chatInput" placeholder="发送消息到 #产品开发..." rows="1"></textarea>
-      <button class="send-btn" title="发送">&#x27A4;</button>
     </div>
+
+    <!-- SCENE 2: H-Bot Smart Dialog -->
+    <div class="scene-panel" id="scene2">
+      <div style="display:flex;flex:1;overflow:hidden;">
+        <div class="chat-main">
+          <div class="chat-header">
+            <span class="chat-header-hash">&#x1F916;</span>
+            <span class="chat-header-name">代码助手</span>
+            <span class="chat-header-meta">AI / Claude Sonnet / 在线</span>
+            <div class="chat-header-spacer"></div>
+            <div class="context-indicator">
+              <span>&#x1F4DD;</span>
+              <span>上下文: <strong>12 条消息</strong> / <strong>8.2K tokens</strong></span>
+              <div class="token-bar" style="width:80px;"><div class="token-bar-fill" style="width:35%;"></div></div>
+            </div>
+          </div>
+          <div class="chat-messages" id="s2Messages"></div>
+          <div class="chat-input-bar">
+            <div class="chat-input-wrapper">
+              <div class="chat-input-actions">
+                <button class="input-action-btn" title="附件">&#x1F4CE;</button>
+                <button class="input-action-btn" title="代码">&#x1F4BB;</button>
+              </div>
+              <textarea class="chat-input" id="s2Input" placeholder="发送消息给 代码助手..." rows="1"></textarea>
+              <button class="send-btn" title="发送">&#x27A4;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENE 3: Bot-Bot Autonomous -->
+    <div class="scene-panel" id="scene3">
+      <div style="display:flex;flex:1;overflow:hidden;">
+        <div class="chat-main">
+          <div class="chat-header">
+            <span class="chat-header-hash">&#x1F916;</span>
+            <span class="chat-header-name">PR Review 流水线</span>
+            <span class="chat-header-meta">自动化工作流 / 3 Bot</span>
+            <div class="chat-header-spacer"></div>
+            <div class="chat-header-actions">
+              <div class="iteration-badge">&#x1F504; 循环 2/5</div>
+              <div class="antiloop-badge">&#x1F6E1; 循环检测: 正常</div>
+            </div>
+          </div>
+          <div class="chat-messages" id="s3Messages"></div>
+          <div class="chat-input-bar">
+            <div class="chat-input-wrapper" style="opacity:0.5;">
+              <textarea class="chat-input" placeholder="此频道为 Bot 工作流, 仅限观察..." rows="1" disabled></textarea>
+              <div class="checkpoint-btn" id="humanCheckpoint">&#x270B; 人工检查点</div>
+            </div>
+          </div>
+        </div>
+        <div class="member-panel" id="s3MemberPanel"></div>
+      </div>
+    </div>
+
+    <!-- SCENE 4: UMB Visualization -->
+    <div class="scene-panel" id="scene4">
+      <div class="umb-container">
+        <div class="umb-diagram">
+          <div class="umb-title">&#x1F4E1; 统一消息总线 (Unified Message Bus)</div>
+          <div class="umb-flow">
+            <div class="umb-node">&#x1F464; 人类消息</div>
+            <div class="umb-arrow">&#x27A1;</div>
+            <div class="umb-node accent" style="min-width:160px;">&#x26A1; UMB<br><small style="font-size:10px;color:var(--text3);">Redis Streams</small></div>
+            <div class="umb-arrow">&#x27A1;</div>
+            <div class="umb-node" style="min-width:120px;">&#x1F500; 路由引擎</div>
+            <div class="umb-arrow">&#x27A1;</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="umb-node green-node">&#x1F30D; 所有人可见</div>
+              <div class="umb-node accent">&#x1F916; 仅 Bot 可见</div>
+              <div class="umb-node orange-node">&#x1F512; 仅指定接收者</div>
+            </div>
+          </div>
+          <div style="margin-top:20px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
+            <div class="umb-node" style="font-size:11px;">&#x1F916; Bot 消息</div>
+            <div class="umb-arrow">&#x27A1;</div>
+            <div class="umb-node accent" style="min-width:160px;">&#x26A1; UMB<br><small style="font-size:10px;color:var(--text3);">同一总线, 类型无关</small></div>
+            <div class="umb-arrow">&#x27A1;</div>
+            <div class="umb-node" style="min-width:120px;">&#x1F500; 路由引擎</div>
+            <div class="umb-arrow">&#x27A1;</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="umb-node green-node">&#x1F30D; 所有人可见</div>
+              <div class="umb-node accent">&#x1F916; 仅 Bot 可见</div>
+              <div class="umb-node orange-node">&#x1F512; 仅指定接收者</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visibility-demo">
+          <div class="vis-title">&#x1F441; 消息可见性策略</div>
+          <div class="vis-policies">
+            <div class="vis-policy active" data-vis="full">
+              <div class="vis-policy-name">&#x1F30D; 全部可见</div>
+              <div class="vis-policy-desc">所有消息对所有参与者可见 (默认)</div>
+            </div>
+            <div class="vis-policy" data-vis="bot-only">
+              <div class="vis-policy-name">&#x1F916; 仅 Bot 之间</div>
+              <div class="vis-policy-desc">Bot 内部通信, 人类可选择查看</div>
+            </div>
+            <div class="vis-policy" data-vis="private">
+              <div class="vis-policy-name">&#x1F512; 仅创建者和指定接收者</div>
+              <div class="vis-policy-desc">点对点私密消息</div>
+            </div>
+          </div>
+          <div class="vis-chat-demo" id="visChatDemo"></div>
+        </div>
+
+        <div class="visibility-demo">
+          <div class="vis-title">&#x1F440; Observer 模式 (旁听)</div>
+          <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+            <div style="flex:1;min-width:280px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;">
+                <div class="member-item" style="padding:0;margin-bottom:12px;">
+                  <div class="member-avatar" style="background:linear-gradient(135deg,#666688,#555577);">&#x1F4CB;</div>
+                  <div class="member-info">
+                    <div class="member-name">产品助手 <span class="ai-badge-sm">AI</span></div>
+                    <div class="member-role-text">PM / Claude Opus</div>
+                  </div>
+                  <div class="observer-badge">&#x1F440; 旁听中</div>
+                </div>
+                <div style="font-size:12px;color:var(--text3);line-height:1.6;">
+                  <strong style="color:var(--text2);">旁听规则:</strong><br>
+                  - 看到所有消息, 但默认不响应<br>
+                  - 当检测到产品/需求相关讨论时自动介入<br>
+                  - 被 @mention 时立即响应<br>
+                  - 触发关键词: "需求", "PRD", "产品", "用户故事"
+                </div>
+              </div>
+            </div>
+            <div style="flex:1;min-width:280px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;">
+                <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;">可见性策略配置</div>
+                <div style="font-family:monospace;font-size:11px;color:#c9d1d9;background:#0d0d18;border-radius:8px;padding:12px;line-height:1.6;">
+{<br>
+&nbsp;&nbsp;<span style="color:#79c0ff;">"participant"</span>: <span style="color:#a5d6ff;">"产品助手"</span>,<br>
+&nbsp;&nbsp;<span style="color:#79c0ff;">"visibility"</span>: <span style="color:#a5d6ff;">"observer"</span>,<br>
+&nbsp;&nbsp;<span style="color:#79c0ff;">"auto_respond"</span>: <span style="color:#ff7b72;">false</span>,<br>
+&nbsp;&nbsp;<span style="color:#79c0ff;">"triggers"</span>: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a5d6ff;">"@产品助手"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a5d6ff;">"keyword:需求|PRD|产品"</span><br>
+&nbsp;&nbsp;]<br>
+}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENE 5: Workflow + ClawMark -->
+    <div class="scene-panel" id="scene5">
+      <div class="workflow-container">
+        <div class="wf-state-machine">
+          <div class="wf-title">&#x2699; 工作流状态机 — 代码审查自动循环</div>
+          <div class="wf-states" id="wfStates">
+            <div class="wf-state completed-state" data-step="0">&#x26A1; 触发</div>
+            <div class="wf-arrow">&#x27A1;</div>
+            <div class="wf-state completed-state" data-step="1">&#x1F4BB; 编码</div>
+            <div class="wf-arrow">&#x27A1;</div>
+            <div class="wf-state active-state" data-step="2">&#x1F50D; 审查</div>
+            <div class="wf-arrow">&#x27A1;</div>
+            <div class="wf-state" data-step="3">&#x270B; 人工检查</div>
+            <div class="wf-arrow">&#x27A1;</div>
+            <div class="wf-state" data-step="4">&#x27A1; 继续</div>
+            <div class="wf-arrow">&#x27A1;</div>
+            <div class="wf-state" data-step="5">&#x2705; 完成</div>
+          </div>
+          <div style="text-align:center;margin-top:16px;">
+            <button id="wfNextBtn" style="padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;">&#x27A1; 下一步</button>
+            <button id="wfResetBtn" style="padding:8px 20px;background:var(--surface3);color:var(--text2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;margin-left:8px;">&#x1F504; 重置</button>
+          </div>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;">&#x1F4CB; 工作流定义 (嵌入对话)</div>
+          <div class="message" style="animation:none;">
+            <div class="message-avatar" style="background:linear-gradient(135deg,#7c5cfc,#9b7dff);">陈</div>
+            <div class="message-body">
+              <div class="message-header">
+                <span class="message-author">陈朗辉</span>
+                <span class="message-role-tag tag-admin">管理员</span>
+                <span class="message-time">09:00</span>
+              </div>
+              <div class="message-text">创建一个代码审查自动循环工作流</div>
+              <div class="wf-definition-card">
+                <div class="wf-def-header">&#x2699; 工作流: 代码审查自动循环 <span style="margin-left:auto;font-size:10px;color:var(--green);">&#x25CF; 运行中</span></div>
+                <div class="wf-def-body">
+                  <div class="wf-def-step"><div class="wf-def-step-num">1</div><span><strong>write_code</strong> &#x2192; 代码助手 (generate_code)</span></div>
+                  <div class="wf-def-step"><div class="wf-def-step-num">2</div><span><strong>create_pr</strong> &#x2192; 代码助手 (create_github_pr)</span></div>
+                  <div class="wf-def-step"><div class="wf-def-step-num">3</div><span><strong>review</strong> &#x2192; Review Bot (review_code)</span></div>
+                  <div class="wf-def-step"><div class="wf-def-step-num" style="background:var(--orange);">4</div><span><strong>checkpoint</strong> &#x2192; 人工确认 (可选)</span></div>
+                  <div class="wf-def-step"><div class="wf-def-step-num" style="background:var(--green);">5</div><span><strong>complete</strong> &#x2192; 通知 + 合并</span></div>
+                  <div style="margin-top:8px;font-size:11px;color:var(--text3);">最大迭代: 5 | 超时: 4h | 异常: 通知人工</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="clawmark-demo">
+          <div class="clawmark-title">&#x1F4DD; ClawMark 行内标注 — 嵌入对话的文档评审</div>
+          <div class="clawmark-doc">
+            <div class="clawmark-doc-header">
+              <span>&#x1F4C4;</span>
+              <span style="font-weight:600;">AUTH-MODULE-PRD.md</span>
+              <span style="margin-left:auto;font-size:10px;color:var(--green);">&#x25CF; v1.2</span>
+              <span style="font-size:10px;color:var(--text3);">|</span>
+              <span style="font-size:10px;color:var(--accent);">3 条批注</span>
+            </div>
+            <div class="clawmark-doc-body">
+              <div class="clawmark-line" style="font-size:16px;font-weight:700;color:var(--text);">Auth 模块技术方案</div>
+              <div class="clawmark-line" style="color:var(--text3);font-size:12px;margin-bottom:8px;">版本 1.2 | 2026-04-19 | 陈朗辉</div>
+              <div class="clawmark-line"><strong>1. 认证方式:</strong> JWT (RS256)</div>
+              <div class="clawmark-line">- Access Token 有效期: 24h</div>
+              <div class="clawmark-line">- Refresh Token 有效期: 7d, 支持 rotation</div>
+              <div class="clawmark-line" style="height:8px;"></div>
+              <div class="clawmark-line annotated"><strong>2. API 设计</strong></div>
+              <div class="clawmark-line annotated">POST /api/auth/login &#x2192; { access_token, refresh_token }</div>
+              <div class="annotation-bubble">
+                <div class="annotation-header">
+                  <div class="message-avatar" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,var(--accent),#9b7dff);">&#x1F916;</div>
+                  <span class="annotation-author" style="color:var(--accent);">代码助手</span>
+                  <span style="font-size:10px;color:var(--text3);">14:30</span>
+                </div>
+                <div class="annotation-text">这个 API 设计需要考虑并发: 如果两个客户端同时用相同的 refresh token 请求, 需要有 token rotation 的原子性保证。建议使用 Redis SETNX 做 token 消费锁。</div>
+                <div class="annotation-reply">
+                  <div class="annotation-header">
+                    <div class="message-avatar" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,#7c5cfc,#9b7dff);">陈</div>
+                    <span class="annotation-author" style="color:var(--text);">陈朗辉</span>
+                    <span style="font-size:10px;color:var(--text3);">14:35</span>
+                  </div>
+                  <div class="annotation-text">好建议, 加上。另外 token family 检测也需要: 一旦 refresh token 被重用, 立即撤销整个 token family。</div>
+                </div>
+              </div>
+              <div class="clawmark-line">POST /api/auth/refresh &#x2192; { access_token, refresh_token }</div>
+              <div class="clawmark-line">POST /api/auth/logout &#x2192; { success: true }</div>
+              <div class="clawmark-line" style="height:8px;"></div>
+              <div class="clawmark-line annotated"><strong>3. 权限模型:</strong> RBAC + 资源级权限</div>
+              <div class="annotation-bubble">
+                <div class="annotation-header">
+                  <div class="message-avatar" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,#3ecf8e,#2da770);">李</div>
+                  <span class="annotation-author" style="color:var(--green);">李恩琪</span>
+                  <span style="font-size:10px;color:var(--text3);">15:10</span>
+                  <span style="font-size:10px;background:rgba(62,207,142,0.15);color:var(--green);padding:1px 6px;border-radius:4px;font-weight:600;">已解决</span>
+                </div>
+                <div class="annotation-text" style="text-decoration:line-through;opacity:0.6;">建议把 RBAC 的角色继承关系也写清楚, 目前不太明确 admin 和 owner 的权限边界。</div>
+              </div>
+              <div class="clawmark-line">- 角色: owner > admin > member > viewer</div>
+              <div class="clawmark-line">- 资源: workspace / channel / bot / workflow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENE 6: Search -->
+    <div class="scene-panel" id="scene6">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;">
+        <div style="font-size:48px;">&#x1F50D;</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text);">消息搜索</div>
+        <div style="font-size:14px;color:var(--text3);text-align:center;">按 <kbd style="background:var(--surface3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:12px;">Cmd</kbd> + <kbd style="background:var(--surface3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:12px;">K</kbd> 打开搜索<br>或点击下方按钮</div>
+        <button id="openSearchBtn" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;">&#x1F50D; 打开搜索</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- MEMBER PANEL -->
-<div class="member-panel" id="memberPanel">
-  <div id="memberContent">
-    <!-- Populated by JS -->
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-modal">
+    <div class="search-input-row">
+      <span class="search-icon">&#x1F50D;</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索消息...">
+      <span class="search-esc">ESC</span>
+    </div>
+    <div class="search-filters">
+      <div class="search-filter-chip active" data-filter="all">全部</div>
+      <div class="search-filter-chip" data-filter="human">&#x1F464; 人类消息</div>
+      <div class="search-filter-chip" data-filter="bot">&#x1F916; Bot 消息</div>
+      <div class="search-filter-chip" data-filter="file">&#x1F4CE; 文件</div>
+      <div class="search-filter-chip" data-filter="code">&#x1F4BB; 代码</div>
+    </div>
+    <div class="search-results" id="searchResults"></div>
   </div>
 </div>
 
 <script>
-// ============ DATA ============
+// ============================================================
+// MESSAGE DATA
+// ============================================================
 
-const CHANNELS = {
-  'product-dev': {
-    name: '产品开发',
-    hash: '#',
-    meta: '6 位成员',
-    placeholder: '发送消息到 #产品开发...',
-    members: 'default',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '10:30', isBot: false,
-        html: 'Auth 模块的 JWT 实现方案确认了，<span class="mention">@代码助手</span> 开始写代码'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '10:31', isBot: true,
-        html: '收到，开始实现 Auth 模块。预计 30 分钟完成。',
-        code: {
-          lang: 'TypeScript — auth/jwt.service.ts',
-          body: `<span class="kw">import</span> { Injectable } <span class="kw">from</span> <span class="str">'@nestjs/common'</span>;
-<span class="kw">import</span> { JwtService } <span class="kw">from</span> <span class="str">'@nestjs/jwt'</span>;
+var S1_MESSAGES = [
+  { type: 'date', text: '今天 — 4月20日' },
+  { author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc', avatar: '陈', time: '10:15', isBot: false,
+    html: '各位早上好, Sprint 14 第三天了, 今天重点推进 Auth 和权限模块' },
+  { author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e', avatar: '李', time: '10:16', isBot: false,
+    quote: { author: '陈朗辉', text: '各位早上好, Sprint 14 第三天了...' },
+    html: '收到! 我今天继续 review PR #51, 昨天发现了几个并发问题需要讨论',
+    reactions: [{ emoji: '&#x1F44D;', count: 3, active: true }, { emoji: '&#x1F4AA;', count: 1 }] },
+  { author: '张伟', role: 'member', roleLabel: '成员', color: '#6b7280', avatar: '张', time: '10:18', isBot: false,
+    html: '权限模块重构的架构图画好了, 传到这里给大家看看',
+    image: { alt: 'RBAC Architecture', icon: '&#x1F3D7;', name: 'rbac-architecture.png', size: '2.4 MB' } },
+  { author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc', avatar: '陈', time: '10:20', isBot: false,
+    html: '架构图很清晰。<span class="mention">@代码助手</span> 看一下这个 RBAC 设计, 有没有需要补充的?',
+    reactions: [{ emoji: '&#x1F440;', count: 2 }] },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '10:21', isBot: true,
+    html: '看了架构图, 整体设计很好。补充两点建议:<br><br>1. <strong>角色继承链</strong>: 建议 owner > admin > member > viewer, 高角色自动继承低角色权限<br>2. <strong>资源级权限</strong>: 除了角色权限, 还需要支持对单个 channel/bot 的细粒度授权<br><br>我写了一个权限检查的核心方法:',
+    code: { lang: 'TypeScript — rbac/permission.service.ts',
+      body: '<span class="kw">async</span> <span class="fn">checkPermission</span>(\n  userId: <span class="type">string</span>,\n  resource: <span class="type">Resource</span>,\n  action: <span class="type">Action</span>\n): <span class="type">Promise</span>&lt;<span class="type">boolean</span>&gt; {\n  <span class="cm">// 1. Check role-based permission</span>\n  <span class="kw">const</span> userRole = <span class="kw">await</span> <span class="kw">this</span>.<span class="fn">getUserRole</span>(userId);\n  <span class="kw">if</span> (<span class="kw">this</span>.<span class="fn">roleHasPermission</span>(userRole, action)) {\n    <span class="kw">return true</span>;\n  }\n  <span class="cm">// 2. Check resource-level override</span>\n  <span class="kw">const</span> override = <span class="kw">await</span> <span class="kw">this</span>.<span class="fn">getResourceOverride</span>(\n    userId, resource.id\n  );\n  <span class="kw">return</span> override?.allowed ?? <span class="kw">false</span>;\n}' },
+    reactions: [{ emoji: '&#x1F4A1;', count: 4, active: true }, { emoji: '&#x2705;', count: 2 }] },
+  { author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e', avatar: '李', time: '10:25', isBot: false,
+    html: '<span class="mention">@代码助手</span> 权限检查那里需要加缓存, 不然每次请求都查库太慢了。之前 <span class="mention">@张伟</span> 的 PR #51 里就有这个问题' }
+];
 
-<span class="cm">// JWT Authentication Service</span>
-@<span class="fn">Injectable</span>()
-<span class="kw">export class</span> <span class="type">AuthService</span> {
-  <span class="kw">constructor</span>(<span class="kw">private</span> jwt: <span class="type">JwtService</span>) {}
+var S2_MESSAGES = [
+  { type: 'date', text: '今天 — 4月20日' },
+  { author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc', avatar: '陈', time: '14:00', isBot: false,
+    html: '<span class="mention">@代码助手</span> 帮我实现 JWT 认证模块, 要求:<br>- RS256 非对称加密<br>- Access Token 24h, Refresh Token 7d<br>- Token rotation 机制<br>- 支持 token family 检测' },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:00', isBot: true,
+    html: '收到! 正在实现 JWT 认证模块...',
+    progress: ['&#x1F4DD; 分析需求...', '&#x1F528; 编写 JwtService...', '&#x1F9EA; 编写测试...'] },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:02', isBot: true, isStreaming: true,
+    html: '实现完成! 以下是核心代码:<br><br><strong>1. Token 生成与验证</strong>',
+    code: { lang: 'TypeScript — auth/jwt.service.ts',
+      body: '<span class="kw">import</span> { Injectable } <span class="kw">from</span> <span class="str">\'@nestjs/common\'</span>;\n<span class="kw">import</span> * <span class="kw">as</span> jwt <span class="kw">from</span> <span class="str">\'jsonwebtoken\'</span>;\n\n@<span class="fn">Injectable</span>()\n<span class="kw">export class</span> <span class="type">JwtAuthService</span> {\n  <span class="kw">private</span> privateKey: <span class="type">Buffer</span>;\n  <span class="kw">private</span> publicKey: <span class="type">Buffer</span>;\n\n  <span class="kw">async</span> <span class="fn">generateTokenPair</span>(user: <span class="type">User</span>) {\n    <span class="kw">const</span> familyId = <span class="fn">randomUUID</span>();\n    <span class="kw">const</span> accessToken = jwt.<span class="fn">sign</span>(\n      { sub: user.id, roles: user.roles },\n      <span class="kw">this</span>.privateKey,\n      { algorithm: <span class="str">\'RS256\'</span>, expiresIn: <span class="str">\'24h\'</span> }\n    );\n    <span class="cm">// Store token family for rotation</span>\n    <span class="kw">await</span> <span class="kw">this</span>.redis.<span class="fn">set</span>(\n      <span class="str">`token_family:${familyId}`</span>,\n      refreshToken, <span class="str">\'EX\'</span>, <span class="num">604800</span>\n    );\n    <span class="kw">return</span> { accessToken, refreshToken };\n  }\n}' } },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:08', isBot: true,
+    html: '&#x2705; 测试通过!<br><br><strong>进度汇总:</strong><br>- &#x2705; JwtAuthService 实现完成<br>- &#x2705; Token rotation + family 检测<br>- &#x2705; 12 个测试用例全部通过<br>- &#x2705; 已创建 <span class="link">PR #53</span><br><br>需要我继续做什么?',
+    contextInfo: { messages: 12, tokens: '8.2K' } },
+  { author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc', avatar: '陈', time: '14:10', isBot: false,
+    html: '很好, 但是 token rotation 那里, 如果两个客户端同时用同一个 refresh token 请求怎么办?' },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:10', isBot: true,
+    html: '好问题! 这就是 token family 检测的作用。当检测到一个 refresh token 被使用两次 (意味着泄露), 系统会:<br><br>1. <strong>立即撤销整个 token family</strong> — 该用户所有活跃的 refresh token 全部失效<br>2. <strong>强制重新登录</strong> — 所有客户端回到登录页<br>3. <strong>发送安全告警</strong> — 通知用户账号可能被盗<br><br>这是基于 <span class="link">RFC 6749 Section 10.4</span> 的最佳实践。' }
+];
 
-  <span class="kw">async</span> <span class="fn">generateToken</span>(user: <span class="type">UserPayload</span>): <span class="type">Promise</span>&lt;<span class="type">string</span>&gt; {
-    <span class="kw">const</span> payload = {
-      sub: user.id,
-      email: user.email,
-      roles: user.roles,
-    };
-    <span class="kw">return</span> <span class="kw">this</span>.jwt.<span class="fn">signAsync</span>(payload, {
-      expiresIn: <span class="str">'24h'</span>,
-      algorithm: <span class="str">'RS256'</span>,
-    });
-  }
+var S3_MESSAGES = [
+  { type: 'date', text: '今天 — 4月20日' },
+  { type: 'autonomous-banner', text: 'Bot&#x2194;Bot 自主协作 — 无需人工介入 | 工作流: 代码审查自动循环' },
+  { type: 'bot-bot-banner-custom', text: '&#x1F50C; Bot&#x2194;Bot 通信',
+    extra: '<span style="margin-left:auto;display:flex;gap:8px;"><span class="iteration-badge" style="font-size:10px;padding:2px 8px;">循环 1/5</span><span class="antiloop-badge" style="font-size:10px;padding:2px 8px;">&#x1F6E1; 正常</span></span>' },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:00', isBot: true, isBotBot: true,
+    html: '&#x1F4E6; PR #52 提交: 实现用户注册流程优化<br><span style="color:var(--text3);font-size:12px;">变更: 5 files, +142 -38 | 分支: feat/registration-v2</span>',
+    tokenUsage: { used: 4200, total: 128000, label: '4.2K / 128K tokens' } },
+  { author: 'Review Bot', role: 'ai', roleLabel: 'AI', model: 'GPT-4', color: '#a78bfa', avatar: '&#x1F50D;', time: '14:01', isBot: true, isBotBot: true,
+    html: '&#x1F50D; 开始审查 PR #52...<br><span style="color:var(--text3);font-size:12px;">检查项: 代码规范 / 安全漏洞 / 性能影响 / 测试覆盖</span>',
+    tokenUsage: { used: 8500, total: 128000, label: '8.5K / 128K tokens' } },
+  { author: 'Review Bot', role: 'ai', roleLabel: 'AI', model: 'GPT-4', color: '#a78bfa', avatar: '&#x1F50D;', time: '14:05', isBot: true, isBotBot: true,
+    html: '&#x1F4CB; 审查完成: <strong style="color:var(--orange);">2 个建议</strong>, <strong style="color:var(--green);">0 个阻塞问题</strong><br><br>1. <code>registerUser()</code> 缺少输入长度校验 (建议)<br>2. 密码哈希建议使用 argon2 替代 bcrypt (建议)<br><br><span class="link">[查看完整报告]</span>' },
+  { type: 'bot-bot-banner-custom', text: '&#x1F50C; Bot&#x2194;Bot 通信',
+    extra: '<span style="margin-left:auto;display:flex;gap:8px;"><span class="iteration-badge" style="font-size:10px;padding:2px 8px;">循环 2/5</span><span class="antiloop-badge" style="font-size:10px;padding:2px 8px;">&#x1F6E1; 正常</span></span>' },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:12', isBot: true, isBotBot: true,
+    html: '&#x2705; 已根据建议修改:<br>1. 添加了输入长度校验 (max 255 chars)<br>2. 替换为 argon2id 哈希算法<br><br>推送新 commit: <span style="color:var(--text3);font-family:monospace;font-size:12px;">a3f7b2c</span>',
+    tokenUsage: { used: 12800, total: 128000, label: '12.8K / 128K tokens' } },
+  { author: 'Review Bot', role: 'ai', roleLabel: 'AI', model: 'GPT-4', color: '#a78bfa', avatar: '&#x1F50D;', time: '14:13', isBot: true, isBotBot: true,
+    html: '&#x2705; <strong style="color:var(--green);">Approved</strong> — 所有建议已采纳, 代码质量良好',
+    tokenUsage: { used: 15200, total: 128000, label: '15.2K / 128K tokens' } },
+  { author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', time: '14:14', isBot: true, isBotBot: true,
+    html: 'PR #52 已自动合并到 main 分支 &#x2714;<br><span style="color:var(--text3);font-size:12px;">触发 CI/CD 部署流水线...</span>' },
+  { type: 'autonomous-banner', text: '&#x2705; 工作流完成 — 从提交到合并用时 14 分钟, 零人工介入 | Token 消耗: 15.2K' }
+];
 
-  <span class="kw">async</span> <span class="fn">verifyToken</span>(token: <span class="type">string</span>): <span class="type">Promise</span>&lt;<span class="type">UserPayload</span>&gt; {
-    <span class="kw">return</span> <span class="kw">this</span>.jwt.<span class="fn">verifyAsync</span>(token);
-  }
-}`
-        }
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '10:32', isBot: true, isInternal: true,
-        html: '<em>[内部日志] 代码生成完成，运行 lint 检查... 0 errors, 0 warnings. 准备提交 PR.</em>'
-      },
-      { type: 'bot-bot-start' },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '11:02', isBot: true, isBotBot: true,
-        html: 'Auth 模块代码已完成，已创建 <span class="link">PR #47</span>。<span class="mention">@测试Agent</span> 请开始 E2E 测试'
-      },
-      {
-        author: '测试Agent', role: 'qa', roleLabel: 'QA', model: 'GPT-4', color: '#f0a030',
-        avatar: '&#x1F9EA;', time: '11:03', isBot: true, isBotBot: true,
-        html: '收到，正在执行 E2E 测试套件... 测试用例: 24 个'
-      },
-      {
-        author: '测试Agent', role: 'qa', roleLabel: 'QA', model: 'GPT-4', color: '#f0a030',
-        avatar: '&#x1F9EA;', time: '11:15', isBot: true, isBotBot: true,
-        html: '&#x2705; 测试完成',
-        report: {
-          title: 'E2E Test Report — PR #47 Auth Module',
-          passed: 23, failed: 0, flaky: 1,
-          note: 'Flaky: auth_refresh_token_edge_case'
-        }
-      },
-      { type: 'bot-bot-end' },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '11:18', isBot: false,
-        html: '这个 flaky test 之前就有了，可以先合并'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '11:20', isBot: false,
-        html: '<span class="mention">@代码助手</span> 合并 PR #47'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '11:21', isBot: true,
-        html: '<span class="link">PR #47</span> 已合并到 main 分支 &#x2714;'
-      }
-    ]
-  },
-
-  'code-review': {
-    name: '代码审查',
-    hash: '#',
-    meta: '4 位成员',
-    placeholder: '发送消息到 #代码审查...',
-    members: 'default',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '09:15', isBot: true,
-        html: '&#x1F4E2; 新 PR 提醒: <span class="link">PR #51</span> — 重构用户权限模块<br>提交者: 张伟 | 变更文件: 8 | +324 -156'
-      },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '09:30', isBot: false,
-        html: '我来 review 这个 PR。权限模块改动比较大，需要仔细看看'
-      },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '10:05', isBot: false,
-        html: 'Line 47 的 <code>checkPermission</code> 方法有个问题: 缓存失效逻辑没有考虑并发场景，建议加个分布式锁'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '10:06', isBot: true,
-        html: '同意。<span class="mention">@张伟</span> 建议使用 Redis SETNX 实现分布式锁，我可以帮你写这部分代码'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '10:15', isBot: false,
-        html: '这个 PR 优先级比较高，今天能合并吗？'
-      },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '10:16', isBot: false,
-        html: '等张伟改完锁的问题就可以，其他地方没有大问题'
-      }
-    ]
-  },
-
-  'pr-review-pipeline': {
-    name: 'PR Review 流水线',
-    hash: '&#x1F916;',
-    meta: '自动化工作流 / 2 个 Bot',
-    placeholder: '此频道为 Bot 工作流, 仅限观察...',
-    members: 'bots-only',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        type: 'autonomous-banner',
-        text: 'Bot&#x2194;Bot 自主协作 — 无需人工介入'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '14:00', isBot: true, isBotBot: true,
-        html: '&#x1F4E6; PR #52 提交: 实现用户注册流程优化<br><span style="color:var(--text3);font-size:12px;">变更: 5 files, +142 -38 | 分支: feat/registration-v2</span>'
-      },
-      {
-        author: 'Review Bot', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#a78bfa',
-        avatar: '&#x1F50D;', time: '14:01', isBot: true, isBotBot: true,
-        html: '&#x1F50D; 开始审查 PR #52...<br><span style="color:var(--text3);font-size:12px;">检查项: 代码规范 / 安全漏洞 / 性能影响 / 测试覆盖</span>'
-      },
-      {
-        author: 'Review Bot', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#a78bfa',
-        avatar: '&#x1F50D;', time: '14:05', isBot: true, isBotBot: true,
-        html: '&#x1F4CB; 审查完成: <strong style="color:var(--orange);">2 个建议</strong>, <strong style="color:var(--green);">0 个阻塞问题</strong><br><br>1. <code>registerUser()</code> 缺少输入长度校验 (建议)<br>2. 密码哈希建议使用 argon2 替代 bcrypt (建议)<br><br><span class="link">[查看完整报告]</span>'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '14:12', isBot: true, isBotBot: true,
-        html: '&#x2705; 已根据建议修改:<br>1. 添加了输入长度校验 (max 255 chars)<br>2. 替换为 argon2id 哈希算法<br><br>推送新 commit: <span style="color:var(--text3);font-family:monospace;font-size:12px;">a3f7b2c</span>'
-      },
-      {
-        author: 'Review Bot', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#a78bfa',
-        avatar: '&#x1F50D;', time: '14:13', isBot: true, isBotBot: true,
-        html: '&#x2705; <strong style="color:var(--green);">Approved</strong> — 所有建议已采纳，代码质量良好'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '14:14', isBot: true, isBotBot: true,
-        html: 'PR #52 已自动合并到 main 分支 &#x2714;<br><span style="color:var(--text3);font-size:12px;">触发 CI/CD 部署流水线...</span>'
-      },
-      {
-        type: 'autonomous-banner',
-        text: '&#x2705; 工作流完成 — 从提交到合并用时 14 分钟, 零人工介入'
-      }
-    ]
-  },
-
-  'dm-code-assistant': {
-    name: '代码助手',
-    hash: '&#x1F916;',
-    meta: 'AI / Claude Sonnet / 在线',
-    placeholder: '发送消息给 代码助手...',
-    members: 'dm',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '09:00', isBot: false,
-        html: '帮我看看昨天那个数据库连接池的问题解决了没有'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '09:01', isBot: true,
-        html: '已检查。昨天的修复已经生效，连接池泄露问题已解决:<br><br>&#x2022; 修复前: 每小时泄露 ~15 个连接<br>&#x2022; 修复后: 连接数稳定在 20/50<br>&#x2022; 平均响应时间从 340ms 降到 120ms<br><br>监控面板: <span class="link">[Grafana Dashboard]</span>'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '09:02', isBot: false,
-        html: '很好。接下来把 Auth 模块的 JWT 方案做了，用 RS256'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '09:02', isBot: true,
-        html: '收到。方案确认:<br><br>1. 使用 RS256 非对称加密<br>2. Access Token 有效期 24h<br>3. Refresh Token 有效期 7d, 支持 rotation<br>4. Token payload: sub, email, roles<br><br>我去 #产品开发 频道开始实现，完成后会通知你。'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '09:03', isBot: false,
-        html: '可以，做完让测试Agent跑一下E2E'
-      }
-    ]
-  },
-
-  'dm-lienqi': {
-    name: '李恩琪',
-    hash: '',
-    meta: '成员 / 在线',
-    placeholder: '发送消息给 李恩琪...',
-    members: 'dm',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '08:45', isBot: false,
-        html: '早，今天 PR #51 的 review 我来负责'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '08:46', isBot: false,
-        html: '好的，权限模块那个改动比较大，仔细看看安全相关的部分'
-      },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '08:47', isBot: false,
-        html: '了解，我会重点看 RBAC 和缓存失效部分'
-      }
-    ]
-  },
-
-  'dm-zhangwei': {
-    name: '张伟',
-    hash: '',
-    meta: '成员 / 离线',
-    placeholder: '发送消息给 张伟...',
-    members: 'dm',
-    messages: [
-      { type: 'date', text: '昨天 — 4月19日' },
-      {
-        author: '张伟', role: 'member', roleLabel: '成员', color: '#6b7280',
-        avatar: '张', time: '18:30', isBot: false,
-        html: '权限模块重构 PR 提了，明天帮看下'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '18:35', isBot: false,
-        html: '好的，我让恩琪明天 review'
-      }
-    ]
-  },
-
-  'dm-test-agent': {
-    name: '测试 Agent',
-    hash: '&#x1F9EA;',
-    meta: 'QA / GPT-4 / 在线',
-    placeholder: '发送消息给 测试 Agent...',
-    members: 'dm',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '11:25', isBot: false,
-        html: '那个 flaky test auth_refresh_token_edge_case 什么情况？'
-      },
-      {
-        author: '测试Agent', role: 'qa', roleLabel: 'QA', model: 'GPT-4', color: '#f0a030',
-        avatar: '&#x1F9EA;', time: '11:25', isBot: true,
-        html: '分析结果: 这个测试在 token 过期边界条件下偶发失败 (时间窗口 < 1ms)。<br><br>根因: 测试用的 mock clock 精度不够。<br>建议: 将 token 过期检查的容差从 0ms 改为 100ms。<br><br>需要我创建修复 PR 吗？'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '11:26', isBot: false,
-        html: '创建吧，优先级 P2 就行'
-      }
-    ]
-  },
-
-  'e2e-test-chain': {
-    name: 'E2E 测试链',
-    hash: '&#x1F916;',
-    meta: '自动化工作流 / 2 个 Bot',
-    placeholder: '此频道为 Bot 工作流, 仅限观察...',
-    members: 'bots-only',
-    messages: [
-      { type: 'date', text: '今天 — 4月20日' },
-      {
-        type: 'autonomous-banner',
-        text: 'E2E 自动测试链 — 每次 PR 合并自动触发'
-      },
-      {
-        author: '测试Agent', role: 'qa', roleLabel: 'QA', model: 'GPT-4', color: '#f0a030',
-        avatar: '&#x1F9EA;', time: '11:22', isBot: true, isBotBot: true,
-        html: '&#x1F50D; 检测到 main 分支更新 (PR #47 合并)<br>启动 E2E 回归测试...'
-      },
-      {
-        author: '测试Agent', role: 'qa', roleLabel: 'QA', model: 'GPT-4', color: '#f0a030',
-        avatar: '&#x1F9EA;', time: '11:35', isBot: true, isBotBot: true,
-        html: '&#x2705; 回归测试完成<br>&#x2022; 总用例: 156<br>&#x2022; 通过: 155<br>&#x2022; Flaky: 1 (已知问题)<br>&#x2022; 失败: 0<br><br>部署到 staging 环境安全 &#x2714;'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '11:36', isBot: true, isBotBot: true,
-        html: '收到测试结果，正在触发 staging 部署...<br><span style="color:var(--text3);font-size:12px;">部署目标: staging.codeyi.dev</span>'
-      },
-      {
-        author: '代码助手', role: 'ai', roleLabel: 'AI', model: 'Claude Sonnet', color: '#7c5cfc',
-        avatar: '&#x1F916;', time: '11:38', isBot: true, isBotBot: true,
-        html: '&#x2705; Staging 部署完成<br><span class="link">[查看部署日志]</span> | <span class="link">[访问 Staging]</span>'
-      }
-    ]
-  },
-
-  'ops-discuss': {
-    name: '运营讨论',
-    hash: '#',
-    meta: '5 位成员',
-    placeholder: '发送消息到 #运营讨论...',
-    members: 'default',
-    messages: [
-      { type: 'date', text: '昨天 — 4月19日' },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '16:00', isBot: false,
-        html: '这周用户增长数据出来了，DAU 比上周涨了 12%'
-      },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '16:05', isBot: false,
-        html: '不错，主要是哪个渠道带来的？'
-      },
-      {
-        author: '李恩琪', role: 'member', roleLabel: '成员', color: '#3ecf8e',
-        avatar: '李', time: '16:08', isBot: false,
-        html: 'SEO 和社区推荐为主，付费渠道的 ROI 还需要优化'
-      }
-    ]
-  },
-
-  'announcements': {
-    name: '全员公告',
-    hash: '#',
-    meta: '全部成员',
-    placeholder: '发送公告...',
-    members: 'default',
-    messages: [
-      { type: 'date', text: '4月18日 星期五' },
-      {
-        author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc',
-        avatar: '陈', time: '10:00', isBot: false,
-        html: '&#x1F4E2; <strong>Sprint 14 启动</strong><br><br>本期重点:<br>1. Auth 模块 JWT 实现 (P0)<br>2. 用户权限重构 (P0)<br>3. 注册流程优化 (P1)<br><br>预计 4月25日 完成，各位加油 &#x1F4AA;'
-      }
-    ]
-  }
-};
-
-const MEMBERS_DEFAULT = {
+var MEMBERS_DEFAULT = {
   online: [
     { name: '陈朗辉', role: '管理员', color: '#7c5cfc', avatar: '陈', status: 'green' },
     { name: '李恩琪', role: '成员', color: '#3ecf8e', avatar: '李', status: 'green' },
@@ -1595,282 +1302,363 @@ const MEMBERS_DEFAULT = {
   offline: [
     { name: '张伟', role: '成员', color: '#6b7280', avatar: '张', status: 'gray' },
     { name: '产品助手', role: 'PM / Claude Opus', color: '#666688', avatar: '&#x1F4CB;', status: 'gray', tag: '观察者', tagClass: 'observer', isAI: true,
-      tooltip: '旁听中 — 不主动发言，条件触发时响应' }
+      tooltip: '&#x1F440; 旁听中 — 不主动发言, 条件触发时响应' }
   ]
 };
 
-const MEMBERS_BOTS = {
+var MEMBERS_BOTS = {
   online: [
     { name: '代码助手', role: 'AI / Claude Sonnet', color: '#7c5cfc', avatar: '&#x1F916;', status: 'green', tag: '执行者', tagClass: 'executor', isAI: true },
-    { name: 'Review Bot', role: 'AI / Claude Sonnet', color: '#a78bfa', avatar: '&#x1F50D;', status: 'green', tag: '审核者', tagClass: 'reviewer', isAI: true },
+    { name: 'Review Bot', role: 'AI / GPT-4', color: '#a78bfa', avatar: '&#x1F50D;', status: 'green', tag: '审核者', tagClass: 'reviewer', isAI: true },
     { name: '测试Agent', role: 'QA / GPT-4', color: '#f0a030', avatar: '&#x1F9EA;', status: 'green', tag: '审核者', tagClass: 'reviewer', isAI: true }
   ],
   offline: []
 };
 
-// ============ STATE ============
-let currentChannel = 'product-dev';
-let showBotInternal = false;
+var SEARCH_DATA = [
+  { channel: '#产品开发', author: '陈朗辉', time: '10:20', type: 'human', text: '架构图很清晰。<mark>@代码助手</mark> 看一下这个 RBAC 设计, 有没有需要补充的?' },
+  { channel: '#产品开发', author: '代码助手', time: '10:21', type: 'bot', text: '看了<mark>架构</mark>图, 整体设计很好。补充两点建议: 1. 角色继承链... 2. 资源级权限' },
+  { channel: '#代码审查', author: '李恩琪', time: '10:05', type: 'human', text: 'Line 47 的 checkPermission 方法有个问题: 缓存失效逻辑没有考虑<mark>并发</mark>场景' },
+  { channel: 'DM: 代码助手', author: '代码助手', time: '09:01', type: 'bot', text: '已检查。昨天的修复已经生效, 连接池泄露问题已<mark>解决</mark>' },
+  { channel: '#产品开发', author: '代码助手', time: '10:31', type: 'code', text: '<mark>TypeScript</mark> — auth/jwt.service.ts: export class AuthService {...}' },
+  { channel: '#产品开发', author: '张伟', time: '10:18', type: 'file', text: '权限模块重构的<mark>架构</mark>图画好了 [rbac-architecture.png, 2.4 MB]' },
+  { channel: 'PR Review 流水线', author: 'Review Bot', time: '14:05', type: 'bot', text: '审查完成: 2 个建议, 0 个阻塞问题. registerUser() 缺少输入长度<mark>校验</mark>' },
+  { channel: 'E2E 测试链', author: '测试Agent', time: '11:35', type: 'bot', text: '回归<mark>测试</mark>完成: 总用例 156, 通过 155, Flaky 1, 失败 0' }
+];
 
-// ============ RENDER FUNCTIONS ============
+var VIS_CHAT_FULL = [
+  { author: '陈朗辉', avatar: '陈', color: '#7c5cfc', text: '新功能的 API 设计好了, 大家看看', isBot: false },
+  { author: '代码助手', avatar: '&#x1F916;', color: '#7c5cfc', text: '我来分析一下 API 的设计模式...', isBot: true },
+  { author: 'Review Bot', avatar: '&#x1F50D;', color: '#a78bfa', text: '从安全角度看, 建议添加 rate limiting', isBot: true },
+  { author: '李恩琪', avatar: '李', color: '#3ecf8e', text: '同意, rate limit 很重要', isBot: false }
+];
 
-function renderMessages(channelId) {
-  const channel = CHANNELS[channelId];
-  if (!channel) return;
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
 
-  const container = document.getElementById('chatMessages');
-  container.innerHTML = '';
+function renderMessage(msg) {
+  if (msg.type === 'date') return '<div class="date-separator"><span>' + msg.text + '</span></div>';
+  if (msg.type === 'autonomous-banner') return '<div class="autonomous-banner"><span>&#x26A1;</span>' + msg.text + '</div>';
+  if (msg.type === 'bot-bot-banner-custom') return '<div class="bot-bot-banner"><span class="bb-icon">&#x1F50C;</span>' + msg.text + (msg.extra || '') + '</div>';
 
-  channel.messages.forEach(msg => {
-    if (msg.type === 'date') {
-      container.innerHTML += `<div class="date-separator"><span>${msg.text}</span></div>`;
-      return;
+  var classes = 'message';
+  if (msg.isBot) classes += ' bot-message';
+  if (msg.isBotBot) classes += ' bot-bot';
+
+  var roleTag = '';
+  if (msg.role === 'admin') roleTag = '<span class="message-role-tag tag-admin">' + msg.roleLabel + '</span>';
+  else if (msg.role === 'ai') roleTag = '<span class="message-role-tag tag-ai">&#x1F916; ' + msg.roleLabel + '</span>';
+  else if (msg.role === 'qa') roleTag = '<span class="message-role-tag tag-qa">&#x1F9EA; ' + msg.roleLabel + '</span>';
+  else if (msg.role === 'member') roleTag = '<span class="message-role-tag tag-member">' + msg.roleLabel + '</span>';
+
+  var modelTag = msg.model ? '<span class="tag-model">' + msg.model + '</span>' : '';
+  var quoteHtml = msg.quote ? '<div class="message-quote"><div class="quote-author">' + msg.quote.author + '</div><div class="quote-text">' + msg.quote.text + '</div></div>' : '';
+  var codeHtml = msg.code ? '<div class="msg-code-block"><div class="msg-code-header"><span>' + msg.code.lang + '</span><span style="cursor:pointer;color:var(--text3);">&#x1F4CB; Copy</span></div><div class="msg-code-body">' + msg.code.body + '</div></div>' : '';
+  var imageHtml = msg.image ? '<div class="message-image"><div class="img-placeholder">' + msg.image.icon + '</div><div class="img-meta">&#x1F4CE; ' + msg.image.name + ' (' + msg.image.size + ')</div></div>' : '';
+
+  var reactionsHtml = '';
+  if (msg.reactions) {
+    reactionsHtml = '<div class="message-reactions">';
+    for (var i = 0; i < msg.reactions.length; i++) {
+      var r = msg.reactions[i];
+      reactionsHtml += '<span class="reaction-chip' + (r.active ? ' active' : '') + '">' + r.emoji + ' <span class="reaction-count">' + r.count + '</span></span>';
     }
+    reactionsHtml += '</div>';
+  }
 
-    if (msg.type === 'bot-bot-start') {
-      container.innerHTML += `
-        <div class="bot-bot-banner">
-          <span class="bb-icon">&#x1F50C;</span>
-          Bot&#x2194;Bot 通信开始
-        </div>`;
-      return;
+  var progressHtml = '';
+  if (msg.progress) {
+    progressHtml = '<div style="margin-top:6px;">';
+    for (var j = 0; j < msg.progress.length; j++) {
+      progressHtml += '<div style="font-size:12px;color:var(--text2);padding:2px 0;">' + msg.progress[j] + '</div>';
     }
+    progressHtml += '</div>';
+  }
 
-    if (msg.type === 'bot-bot-end') {
-      container.innerHTML += `
-        <div class="bot-bot-banner">
-          <span class="bb-icon">&#x2705;</span>
-          Bot&#x2194;Bot 通信结束
-        </div>`;
-      return;
-    }
+  var tokenHtml = '';
+  if (msg.tokenUsage) {
+    var pct = Math.round(msg.tokenUsage.used / msg.tokenUsage.total * 100);
+    tokenHtml = '<div class="token-meter"><span>&#x1F4CA;</span><span>' + msg.tokenUsage.label + '</span><div class="token-bar"><div class="token-bar-fill" style="width:' + pct + '%;"></div></div></div>';
+  }
 
-    if (msg.type === 'autonomous-banner') {
-      container.innerHTML += `
-        <div class="autonomous-banner">
-          <span class="ab-icon">&#x26A1;</span>
-          ${msg.text}
-        </div>`;
-      return;
-    }
+  var streamingHtml = msg.isStreaming ? '<div class="stop-btn" onclick="this.style.display=\'none\'">&#x23F9; Stop generating</div>' : '';
+  var contextHtml = msg.contextInfo ? '<div class="context-indicator"><span>&#x1F4DD;</span><span>上下文: <strong>' + msg.contextInfo.messages + ' 条消息</strong> / <strong>' + msg.contextInfo.tokens + ' tokens</strong></span></div>' : '';
 
-    // Regular message
-    let classes = 'message';
-    if (msg.isBot) classes += ' bot-message';
-    if (msg.isBotBot) classes += ' bot-bot';
-    if (msg.isInternal) classes += ' bot-internal' + (showBotInternal ? ' visible' : '');
-
-    let roleTag = '';
-    if (msg.role === 'admin') roleTag = `<span class="message-role-tag tag-admin">${msg.roleLabel}</span>`;
-    else if (msg.role === 'ai') roleTag = `<span class="message-role-tag tag-ai">&#x1F916; ${msg.roleLabel}</span>`;
-    else if (msg.role === 'qa') roleTag = `<span class="message-role-tag tag-qa">&#x1F9EA; ${msg.roleLabel}</span>`;
-    else if (msg.role === 'member') roleTag = `<span class="message-role-tag tag-member">${msg.roleLabel}</span>`;
-
-    let modelTag = msg.model ? `<span class="tag-model">${msg.model}</span>` : '';
-    let internalTag = msg.isInternal ? `<span class="internal-tag">内部</span>` : '';
-
-    let codeHtml = '';
-    if (msg.code) {
-      codeHtml = `
-        <div class="msg-code-block">
-          <div class="msg-code-header">
-            <span>${msg.code.lang}</span>
-            <span style="cursor:pointer;color:var(--text3);">&#x1F4CB; Copy</span>
-          </div>
-          <div class="msg-code-body">${msg.code.body}</div>
-        </div>`;
-    }
-
-    let reportHtml = '';
-    if (msg.report) {
-      reportHtml = `
-        <div class="report-embed">
-          <div class="re-title">&#x1F4CA; ${msg.report.title}</div>
-          <div class="re-stats">
-            <span>通过: <span class="pass">${msg.report.passed}</span></span>
-            <span>失败: <span class="fail">${msg.report.failed}</span></span>
-            <span>Flaky: <span class="flaky">${msg.report.flaky}</span></span>
-          </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px;">${msg.report.note}</div>
-          <div style="margin-top:6px;"><span class="link" style="font-size:12px;">[查看完整报告]</span></div>
-        </div>`;
-    }
-
-    container.innerHTML += `
-      <div class="${classes}">
-        <div class="message-avatar" style="background: linear-gradient(135deg, ${msg.color}, ${msg.color}dd);">
-          ${msg.avatar}
-        </div>
-        <div class="message-body">
-          <div class="message-header">
-            <span class="message-author">${msg.author}</span>
-            ${roleTag}
-            ${modelTag}
-            ${internalTag}
-            <span class="message-time">${msg.time}</span>
-          </div>
-          <div class="message-text">${msg.html}</div>
-          ${codeHtml}
-          ${reportHtml}
-        </div>
-      </div>`;
-  });
-
-  // Add typing indicator
-  container.innerHTML += `
-    <div class="typing-indicator" id="typingIndicator">
-      <div class="typing-dots"><span></span><span></span><span></span></div>
-      <span id="typingText">代码助手 正在输入...</span>
-    </div>`;
-
-  // Scroll to bottom
-  container.scrollTop = container.scrollHeight;
+  return '<div class="' + classes + '">' +
+    '<div class="message-avatar" style="background:linear-gradient(135deg,' + msg.color + ',' + msg.color + 'dd);">' + msg.avatar + '</div>' +
+    '<div class="message-body">' +
+      '<div class="message-header"><span class="message-author">' + msg.author + '</span>' + roleTag + modelTag + '<span class="message-time">' + msg.time + '</span></div>' +
+      quoteHtml +
+      '<div class="message-text">' + msg.html + '</div>' +
+      codeHtml + imageHtml + progressHtml + tokenHtml + streamingHtml + contextHtml + reactionsHtml +
+    '</div></div>';
 }
 
-function renderMembers(channelId) {
-  const channel = CHANNELS[channelId];
-  if (!channel) return;
-
-  let members;
-  if (channel.members === 'bots-only') members = MEMBERS_BOTS;
-  else if (channel.members === 'dm') members = null;
-  else members = MEMBERS_DEFAULT;
-
-  const container = document.getElementById('memberContent');
-
-  if (!members) {
-    container.innerHTML = `<div style="padding:20px 16px;color:var(--text3);font-size:13px;text-align:center;">私聊对话</div>`;
-    return;
+function renderMessages(containerId, messages) {
+  var c = document.getElementById(containerId);
+  var html = '';
+  for (var i = 0; i < messages.length; i++) html += renderMessage(messages[i]);
+  if (containerId === 's1Messages' || containerId === 's2Messages') {
+    html += '<div class="typing-indicator" id="' + containerId + 'Typing"><div class="typing-dots"><span></span><span></span><span></span></div><span>代码助手 正在输入...</span></div>';
   }
+  c.innerHTML = html;
+  c.scrollTop = c.scrollHeight;
+}
 
-  let html = '';
-
-  if (members.online.length > 0) {
-    html += `<div class="member-section-title">在线 (${members.online.length})</div>`;
-    members.online.forEach(m => {
-      html += renderMemberItem(m);
-    });
+function renderMemberPanel(containerId, members) {
+  var c = document.getElementById(containerId);
+  var html = '';
+  if (members.online.length) {
+    html += '<div class="member-section-title">在线 (' + members.online.length + ')</div>';
+    for (var i = 0; i < members.online.length; i++) html += renderMemberItem(members.online[i]);
   }
-
-  if (members.offline.length > 0) {
-    html += `<div class="member-section-title" style="margin-top:12px;">离线 (${members.offline.length})</div>`;
-    members.offline.forEach(m => {
-      html += renderMemberItem(m);
-    });
+  if (members.offline.length) {
+    html += '<div class="member-section-title" style="margin-top:12px;">离线 (' + members.offline.length + ')</div>';
+    for (var j = 0; j < members.offline.length; j++) html += renderMemberItem(members.offline[j]);
   }
-
-  container.innerHTML = html;
+  c.innerHTML = html;
 }
 
 function renderMemberItem(m) {
-  const statusColor = m.status === 'green' ? 'var(--green)' : 'var(--text3)';
-  const aiBadge = m.isAI ? `<span class="ai-badge-sm" style="font-size:8px;">AI</span>` : '';
-  const tag = m.tag ? `<span class="member-tag ${m.tagClass}">${m.tag}</span>` : '';
-  const tooltip = m.tooltip ? `<div class="observer-tooltip">${m.tooltip}</div>` : '';
-
-  return `
-    <div class="member-item">
-      <div class="member-avatar" style="background: linear-gradient(135deg, ${m.color}, ${m.color}cc);">
-        ${m.avatar}
-        <div class="member-status" style="background: ${statusColor};"></div>
-      </div>
-      <div class="member-info">
-        <div class="member-name">${m.name} ${aiBadge}</div>
-        <div class="member-role-text">${m.role}</div>
-      </div>
-      ${tag}
-      ${tooltip}
-    </div>`;
+  var statusColor = m.status === 'green' ? 'var(--green)' : 'var(--text3)';
+  var aiBadge = m.isAI ? '<span class="ai-badge-sm">AI</span>' : '';
+  var tag = m.tag ? '<span class="member-tag ' + m.tagClass + '">' + m.tag + '</span>' : '';
+  var tooltip = m.tooltip ? '<div class="observer-tooltip">' + m.tooltip + '</div>' : '';
+  return '<div class="member-item">' +
+    '<div class="member-avatar" style="background:linear-gradient(135deg,' + m.color + ',' + m.color + 'cc);">' + m.avatar + '<div class="member-status" style="background:' + statusColor + ';"></div></div>' +
+    '<div class="member-info"><div class="member-name">' + m.name + ' ' + aiBadge + '</div><div class="member-role-text">' + m.role + '</div></div>' + tag + tooltip +
+  '</div>';
 }
 
-function switchChannel(channelId) {
-  if (!CHANNELS[channelId]) return;
+function renderVisChatDemo(visType) {
+  var c = document.getElementById('visChatDemo');
+  var html = '';
 
-  currentChannel = channelId;
-  const channel = CHANNELS[channelId];
-
-  // Update header
-  document.getElementById('chatHeaderName').textContent = channel.name;
-  document.getElementById('chatHeaderMeta').textContent = channel.meta;
-  document.querySelector('.chat-header-hash').innerHTML = channel.hash || '';
-
-  // Update input placeholder
-  document.getElementById('chatInput').placeholder = channel.placeholder;
-
-  // Update active channel in list
-  document.querySelectorAll('.channel-item').forEach(el => {
-    el.classList.remove('active');
-    if (el.dataset.channel === channelId) {
-      el.classList.add('active');
-      // Remove unread badge on click
-      const badge = el.querySelector('.ch-badge');
-      if (badge) badge.style.display = 'none';
+  if (visType === 'full') {
+    for (var i = 0; i < VIS_CHAT_FULL.length; i++) {
+      var msg = VIS_CHAT_FULL[i];
+      var botClass = msg.isBot ? ' bot-message' : '';
+      var aiTag = msg.isBot ? ' <span style="font-size:9px;background:rgba(124,92,252,0.25);color:#b8a4ff;padding:1px 4px;border-radius:3px;">AI</span>' : '';
+      html += '<div class="message' + botClass + '" style="animation:none;padding:6px 0;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,' + msg.color + ',' + msg.color + 'dd);">' + msg.avatar + '</div><div class="message-body"><div style="font-size:12px;"><strong>' + msg.author + '</strong>' + aiTag + '</div><div style="font-size:13px;color:var(--text2);margin-top:2px;">' + msg.text + '</div></div></div>';
     }
-  });
-
-  // Render
-  renderMessages(channelId);
-  renderMembers(channelId);
+  } else if (visType === 'bot-only') {
+    html += '<div class="message" style="animation:none;padding:6px 0;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#7c5cfc,#7c5cfcdd);">陈</div><div class="message-body"><div style="font-size:12px;"><strong>陈朗辉</strong></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">新功能的 API 设计好了, 大家看看</div></div></div>';
+    html += '<div class="bot-collapse-toggle" onclick="var el=this.nextElementSibling;el.style.display=el.style.display===\'block\'?\'none\':\'block\';this.querySelector(\'.ca\').textContent=el.style.display===\'block\'?\'&#x25BC;\':\'&#x25B6;\'"><span class="ca">&#x25B6;</span> 展开 Bot 内部对话 (2 条)</div>';
+    html += '<div style="display:none;">';
+    html += '<div class="message bot-message" style="animation:none;opacity:0.7;padding:6px 0;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#7c5cfc,#7c5cfcdd);">&#x1F916;</div><div class="message-body"><div style="font-size:12px;"><strong>代码助手</strong> <span style="font-size:9px;background:rgba(124,92,252,0.25);color:#b8a4ff;padding:1px 4px;border-radius:3px;">AI</span></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">我来分析一下 API 的设计模式...</div></div></div>';
+    html += '<div class="message bot-message" style="animation:none;opacity:0.7;padding:6px 0;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#a78bfa,#a78bfadd);">&#x1F50D;</div><div class="message-body"><div style="font-size:12px;"><strong>Review Bot</strong> <span style="font-size:9px;background:rgba(124,92,252,0.25);color:#b8a4ff;padding:1px 4px;border-radius:3px;">AI</span></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">从安全角度看, 建议添加 rate limiting</div></div></div>';
+    html += '</div>';
+    html += '<div class="message" style="animation:none;padding:6px 0;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#3ecf8e,#3ecf8edd);">李</div><div class="message-body"><div style="font-size:12px;"><strong>李恩琪</strong></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">同意, rate limit 很重要</div></div></div>';
+  } else {
+    html += '<div class="message" style="animation:none;padding:6px 0;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#7c5cfc,#7c5cfcdd);">陈</div><div class="message-body"><div style="font-size:12px;"><strong>陈朗辉</strong></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">新功能的 API 设计好了, 大家看看</div></div></div>';
+    html += '<div class="message bot-message" style="animation:none;padding:6px 0;background:rgba(240,160,48,0.05);border-left:2px solid var(--orange);padding-left:10px;margin-left:-12px;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#7c5cfc,#7c5cfcdd);">&#x1F916;</div><div class="message-body"><div style="font-size:12px;"><strong>代码助手</strong> <span style="font-size:9px;background:rgba(240,160,48,0.2);color:var(--orange);padding:1px 4px;border-radius:3px;">PRIVATE</span></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">[仅发送给 陈朗辉] 检测到 3 个潜在安全风险, 私信通知您</div></div></div>';
+    html += '<div class="message" style="animation:none;padding:6px 0;opacity:0.4;"><div class="message-avatar" style="width:28px;height:28px;font-size:10px;background:linear-gradient(135deg,#3ecf8e,#3ecf8edd);">李</div><div class="message-body"><div style="font-size:12px;"><strong>李恩琪</strong></div><div style="font-size:13px;color:var(--text2);margin-top:2px;">(看不到上面的私密消息)</div></div></div>';
+  }
+  c.innerHTML = html;
 }
 
-// ============ EVENT HANDLERS ============
+function renderSearchResults(filter) {
+  var c = document.getElementById('searchResults');
+  var results = SEARCH_DATA;
+  if (filter && filter !== 'all') {
+    results = [];
+    for (var i = 0; i < SEARCH_DATA.length; i++) {
+      if (SEARCH_DATA[i].type === filter) results.push(SEARCH_DATA[i]);
+    }
+  }
+  if (!results.length) {
+    c.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text3);">没有找到结果</div>';
+    return;
+  }
+  var html = '';
+  for (var j = 0; j < results.length; j++) {
+    var r = results[j];
+    var typeIcon = r.type === 'bot' ? '&#x1F916;' : r.type === 'file' ? '&#x1F4CE;' : r.type === 'code' ? '&#x1F4BB;' : '&#x1F464;';
+    html += '<div class="search-result-item"><div class="search-result-meta"><span>' + typeIcon + '</span><span style="font-weight:600;color:var(--text2);">' + r.author + '</span><span>in ' + r.channel + '</span><span style="margin-left:auto;">' + r.time + '</span></div><div class="search-result-text">' + r.text + '</div></div>';
+  }
+  c.innerHTML = html;
+}
 
-// Channel clicks
-document.querySelectorAll('.channel-item').forEach(el => {
-  el.addEventListener('click', () => {
-    switchChannel(el.dataset.channel);
-  });
+// ============================================================
+// EVENT HANDLERS
+// ============================================================
+
+// Scene tabs
+var sceneTabs = document.querySelectorAll('.scene-tab');
+var scenePanels = document.querySelectorAll('.scene-panel');
+for (var t = 0; t < sceneTabs.length; t++) {
+  (function(tab) {
+    tab.addEventListener('click', function() {
+      for (var i = 0; i < sceneTabs.length; i++) sceneTabs[i].classList.remove('active');
+      for (var j = 0; j < scenePanels.length; j++) scenePanels[j].classList.remove('active');
+      tab.classList.add('active');
+      document.getElementById(tab.getAttribute('data-scene')).classList.add('active');
+    });
+  })(sceneTabs[t]);
+}
+
+// Channel switching
+var channelItems = document.querySelectorAll('.channel-item');
+for (var ci = 0; ci < channelItems.length; ci++) {
+  (function(el) {
+    el.addEventListener('click', function() {
+      for (var i = 0; i < channelItems.length; i++) channelItems[i].classList.remove('active');
+      el.classList.add('active');
+      var badge = el.querySelector('.ch-badge');
+      if (badge) badge.style.display = 'none';
+      var ch = el.getAttribute('data-channel');
+      if (ch === 'dm-code-assistant') document.querySelector('[data-scene="scene2"]').click();
+      else if (ch === 'pr-review-pipeline') document.querySelector('[data-scene="scene3"]').click();
+      else if (ch === 'e2e-test-chain') document.querySelector('[data-scene="scene3"]').click();
+    });
+  })(channelItems[ci]);
+}
+
+// Member panel toggle
+document.getElementById('s1MemberToggle').addEventListener('click', function() {
+  var panel = document.getElementById('s1MemberPanel');
+  panel.classList.toggle('hidden');
+  this.classList.toggle('active');
 });
 
-// Visibility toggle
-document.getElementById('visibilityBtn').addEventListener('click', function() {
-  showBotInternal = !showBotInternal;
-  this.classList.toggle('active', showBotInternal);
-  document.querySelectorAll('.bot-internal').forEach(el => {
-    el.classList.toggle('visible', showBotInternal);
-  });
-  // Update tooltip
-  document.getElementById('visibilityTooltip').textContent =
-    showBotInternal ? 'Bot 内部对话: 显示中' : '点击切换: 显示/隐藏 Bot 内部对话';
+// Typing trigger
+var s1TypingTimeout;
+document.getElementById('s1Input').addEventListener('focus', function() {
+  clearTimeout(s1TypingTimeout);
+  s1TypingTimeout = setTimeout(function() {
+    var ti = document.getElementById('s1MessagesTyping');
+    if (ti) { ti.classList.add('visible'); setTimeout(function() { ti.classList.remove('visible'); }, 3000); }
+  }, 800);
 });
 
-// Typing animation
-let typingTimeout;
-document.getElementById('chatInput').addEventListener('focus', () => {
-  const indicator = document.getElementById('typingIndicator');
-  if (indicator) {
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      indicator.classList.add('visible');
-      // Hide after 3 seconds
-      setTimeout(() => {
-        indicator.classList.remove('visible');
-      }, 3000);
-    }, 800);
+// Streaming simulation (scene 2)
+var streamingActive = false;
+document.getElementById('s2Input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    var val = this.value.trim();
+    if (!val || streamingActive) return;
+    this.value = '';
+    var container = document.getElementById('s2Messages');
+    var now = new Date().toTimeString().slice(0, 5);
+    container.innerHTML += renderMessage({
+      author: '陈朗辉', role: 'admin', roleLabel: '管理员', color: '#7c5cfc', avatar: '陈', time: now, isBot: false, html: val
+    });
+    streamingActive = true;
+    var rid = 'stream_' + Date.now();
+    container.innerHTML += '<div class="message bot-message" id="' + rid + '"><div class="message-avatar" style="background:linear-gradient(135deg,#7c5cfc,#7c5cfcdd);">&#x1F916;</div><div class="message-body"><div class="message-header"><span class="message-author">代码助手</span><span class="message-role-tag tag-ai">&#x1F916; AI</span><span class="tag-model">Claude Sonnet</span><span class="message-time">' + now + '</span></div><div class="message-text" id="' + rid + '_text"><span class="streaming-cursor"></span></div><div class="stop-btn" onclick="this.style.display=\'none\'">&#x23F9; Stop generating</div></div></div>';
+    container.scrollTop = container.scrollHeight;
+    var response = '让我想想这个问题...\n\n这是一个很好的思路。基于目前的上下文, 我建议我们从以下几个方面入手:\n\n1. **首先确认需求边界** — 明确哪些是 MVP 必须的\n2. **然后制定技术方案** — 选择最适合的架构\n3. **最后排期实施** — 分阶段交付\n\n需要我展开哪个部分?';
+    var charIdx = 0;
+    var streamInt = setInterval(function() {
+      if (charIdx >= response.length) {
+        clearInterval(streamInt);
+        streamingActive = false;
+        var textEl = document.getElementById(rid + '_text');
+        if (textEl) {
+          textEl.innerHTML = response.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          var stopBtn = textEl.parentElement.querySelector('.stop-btn');
+          if (stopBtn) stopBtn.style.display = 'none';
+        }
+        return;
+      }
+      var textEl = document.getElementById(rid + '_text');
+      if (textEl) {
+        var partial = response.slice(0, charIdx + 1).replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        textEl.innerHTML = partial + '<span class="streaming-cursor"></span>';
+        container.scrollTop = container.scrollHeight;
+      }
+      charIdx++;
+    }, 20);
   }
 });
 
-document.getElementById('chatInput').addEventListener('blur', () => {
-  clearTimeout(typingTimeout);
+// Visibility policy switching
+var visPolicies = document.querySelectorAll('.vis-policy');
+for (var vp = 0; vp < visPolicies.length; vp++) {
+  (function(el) {
+    el.addEventListener('click', function() {
+      for (var i = 0; i < visPolicies.length; i++) visPolicies[i].classList.remove('active');
+      el.classList.add('active');
+      renderVisChatDemo(el.getAttribute('data-vis'));
+    });
+  })(visPolicies[vp]);
+}
+
+// Workflow state machine
+var wfCurrentStep = 2;
+function updateWfStates() {
+  var states = document.querySelectorAll('.wf-state');
+  for (var i = 0; i < states.length; i++) {
+    var step = parseInt(states[i].getAttribute('data-step'));
+    states[i].classList.remove('active-state', 'completed-state');
+    if (step < wfCurrentStep) states[i].classList.add('completed-state');
+    else if (step === wfCurrentStep) states[i].classList.add('active-state');
+  }
+}
+document.getElementById('wfNextBtn').addEventListener('click', function() {
+  if (wfCurrentStep < 5) { wfCurrentStep++; updateWfStates(); }
+});
+document.getElementById('wfResetBtn').addEventListener('click', function() {
+  wfCurrentStep = 0; updateWfStates();
 });
 
-// Auto-resize textarea
-document.getElementById('chatInput').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+// Search
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('active');
+  document.getElementById('searchInput').focus();
+  renderSearchResults('all');
+}
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('active');
+  document.getElementById('searchInput').value = '';
+}
+document.getElementById('cmdkTrigger').addEventListener('click', openSearch);
+document.getElementById('openSearchBtn').addEventListener('click', openSearch);
+document.getElementById('searchOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSearch();
+});
+document.addEventListener('keydown', function(e) {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape') closeSearch();
+});
+var filterChips = document.querySelectorAll('.search-filter-chip');
+for (var fc = 0; fc < filterChips.length; fc++) {
+  (function(chip) {
+    chip.addEventListener('click', function() {
+      for (var i = 0; i < filterChips.length; i++) filterChips[i].classList.remove('active');
+      chip.classList.add('active');
+      renderSearchResults(chip.getAttribute('data-filter'));
+    });
+  })(filterChips[fc]);
+}
+
+// Human checkpoint
+document.getElementById('humanCheckpoint').addEventListener('click', function() {
+  var c = document.getElementById('s3Messages');
+  c.innerHTML += '<div class="autonomous-banner" style="border-color:var(--orange);color:var(--orange);background:rgba(240,160,48,0.06);">&#x270B; 人工检查点已触发 — 工作流已暂停, 等待人工确认</div>';
+  c.scrollTop = c.scrollHeight;
 });
 
-// Member panel toggle
-document.getElementById('toggleMembers').addEventListener('click', function() {
-  const panel = document.getElementById('memberPanel');
-  const isHidden = panel.style.display === 'none';
-  panel.style.display = isHidden ? '' : 'none';
-  this.classList.toggle('active', isHidden);
-});
+// Auto-resize textareas
+var textareas = document.querySelectorAll('.chat-input');
+for (var ta = 0; ta < textareas.length; ta++) {
+  textareas[ta].addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+}
 
-// ============ INIT ============
-renderMessages('product-dev');
-renderMembers('product-dev');
+// ============================================================
+// INIT
+// ============================================================
+renderMessages('s1Messages', S1_MESSAGES);
+renderMemberPanel('s1MemberPanel', MEMBERS_DEFAULT);
+renderMessages('s2Messages', S2_MESSAGES);
+renderMessages('s3Messages', S3_MESSAGES);
+renderMemberPanel('s3MemberPanel', MEMBERS_BOTS);
+renderVisChatDemo('full');
 </script>
 </body>
 </html>
