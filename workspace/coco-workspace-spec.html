@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COCO Workspace 产品规格说明书 (Spec)</title>
+<style>
+  :root { --bg: #0d1117; --surface: #161b22; --surface2: #1c2128; --border: #30363d; --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; --red: #f85149; --purple: #bc8cff; --cyan: #39d353; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 2rem; max-width: 1020px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  h3 { font-size: 1.05rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--purple); }
+  h4 { font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.3rem; color: var(--cyan); }
+  p, li { color: var(--text); margin-bottom: 0.5rem; font-size: 0.93rem; }
+  .subtitle { color: var(--text2); margin-bottom: 2rem; font-size: 0.9rem; }
+  .box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; margin: 1rem 0; }
+  .p0 { border-left: 4px solid var(--red); }
+  .p1 { border-left: 4px solid var(--orange); }
+  .p2 { border-left: 4px solid var(--text2); }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; }
+  th, td { border: 1px solid var(--border); padding: 0.45rem 0.7rem; text-align: left; }
+  th { background: var(--surface); color: var(--accent); font-weight: 600; }
+  td { background: var(--bg); }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+  .tag-p0 { background: rgba(248,81,73,0.2); color: var(--red); }
+  .tag-p1 { background: rgba(210,153,34,0.2); color: var(--orange); }
+  .tag-p2 { background: rgba(139,148,158,0.2); color: var(--text2); }
+  .tag-new { background: rgba(63,185,80,0.2); color: var(--green); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; overflow-x: auto; font-size: 0.82rem; line-height: 1.5; margin: 1rem 0; }
+  code { font-family: "SF Mono", "Fira Code", monospace; }
+  ul, ol { padding-left: 1.5rem; }
+  .highlight { background: rgba(88,166,255,0.12); padding: 0.8rem 1rem; border-radius: 6px; margin: 1rem 0; border: 1px solid rgba(88,166,255,0.25); }
+  .warn { background: rgba(248,81,73,0.1); padding: 0.8rem 1rem; border-radius: 6px; margin: 0.5rem 0; border: 1px solid rgba(248,81,73,0.25); }
+  .warn strong { color: var(--red); }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.8rem; margin: 1rem 0; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; text-align: center; }
+  .summary-card .number { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .summary-card .label { color: var(--text2); font-size: 0.8rem; }
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; }
+  .toc a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { padding-left: 1.2rem; }
+  .toc li { margin-bottom: 0.3rem; }
+  @media (max-width: 600px) { body { padding: 1rem; } .summary-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>COCO Workspace 产品规格说明书</h1>
+<p class="subtitle">基于设计稿 v0.1（10 screens）&middot; 2026-04-19 &middot; 全新开发，非现有 Dashboard 扩展</p>
+
+<div class="summary-grid">
+  <div class="summary-card"><div class="number">9</div><div class="label">核心模块</div></div>
+  <div class="summary-card"><div class="number">~24 周</div><div class="label">MVP 到内测</div></div>
+  <div class="summary-card"><div class="number">6-7 人</div><div class="label">最小团队</div></div>
+  <div class="summary-card"><div class="number">全新</div><div class="label">独立代码库</div></div>
+</div>
+
+<div class="toc">
+<strong>目录</strong>
+<ol>
+<li><a href="#s1">产品定位与核心模型</a></li>
+<li><a href="#s2">信息架构（9 模块总览）</a></li>
+<li><a href="#s3">模块详细 Spec</a></li>
+<li><a href="#s4">数据模型</a></li>
+<li><a href="#s5">技术选型建议</a></li>
+<li><a href="#s6">P0 / P1 / P2 拆分</a></li>
+<li><a href="#s7">团队配置与排期</a></li>
+<li><a href="#s8">风险与待决策项</a></li>
+</ol>
+</div>
+
+<!-- ==================== 1. POSITIONING ==================== -->
+<h2 id="s1">一、产品定位与核心模型</h2>
+
+<div class="highlight">
+<strong>一句话定位：</strong>AI-Native 团队协作平台 — 人类和 AI Agent 作为平级团队成员，共同完成项目开发。
+</div>
+
+<h3>核心概念模型：HxA（Human × Agent）</h3>
+<p>传统协作工具里，AI 是"工具"——人调用它，用完丢掉。COCO Workspace 的核心突破是：<strong>Agent 是团队成员</strong>，有角色、有任务、有绩效、有权限。</p>
+
+<pre><code>
+Workspace（工作空间）
+├── Team（团队）
+│   ├── 人类成员 ─── 角色（管理员/成员/审核者）
+│   └── Agent 成员 ─── 角色（执行者/审核者/协调者/观察者）
+├── Projects（项目）
+│   ├── Sprint / Phase 周期
+│   └── Tasks（任务） ─── 分配给 人类 或 Agent
+├── Conversations（对话）
+│   ├── 频道对话（团队可见）
+│   └── 私人对话（1:1）
+├── Toolbox（工具箱）
+│   ├── MCP 集成（GitHub/Lark/Jira/...）
+│   ├── 内置技能（数据库查询/安全扫描/...）
+│   └── 社区技能
+└── Admin（管理）
+    ├── 席位管理（人 + Agent 统一视图）
+    ├── 权限控制（Agent 执行权限 + 审批策略）
+    └── 用量分析（API 调用/Credits 消耗）
+</code></pre>
+
+<h3>与现有产品的关系</h3>
+<table>
+<tr><th>维度</th><th>现有 Dashboard</th><th>新 Workspace</th></tr>
+<tr><td>定位</td><td>个人 AI 员工管理面板</td><td>团队 AI-Native 协作平台</td></tr>
+<tr><td>Agent 模型</td><td>1 用户 : 1 Agent (独立 VM)</td><td>1 团队 : N Agent（多专业角色）</td></tr>
+<tr><td>交互</td><td>通过外部 IM（Lark/TG）</td><td>内置对话界面 + 外部 IM 可选</td></tr>
+<tr><td>任务</td><td>无</td><td>原生 Kanban + Git 集成</td></tr>
+<tr><td>代码库</td><td>coco-dashboard (Next.js + Fastify)</td><td>全新代码库</td></tr>
+<tr><td>用户群</td><td>现有 300+ 个人用户</td><td>新产品线，面向开发团队</td></tr>
+</table>
+
+<div class="warn">
+<strong>关键决策：</strong>这是一个全新产品线，不是在现有 dashboard 上改。现有 dashboard 继续服务个人用户，Workspace 作为独立产品面向团队客户。两个产品可以共享用户账户体系（Logto），但代码库、部署、计费完全独立。
+</div>
+
+<!-- ==================== 2. INFORMATION ARCHITECTURE ==================== -->
+<h2 id="s2">二、信息架构</h2>
+
+<p>基于设计稿左侧导航栏，Workspace 有 9 个一级模块：</p>
+
+<pre><code>
+左侧导航
+═══════════════════════
+工作区
+  ● 对话        ③     ← 实时聊天，人机协作沟通
+  ■ 任务        ⑫     ← Kanban 看板，连接 Git
+  ◆ 项目              ← Sprint/Phase 管理
+  👥 团队              ← 人 + Agent 成员管理
+─────────────────────
+平台
+  🤖 Agent             ← Agent 管理 + 模板市场
+  🧰 工具箱            ← MCP / 技能 市场
+─────────────────────
+系统
+  📊 管理后台          ← 概览 + 席位 + 权限
+  ⚙ 设置              ← 个人资料 + OAuth + 通知
+─────────────────────
+  ⌘ Cmd+K             ← 全局命令面板
+</code></pre>
+
+<!-- ==================== 3. MODULE SPECS ==================== -->
+<h2 id="s3">三、模块详细 Spec</h2>
+
+<!-- M1: CHAT -->
+<div class="box p0">
+<h3>模块 1：对话 (Chat) <span class="tag tag-p0">P0</span></h3>
+
+<h4>功能描述</h4>
+<p>类飞书/Slack 的即时通讯界面。用户可以跟 Agent 对话、跟团队成员对话、或在频道中多人+多Agent 协作。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>频道对话</td><td>团队公开频道，人和 Agent 都能参与。消息实时推送。</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>私人对话</td><td>1:1 跟 Agent 或跟人。Agent 私聊内容不对其他成员可见。</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>消息归属</td><td>每条消息标记发送者（人类头像 or Agent 图标+名称）</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>@提及</td><td>@人 或 @Agent 触发通知/唤醒</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>富文本 + 代码块</td><td>Markdown 渲染、代码高亮、文件附件、图片</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>消息引用/回复</td><td>引用上下文回复，线程式讨论</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>消息搜索</td><td>全文搜索历史消息</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>外部 IM 桥接</td><td>可选连接 Lark/Slack，双向同步消息</td><td><span class="tag tag-p2">P2</span></td></tr>
+</table>
+
+<h4>技术要点</h4>
+<ul>
+<li>实时通讯：WebSocket（推荐 Socket.IO 或原生 WS + Redis Pub/Sub 扇出）</li>
+<li>消息存储：PostgreSQL（结构化）+ 全文搜索（pg_trgm 或 Elasticsearch）</li>
+<li>Agent 响应：消息发送后通过内部队列分发到对应 Agent 运行时，Agent 通过 SSE/WS 回传流式响应</li>
+<li>文件上传：S3/GCS，消息中存引用</li>
+</ul>
+
+<h4>设计稿对应</h4>
+<p>Screen 1 of navigation (对话③)。设计稿中未展示完整对话界面截图，需要补充 UI 设计。</p>
+
+<h4>工时估算</h4>
+<p><strong>P0 范围：~6 周</strong>（2 前端 + 1 后端）</p>
+</div>
+
+<!-- M2: TASKS -->
+<div class="box p0">
+<h3>模块 2：任务 (Tasks) <span class="tag tag-p0">P0</span></h3>
+
+<h4>功能描述</h4>
+<p>Kanban 看板式任务管理，直连 GitHub/GitLab。任务可以分配给人类或 Agent。Agent 执行任务时，进展实时可见。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>Kanban 看板</td><td>四列：待办 → 进行中 → 已完成 → 已归档。拖拽排序。</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>任务卡片</td><td>标题、描述、标签（设计/前端/Agent/DevOps）、优先级（P0-P4）、指派人、进度条</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>指派给 Agent</td><td>选择 Agent 为执行者 → Agent 自动开始执行 → 状态实时更新</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>筛选视图</td><td>全部 / 我负责的 / Agent 执行中 / 高优先级。按项目过滤。</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>GitHub/GitLab 同步</td><td>Issue ↔ Task 双向同步：在 Workspace 创建 Task 自动建 Issue，Git Issue 变化自动更新 Task</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>任务评论</td><td>人和 Agent 可在任务中留评论，Agent 完成后自动附结果报告</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>自动化规则</td><td>如「PR merged → 任务自动完成」「Agent 成功率 < 80% → 通知管理员」</td><td><span class="tag tag-p2">P2</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 2：12 个任务的 Kanban。每个任务卡显示：标签（设计/前端/Agent/DevOps/文档/测试）、指派人头像、优先级（P1-P4）、截止日期、进度百分比。支持「Agent 执行中」筛选标签。</p>
+
+<h4>数据模型</h4>
+<pre><code>tasks {
+  id, workspace_id, project_id,
+  title, description, status (todo|in_progress|done|archived),
+  priority (p0|p1|p2|p3|p4),
+  assignee_id,        -- 可以是 user_id 或 agent_id
+  assignee_type,      -- 'human' | 'agent'
+  labels[],           -- ['设计','前端','Agent']
+  progress,           -- 0-100
+  due_date,
+  git_issue_url,      -- GitHub/GitLab issue link
+  sort_order,
+  created_by, created_at, updated_at
+}
+
+task_comments {
+  id, task_id, author_id, author_type, content, created_at
+}</code></pre>
+
+<h4>工时估算</h4>
+<p><strong>P0 范围：~5 周</strong>（1 前端 + 1 后端）</p>
+</div>
+
+<!-- M3: PROJECTS -->
+<div class="box p0">
+<h3>模块 3：项目 (Projects) <span class="tag tag-p0">P0</span></h3>
+
+<h4>功能描述</h4>
+<p>项目是任务的容器。每个项目有 Sprint/Phase 周期、进度追踪、团队成员。卡片视图展示整体状况。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>项目卡片视图</td><td>名称、描述、Sprint/Phase 标签、进度条、团队头像、最近活动时间</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>项目 CRUD</td><td>创建/编辑/归档项目。Tab：全部项目 / 我参与的 / 已归档</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>项目内任务列表</td><td>进入项目后展示该项目的 Kanban（复用任务模块，filter by project_id）</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>列表视图</td><td>表格形式查看所有项目</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>Git repo 绑定</td><td>一个项目绑定一个或多个 Git repo，Task 自动关联 commit/PR</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>Sprint 管理</td><td>时间周期、Sprint 目标、velocity 图表</td><td><span class="tag tag-p2">P2</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 3：4 个项目卡片（CODE-YI主站 Sprint 14 62%、移动端 App Sprint 12 38%、MCP 集成层 Phase 1 25%、Agent 记忆系统 研发中 15%）。+ 新建项目 按钮。</p>
+
+<h4>工时估算</h4>
+<p><strong>P0 范围：~3 周</strong>（1 前端 + 0.5 后端 — 大量复用任务模块）</p>
+</div>
+
+<!-- M4: TEAM -->
+<div class="box p0">
+<h3>模块 4：团队 (Team) <span class="tag tag-p0">P0</span></h3>
+
+<h4>功能描述</h4>
+<p>统一管理人类成员和 Agent 成员。展示 HxA 协作拓扑。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>人类成员管理</td><td>邀请（邮件/链接）、角色设置（管理员/成员/审核者）、移除</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>Agent 成员管理</td><td>添加 Agent（从市场选或创建）、设置角色（执行者/审核者/协调者/观察者）</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>成员卡片展示</td><td>头像、名称、角色标签、在线/离线状态</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>HxA 协作拓扑图</td><td>可视化展示人与 Agent 之间的协作关系</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>多团队</td><td>一个 Workspace 可有多个团队（如产品开发团队、运营团队）</td><td><span class="tag tag-p2">P2</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 4：「产品开发团队」— 人类成员(4)和Agent成员(4)分区展示。每个 Agent 卡显示底层模型（Claude Sonnet / GPT-4 / Claude Opus / Gemini Pro）和在线状态。下方有 HxA 协作拓扑图。</p>
+
+<h4>Agent 角色说明</h4>
+<table>
+<tr><th>角色</th><th>权限</th><th>典型场景</th></tr>
+<tr><td>执行者</td><td>接收任务 → 自主执行 → 提交结果</td><td>代码助手写代码</td></tr>
+<tr><td>审核者</td><td>Review 其他 Agent/人的产出 → 提出修改建议</td><td>测试 Agent 做 Code Review</td></tr>
+<tr><td>协调者</td><td>拆解需求 → 分配子任务 → 跟踪进度</td><td>产品助手做需求分析</td></tr>
+<tr><td>观察者</td><td>只读监控 → 收集数据 → 生成报告</td><td>数据分析 Agent</td></tr>
+</table>
+
+<h4>工时估算</h4>
+<p><strong>P0 范围：~3 周</strong>（1 前端 + 1 后端）</p>
+</div>
+
+<!-- M5: AGENT -->
+<div class="box p0">
+<h3>模块 5：Agent 管理 <span class="tag tag-p0">P0</span></h3>
+
+<h4>功能描述</h4>
+<p>Agent 的全生命周期管理：创建、配置、监控、销毁。包含 Agent 模板市场。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>Agent 仪表板</td><td>卡片视图：名称、类型图标(AI/QA/PM/数据)、底层模型、技能标签、本周任务数/成功率/平均时长</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>创建 Agent</td><td>选择模板 → 配置模型/技能/权限 → 命名 → 部署</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>Agent 配置</td><td>修改 persona（系统 prompt）、模型选择、技能启用/禁用、权限等级</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>Agent 状态监控</td><td>在线/离线/错误状态、资源使用、最近活动</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>Agent 模板市场</td><td>预设模板：全栈开发者、UI设计师、代码审查员、技术写作者、安全审计员等</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>Fork Agent</td><td>从已有 Agent 复制（包含 Memory + 技能配置）</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>导入配置</td><td>从 JSON/YAML 导入 Agent 配置</td><td><span class="tag tag-p1">P1</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 1/5：4 个 Agent 卡片 — 代码助手(Claude 3.5 Sonnet, 23 tasks, 97%, 4.2min), 测试Agent(GPT-4 Turbo, 18 tasks, 94%, 6.8min), 产品助手(Claude Opus, 8 tasks, 100%, 12min), 数据分析Agent(Gemini 1.5 Pro, 12 tasks, 95%, 3.5min)。每个卡显示技能标签（代码生成/重构/Code Review/测试 等）。底部 Agent 模板市场有 5 个模板。</p>
+
+<h4>Agent 运行时架构</h4>
+<div class="highlight">
+<strong>关键架构决策：</strong>每个 Agent 的运行时是什么？<br><br>
+<strong>方案 A：独立 VM（现有模式）</strong> — 每个 Agent = 1 台 GCE VM。隔离性好，但成本高（4 Agent = 4 VM）。<br>
+<strong>方案 B：容器化</strong> — 每个 Agent = 1 个 Docker 容器，共享宿主机。成本降 60-70%，隔离性略低但可控。<br>
+<strong>方案 C：进程级</strong> — 同一 VM 内多个 Agent 进程（PM2 管理）。成本最低，但隔离性弱。<br><br>
+<strong>建议：</strong>MVP 用方案 B（Docker 容器）。平衡成本和隔离性。每个 Workspace 一台宿主 VM，上面跑 N 个 Agent 容器。
+</div>
+
+<h4>工时估算</h4>
+<p><strong>P0 范围：~5 周</strong>（1 后端 + 1 前端。Agent 运行时改造是最重头的。）</p>
+</div>
+
+<!-- M6: TOOLBOX -->
+<div class="box p1">
+<h3>模块 6：工具箱 (Toolbox) <span class="tag tag-p1">P1</span></h3>
+
+<h4>功能描述</h4>
+<p>Agent 的技能/工具市场。支持 MCP 协议集成、内置技能、社区技能。一键安装，OAuth 授权。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>技能浏览</td><td>分类 Tab：全部 / 内置技能 / MCP 集成 / 社区技能 / 我的技能</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>一键安装</td><td>点击安装 → 自动部署到 Agent 运行时</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>OAuth 连接</td><td>GitHub/Lark/Jira/Gmail 等需要授权的集成，一键 OAuth flow</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>技能评分/安装数</td><td>社区评分（★4.5）+ 安装数量（12.3k）</td><td><span class="tag tag-p2">P2</span></td></tr>
+<tr><td>上传技能</td><td>用户可上传自定义技能到市场</td><td><span class="tag tag-p2">P2</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 6：8 个工具卡片。GitHub 集成(官方MCP, ★4.5, 12.3k, 已安装)、飞书集成(官方MCP, ★4.8, 8.7k, 已安装)、数据库查询(官方内置, ★4.6, 8.2k)、图像生成(★4.7, 9.1k, 已安装)、网页抓取(★4.3, 3.4k)、邮件管理(MCP, ★4.4, 5.1k)、Jira 集成(★4.2, 4.5k)、安全扫描(内置, 7.8k, 已安装)。</p>
+
+<h4>MVP 策略</h4>
+<p>P0 不做市场，而是<strong>预装 3-5 个核心集成</strong>（GitHub、数据库查询、文件操作），作为 Agent 内置能力。P1 再做完整的市场 UI 和安装流程。</p>
+
+<h4>工时估算</h4>
+<p><strong>P1 范围：~4 周</strong>（1 前端 + 1 后端）</p>
+</div>
+
+<!-- M7: ADMIN -->
+<div class="box p0">
+<h3>模块 7：管理后台 (Admin) <span class="tag tag-p0">P0</span></h3>
+
+<h4>功能描述</h4>
+<p>Workspace 管理员的控制中心：系统概览、席位管理（人+Agent 统一视图）、权限控制、用量分析。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>系统概览</td><td>4 个 KPI 卡：Agent 数 / 活跃用户 / API 调用量 / Credits 消耗。7 天趋势图。</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>席位管理</td><td>统一表格：成员名 / 角色 / 类型(人类/Agent) / 最近活跃 / 本周 API 调用 / 状态(活跃/在线/离线)。支持操作列。</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>Agent 执行权限</td><td>开关式控制：代码执行 ✓/✗、文件写入 ✓/✗、外部 API 调用 ✓/✗、数据库操作 ✓/✗</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>审批策略</td><td>高风险操作需人工审批、费用超限告警、自动回滚、操作日志审计</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>导出报告</td><td>一键导出系统使用报告</td><td><span class="tag tag-p1">P1</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 7-9：KPI 卡（4 Agents +1本月 / 28 活跃用户 +12% / 14.2k API +23% / $842 Credits +5%）。席位管理表含人类和 Agent 混合行。权限控制面板有 4 个执行权限开关 + 4 个审批策略选项。</p>
+
+<h4>工时估算</h4>
+<p><strong>P0 范围：~3 周</strong>（1 前端 + 0.5 后端）</p>
+</div>
+
+<!-- M8: SETTINGS -->
+<div class="box p1">
+<h3>模块 8：设置 (Settings) <span class="tag tag-p1">P1</span></h3>
+
+<h4>功能描述</h4>
+<p>个人资料、OAuth 集成管理、通知偏好。</p>
+
+<h4>核心功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th><th>优先级</th></tr>
+<tr><td>个人资料</td><td>头像、名称、邮箱、角色标签</td><td><span class="tag tag-p0">P0</span></td></tr>
+<tr><td>OAuth 集成面板</td><td>20+ 平台 OAuth 连接：GitHub/飞书/Slack/Jira/Notion/Gmail/AWS/Docker/GitLab/Confluence/Vercel/Linear/Figma/npm/Okta/Datadog/Zoom/Discord/微信/Twitter</td><td><span class="tag tag-p1">P1</span></td></tr>
+<tr><td>通知偏好</td><td>开关：Agent 任务完成通知 / 任务分配通知 / @提及通知</td><td><span class="tag tag-p1">P1</span></td></tr>
+</table>
+
+<h4>设计稿参考</h4>
+<p>Screen 10：个人资料卡 + 20 个 OAuth 服务图标（部分高亮为已连接）+ 3 个通知开关。</p>
+
+<h4>MVP 策略</h4>
+<p>P0 只做个人资料。OAuth 集成在 P1 按需开通（先做 GitHub，其余按客户需求优先级排序）。</p>
+
+<h4>工时估算</h4>
+<p><strong>P0: ~1 周</strong>（基础设置页）<strong>| P1: ~4 周</strong>（OAuth 集成框架 + 前 3-5 个平台）</p>
+</div>
+
+<!-- M9: CMD+K -->
+<div class="box p2">
+<h3>模块 9：全局命令面板 (Cmd+K) <span class="tag tag-p2">P2</span></h3>
+<p>全局快捷键唤出命令面板，类 Linear/Raycast。快速搜索任务、跳转页面、执行操作。</p>
+<p><strong>P2，MVP 不做。</strong>工时 ~2 周。</p>
+</div>
+
+<!-- ==================== 4. DATA MODEL ==================== -->
+<h2 id="s4">四、数据模型</h2>
+
+<pre><code>
+┌─────────────┐     ┌──────────────┐     ┌──────────────┐
+│ workspaces  │────&lt;│ workspace_   │>────│    users     │
+│             │     │ members      │     │              │
+│ id          │     │ workspace_id │     │ id           │
+│ name        │     │ user_id      │     │ name         │
+│ slug        │     │ role         │     │ email        │
+│ owner_id    │     │ joined_at    │     │ avatar_url   │
+│ plan        │     └──────────────┘     │ logto_id     │
+└──────┬──────┘                          └──────────────┘
+       │
+       │ 1:N
+       ▼
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   agents     │────&lt;│  agent_      │>────│   skills     │
+│              │     │  skills      │     │              │
+│ id           │     └──────────────┘     │ id           │
+│ workspace_id │                          │ name         │
+│ name         │     ┌──────────────┐     │ type (mcp/   │
+│ type (code/  │     │  agent_      │     │  builtin/    │
+│  test/pm/    │     │  configs     │     │  community)  │
+│  data/custom)│     │              │     │ install_count│
+│ model        │     │ agent_id     │     └──────────────┘
+│ persona      │     │ key          │
+│ status       │     │ value        │
+│ role         │     └──────────────┘
+│ stats_json   │
+└──────┬──────┘
+       │
+       │
+┌──────▼──────┐     ┌──────────────┐
+│  projects   │────&lt;│    tasks     │
+│             │     │              │
+│ id          │     │ id           │
+│ workspace_id│     │ project_id   │
+│ name        │     │ workspace_id │
+│ description │     │ title        │
+│ sprint_label│     │ status       │
+│ progress    │     │ priority     │
+│ repo_url    │     │ assignee_id  │
+└─────────────┘     │ assignee_type│   ┌──────────────┐
+                    │ labels[]     │   │  messages    │
+                    │ progress     │   │              │
+                    │ git_issue_url│   │ id           │
+                    └──────────────┘   │ channel_id   │
+                                       │ sender_id    │
+┌──────────────┐                       │ sender_type  │
+│  channels    │──────────────────────&gt;│ content      │
+│              │                       │ attachments  │
+│ id           │                       │ created_at   │
+│ workspace_id │                       └──────────────┘
+│ name         │
+│ type (public/│     ┌──────────────┐
+│  private/dm) │     │ oauth_       │
+│ members[]    │     │ connections  │
+└──────────────┘     │              │
+                     │ user_id      │
+┌──────────────┐     │ provider     │
+│ subscriptions│     │ access_token │
+│              │     │ refresh_token│
+│ workspace_id │     │ scopes       │
+│ plan         │     │ expires_at   │
+│ seats        │     └──────────────┘
+│ stripe_sub_id│
+│ period_start │     ┌──────────────┐
+│ period_end   │     │ audit_logs   │
+└──────────────┘     │              │
+                     │ workspace_id │
+                     │ actor_id     │
+                     │ actor_type   │
+                     │ action       │
+                     │ target       │
+                     │ details_json │
+                     │ created_at   │
+                     └──────────────┘
+</code></pre>
+
+<p><strong>核心表：~12 张</strong>（workspaces, workspace_members, users, agents, agent_skills, agent_configs, skills, projects, tasks, channels, messages, subscriptions）+ 辅助表 ~6 张（task_comments, oauth_connections, audit_logs, notifications, invites, usage_metrics）</p>
+
+<!-- ==================== 5. TECH STACK ==================== -->
+<h2 id="s5">五、技术选型建议</h2>
+
+<table>
+<tr><th>层</th><th>推荐</th><th>理由</th></tr>
+<tr><td>前端框架</td><td>Next.js 16 (App Router)</td><td>团队已有经验（现有 dashboard），SSR + RSC 性能好</td></tr>
+<tr><td>UI</td><td>TailwindCSS v4 + Radix UI + shadcn/ui</td><td>设计稿风格匹配，组件生态成熟</td></tr>
+<tr><td>实时通讯</td><td>Socket.IO + Redis Adapter</td><td>对话模块需要 WebSocket，Socket.IO 处理重连/房间/扇出</td></tr>
+<tr><td>后端</td><td>Fastify (TypeScript)</td><td>团队已有经验，性能优于 Express</td></tr>
+<tr><td>ORM</td><td>Prisma 6</td><td>团队已有经验，Type-safe</td></tr>
+<tr><td>数据库</td><td>PostgreSQL 17</td><td>现有基础设施，复用 Cloud SQL</td></tr>
+<tr><td>缓存/实时</td><td>Redis 7 (Pub/Sub + Cache)</td><td>消息扇出、会话缓存、在线状态</td></tr>
+<tr><td>任务队列</td><td>BullMQ</td><td>Agent 任务调度、异步 Job</td></tr>
+<tr><td>Agent 运行时</td><td>Docker 容器（每 Agent 一个）</td><td>隔离性 + 成本平衡。宿主 VM 上跑 Docker Compose。</td></tr>
+<tr><td>对象存储</td><td>GCS (Google Cloud Storage)</td><td>文件附件、Agent 产出物</td></tr>
+<tr><td>认证</td><td>Logto (共享现有实例)</td><td>SSO + 社交登录 + RBAC</td></tr>
+<tr><td>支付</td><td>Stripe (Workspace 级别订阅)</td><td>per-seat pricing 原生支持</td></tr>
+<tr><td>Monorepo</td><td>Turborepo + pnpm</td><td>前后端 + shared types 共享</td></tr>
+</table>
+
+<div class="highlight">
+<strong>复用清单（来自现有 coco-dashboard）：</strong><br>
+✅ Logto 认证实例<br>
+✅ Cloud SQL PostgreSQL（新建数据库，同实例）<br>
+✅ Redis Memorystore<br>
+✅ Stripe 商户账户<br>
+✅ GCE 基础设施 + VM 编排经验<br>
+✅ Cloudflare DNS + 代理<br>
+❌ 不复用前端代码（全新产品 UI）<br>
+❌ 不复用后端路由（API 设计差异太大）<br>
+⚠️ 可部分复用 Prisma schema 工具链和 Stripe 集成模式
+</div>
+
+<!-- ==================== 6. P0/P1/P2 ==================== -->
+<h2 id="s6">六、P0 / P1 / P2 拆分</h2>
+
+<h3>P0 — MVP（能对外 demo + 内测的最小产品）</h3>
+<p><strong>用户故事：</strong>一个 5 人开发团队创建 Workspace → 添加 2 个 Agent（代码助手 + 测试）→ 在对话频道中跟 Agent 协作 → 创建项目和任务 → 把任务分配给 Agent → Agent 自动执行 → 在管理后台看用量。</p>
+
+<table>
+<tr><th>模块</th><th>P0 范围</th><th>工时</th></tr>
+<tr><td>M1 对话</td><td>频道对话 + 私人对话 + @提及 + 富文本 + 流式 Agent 响应</td><td>6 周</td></tr>
+<tr><td>M2 任务</td><td>Kanban 四列 + 任务 CRUD + 分配给人/Agent + 筛选</td><td>5 周</td></tr>
+<tr><td>M3 项目</td><td>项目卡片 + CRUD + 项目内任务列表</td><td>3 周</td></tr>
+<tr><td>M4 团队</td><td>人类成员邀请 + Agent 成员添加 + 角色设置</td><td>3 周</td></tr>
+<tr><td>M5 Agent</td><td>Agent 仪表板 + 创建(从预设模板) + 配置 + 状态监控</td><td>5 周</td></tr>
+<tr><td>M7 管理后台</td><td>系统概览 4 KPI + 席位管理 + Agent 执行权限开关</td><td>3 周</td></tr>
+<tr><td>M8 设置</td><td>个人资料基础页</td><td>1 周</td></tr>
+<tr><td>基础设施</td><td>项目脚手架 + Auth + DB + Docker Agent 运行时 + CI/CD</td><td>4 周</td></tr>
+<tr><th colspan="2">P0 合计（并行排期）</th><th>~20-24 周</th></tr>
+</table>
+
+<h3>P1 — 增强（内测后 8-10 周）</h3>
+<table>
+<tr><th>任务</th><th>工时</th></tr>
+<tr><td>M6 工具箱（技能市场 UI + 安装流程 + GitHub/Lark OAuth）</td><td>4 周</td></tr>
+<tr><td>GitHub/GitLab Issue 双向同步</td><td>3 周</td></tr>
+<tr><td>Agent 模板市场 + Fork</td><td>3 周</td></tr>
+<tr><td>HxA 协作拓扑图</td><td>1.5 周</td></tr>
+<tr><td>消息搜索 + 引用回复</td><td>2 周</td></tr>
+<tr><td>审批策略（高风险操作人工审批）</td><td>2 周</td></tr>
+<tr><td>OAuth 集成框架 + 前 5 个平台</td><td>4 周</td></tr>
+<tr><td>通知系统（Agent 完成/任务分配/@提及）</td><td>2 周</td></tr>
+<tr><td>Workspace 计费（Stripe per-seat）</td><td>4 周</td></tr>
+</table>
+
+<h3>P2 — 规模化（P1 后 8-12 周）</h3>
+<table>
+<tr><th>任务</th><th>工时</th></tr>
+<tr><td>Cmd+K 全局命令面板</td><td>2 周</td></tr>
+<tr><td>Sprint 管理 + Velocity 图表</td><td>3 周</td></tr>
+<tr><td>任务自动化规则引擎</td><td>3 周</td></tr>
+<tr><td>外部 IM 桥接（Lark/Slack 双向同步）</td><td>4 周</td></tr>
+<tr><td>多团队支持</td><td>2 周</td></tr>
+<tr><td>社区技能上传 + 审核</td><td>3 周</td></tr>
+<tr><td>SSO (SAML/OIDC) + SCIM</td><td>4 周</td></tr>
+<tr><td>审计日志完整实现</td><td>2 周</td></tr>
+<tr><td>移动端适配 / PWA</td><td>6 周</td></tr>
+</table>
+
+<!-- ==================== 7. TEAM & TIMELINE ==================== -->
+<h2 id="s7">七、团队配置与排期</h2>
+
+<h3>最小团队：6-7 人</h3>
+<table>
+<tr><th>角色</th><th>人数</th><th>主要职责</th></tr>
+<tr><td>前端工程师</td><td>2</td><td>对话 UI（WebSocket + 流式渲染）、任务看板、项目页、Agent 管理页、管理后台</td></tr>
+<tr><td>后端工程师</td><td>2</td><td>API 全套、WebSocket 服务、Agent 运行时编排、数据库、Stripe</td></tr>
+<tr><td>Agent/基础设施工程师</td><td>1</td><td>Docker Agent 运行时、模型网关、Agent ↔ 平台通信协议、MCP 集成</td></tr>
+<tr><td>设计师</td><td>0.5</td><td>基于现有设计稿细化交互（可兼职）</td></tr>
+<tr><td>产品/项目</td><td>1</td><td>Stephanie：优先级决策、验收、用户测试</td></tr>
+</table>
+
+<div class="warn">
+<strong>对比之前方案：</strong>之前基于现有 dashboard 扩展是 4 人 16 周。现在全新产品需要 6-7 人 20-24 周。工程量是 <strong>3 倍以上</strong>。这是实话——不是在现有产品上加模块，而是从零造一个 Linear + Slack + GitHub Copilot 的合体。
+</div>
+
+<h3>并行排期（6 人工程团队）</h3>
+<pre><code>
+周次   前端A         前端B         后端A          后端B          Agent工程师      里程碑
+──────────────────────────────────────────────────────────────────────────────────
+W1-2   项目脚手架     设计系统       DB schema +    Auth +         Docker Agent    🏁 技术评审
+       Next.js 搭建   组件库搭建     Prisma 迁移    Logto 集成     运行时 PoC
+
+W3-4   M1 对话 UI     M2 任务        M4 团队 API    M2 任务 API    Agent 创建 +    🏁 对话 PoC
+       WebSocket      Kanban 组件    成员管理       CRUD + 分配    部署流程
+
+W5-6   M1 对话        M2 任务看板    M1 消息 API    M3 项目 API    Agent ↔ 平台    🏁 任务可拖拽
+       频道 + DM      拖拽 + 筛选    WebSocket      + 任务关联     通信协议
+
+W7-8   M1 Agent       M3 项目        M5 Agent       M5 Agent       模型网关        🏁 可跟 Agent
+       流式响应       卡片页         CRUD API       配置 + 监控    (多模型路由)    对话
+
+W9-10  M5 Agent       M4 团队        M7 管理后台    M5 Agent       Agent 任务      🏁 Agent
+       仪表板 UI      成员页 UI      概览 + 席位    模板系统       执行引擎        执行任务
+
+W11-12 M7 管理后台    M8 设置        M7 权限控制    用量计量       Agent 权限      🏁 全功能
+       UI             基础页         API            + 统计         沙箱            联调
+
+W13-16 集成测试       UI polish      Bug fix        性能优化       稳定性测试      🏁 内测
+
+W17-20 内测修复       内测修复       内测修复       内测修复       内测修复        🏁 Beta
+──────────────────────────────────────────────────────────────────────────────────
+</code></pre>
+
+<p><strong>关键里程碑：</strong></p>
+<ul>
+<li><strong>W2：</strong>技术评审 — 架构对齐，Agent 运行时 PoC 验证</li>
+<li><strong>W4：</strong>对话 PoC — 能在浏览器里跟一个 Agent 聊天</li>
+<li><strong>W8：</strong>核心可用 — 能对话 + 能建任务 + Agent 能执行</li>
+<li><strong>W12：</strong>全功能联调 — 所有 P0 模块串通</li>
+<li><strong>W16：</strong>内测启动 — 5-10 个团队 closed beta</li>
+<li><strong>W20：</strong>Beta 发布</li>
+</ul>
+
+<!-- ==================== 8. RISKS ==================== -->
+<h2 id="s8">八、风险与待决策项</h2>
+
+<h3>技术风险</h3>
+
+<div class="warn">
+<strong>1. Agent 运行时架构（最大风险）</strong><br>
+多 Agent 共享 vs 独立 VM 是整个项目的地基决策。选错 → 后面全部要改。建议 W1-2 做 PoC 验证 Docker 容器方案的隔离性、冷启动时间、资源开销，再做最终决策。
+</div>
+
+<div class="warn">
+<strong>2. Agent 任务执行的可靠性</strong><br>
+Agent「自动执行任务」不是确定性的——LLM 可能失败、超时、产出垃圾。需要：超时机制、重试策略、人工兜底通知、结果审核流程。这不是一个单一功能点，而是贯穿整个系统的质量保障层。
+</div>
+
+<div class="warn">
+<strong>3. 实时通讯的规模</strong><br>
+对话模块 = 造一个简版 Slack。WebSocket 连接管理、消息排序、离线消息同步、移动端推送 — 每一项都不简单。建议 MVP 严格限制：单 Workspace ≤ 50 人，消息不做离线推送（P1再加）。
+</div>
+
+<div class="warn">
+<strong>4. 多模型路由</strong><br>
+设计稿中 4 个 Agent 用了 4 个不同模型（Claude Sonnet / GPT-4 / Claude Opus / Gemini Pro）。需要一个模型网关统一管理 API key、限流、fallback、成本计算。
+</div>
+
+<h3>产品决策项（需要 Stephanie 确认）</h3>
+
+<table>
+<tr><th>#</th><th>决策项</th><th>建议</th><th>影响</th></tr>
+<tr><td>D1</td><td>Agent 运行时方案</td><td>Docker 容器（不是独立 VM）</td><td>成本、部署复杂度、P0 Agent 工程师工作量</td></tr>
+<tr><td>D2</td><td>与现有 Dashboard 的关系</td><td>完全独立产品线，共享 Logto + Stripe 账户</td><td>代码库规划、团队分工</td></tr>
+<tr><td>D3</td><td>MVP 预设 Agent 模板</td><td>先做 3 个：代码助手(Claude) + 测试(GPT-4) + 通用助手</td><td>Agent 工程师工作量</td></tr>
+<tr><td>D4</td><td>MVP 的 Git 集成深度</td><td>P0 只做 repo 绑定 + 手动关联。双向同步放 P1</td><td>省 3 周开发</td></tr>
+<tr><td>D5</td><td>对话界面是否支持语音/视频</td><td>不做。纯文本 + 文件附件</td><td>—</td></tr>
+<tr><td>D6</td><td>Agent 的模型由谁选？</td><td>Admin 在创建时选择，不允许 Agent 自主切换</td><td>模型网关设计</td></tr>
+<tr><td>D7</td><td>产品名称</td><td>设计稿用 "CODE-YI"，正式产品名待定？</td><td>域名、品牌</td></tr>
+<tr><td>D8</td><td>定价模型</td><td>需要重新设计（不是之前 $79/人 方案）。建议按 Agent 数 + 人数 双维度</td><td>Stripe 产品结构</td></tr>
+<tr><td>D9</td><td>开发团队从哪来？</td><td>6-7 人，现有团队还是新招？</td><td>W1 能否启动</td></tr>
+</table>
+
+<p style="margin-top: 3rem; color: var(--text2); font-size: 0.82rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+COCO Workspace Product Spec v1.0 &middot; 2026-04-19 22:30 SGT &middot; 基于设计稿 v0.1 (10 screens) &middot; 由 Zylos 分析生成<br>
+下一步：Stephanie 确认决策项 → 技术评审 → 启动开发
+</p>
+
+</body>
+</html>
