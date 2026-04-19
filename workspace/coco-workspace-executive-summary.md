@@ -24,4 +24,4 @@
 - **Phase 2 团队增强 (6-8 周)**: 自定义频道、Agent 角色、用量统计、记忆管理、SSO、迁移工具
 - **Phase 3 企业级 (8-12 周)**: 审计日志、SCIM、多 Agent、API、合规认证
 
-完整 PRD 见 `coco-workspace-prd.md`。
+完整 PRD 见 `coco-workspace-general-prd.md`。
