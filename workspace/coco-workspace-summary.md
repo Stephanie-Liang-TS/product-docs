@@ -16,7 +16,7 @@
 
 **C. 单 Agent vs 多 Agent**：MVP 单 Agent，Phase 2 引入 Agent 角色系统（低成本满足 80% 需求），Phase 3 再考虑多 Agent（Enterprise 高阶功能）。
 
-**D. 计费模型**：Team $79/用户/月（3 人起）、Business $59/用户/月（10 人起）、Enterprise 自定义。个人计划保持不变。
+**D. 计费+积分模型**：Team $79/用户/月（3 人起）、Business $59/用户/月（10 人起）、Enterprise 自定义。个人计划保持不变。
 
 ## 路线图
 
