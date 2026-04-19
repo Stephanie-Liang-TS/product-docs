@@ -16,7 +16,9 @@ WorkBuddy 是腾讯云 CodeBuddy 团队于 2026 年 3 月 9 日正式发布的**
 
 **局限**：协作模式偏向"单人多 Agent"而非"多人共享同一 Agent/上下文"。目前缺乏类似 Zylos 的团队共享记忆层或多用户权限隔离机制。
 <img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/8532a6ba-309f-423a-a99f-1f4c69b1b440" />
+
 <img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/8469172d-131d-405a-9554-8e808c010aba" />
+
 <img width="2400" height="1600" alt="image" src="https://github.com/user-attachments/assets/0f329033-e570-4687-82fd-18bb678309e2" />
 
 ## Agent 持久化 / Always-On
