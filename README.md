@@ -12,10 +12,10 @@ CODE-YI v0.1 包含 9 个核心模块：
 | Module 2 | 任务 (Tasks) | P0 | [已完成](workspace/modules/module2-tasks-prd.md) |
 | Module 3 | 项目 (Projects) | P0 | [已完成](workspace/modules/module3-projects-prd.md) |
 | Module 4 | 团队 (Team) | P0 | [已完成](workspace/modules/module4-team-prd.md) |
-| Module 5 | Agent 管理 (Agent Management) | P0 | 编写中 |
-| Module 6 | 工具箱 (Toolbox) | P1 | 编写中 |
-| Module 7 | 管理后台 (Admin) | P0 | 编写中 |
-| Module 8 | 设置 (Settings) | P1 | 编写中 |
+| Module 5 | Agent 管理 (Agent Management) | P0 | [已完成](workspace/modules/module5-agent-prd.md) |
+| Module 6 | 工具箱 (Toolbox) | P1 | [已完成](workspace/modules/module6-toolbox-prd.md) |
+| Module 7 | 管理后台 (Admin) | P0 | [已完成](workspace/modules/module7-admin-prd.md) |
+| Module 8 | 设置 (Settings) | P1 | [已完成](workspace/modules/module8-settings-prd.md) |
 | Module 9 | 全局命令面板 (Cmd+K) | P2 | 待定 |
 
 ## 目录结构
@@ -34,6 +34,9 @@ product-docs/
         ├── module2-tasks-prd.md                  # Module 2: 任务 (2540 行)
         ├── module3-projects-prd.md               # Module 3: 项目 (2212 行)
         ├── module4-team-prd.md                   # Module 4: 团队 (2403 行)
+        ├── module5-agent-prd.md                  # Module 5: Agent 管理 (3377 行)
+        ├── module6-toolbox-prd.md                # Module 6: 工具箱 (3013 行)
+        ├── module7-admin-prd.md                  # Module 7: 管理后台 (2849 行)
         └── module8-settings-prd.md               # Module 8: 设置 (2345 行)
 ```
 
