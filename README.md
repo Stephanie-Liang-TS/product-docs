@@ -16,7 +16,7 @@ CODE-YI v0.1 包含 9 个核心模块：
 | Module 6 | 工具箱 (Toolbox) | P1 | [已完成](workspace/modules/module6-toolbox-prd.md) |
 | Module 7 | 管理后台 (Admin) | P0 | [已完成](workspace/modules/module7-admin-prd.md) |
 | Module 8 | 设置 (Settings) | P1 | [已完成](workspace/modules/module8-settings-prd.md) |
-| Module 9 | 全局命令面板 (Cmd+K) | P2 | 待定 |
+| Module 9 | 全局命令面板 (Cmd+K) | P2 | [已完成](workspace/modules/module9-cmdk-prd.md) |
 
 ## 目录结构
 
@@ -37,7 +37,8 @@ product-docs/
         ├── module5-agent-prd.md                  # Module 5: Agent 管理 (3377 行)
         ├── module6-toolbox-prd.md                # Module 6: 工具箱 (3013 行)
         ├── module7-admin-prd.md                  # Module 7: 管理后台 (2849 行)
-        └── module8-settings-prd.md               # Module 8: 设置 (2345 行)
+        ├── module8-settings-prd.md               # Module 8: 设置 (2345 行)
+        └── module9-cmdk-prd.md                  # Module 9: 全局命令面板 (2484 行)
 ```
 
 ## SSOT 工作流
