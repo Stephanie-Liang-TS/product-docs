@@ -22,18 +22,19 @@ CODE-YI v0.1 包含 9 个核心模块：
 
 ```
 product-docs/
-├── README.md                          # 本文件
+├── README.md                                    # 本文件
 └── workspace/
-    ├── coco-workspace-prd.md          # 总产品 PRD（概览）
-    ├── coco-workspace-spec.md         # 总产品 Spec v1
-    ├── coco-workspace-spec-v2.md      # 总产品 Spec v2
-    ├── coco-workspace-summary.md      # 产品概要
-    ├── workbuddy-research.md          # WorkBuddy 竞品调研
+    ├── coco-workspace-executive-summary.md       # 产品概要（Executive Summary）
+    ├── coco-workspace-general-prd.md             # 总产品 PRD
+    ├── coco-workspace-general-research.md        # 通用产品调研
+    ├── coco-workspace-spec-modules-breakdown.md  # 模块拆分 Spec
+    ├── workbuddy-research.md                     # WorkBuddy 竞品调研
     └── modules/
-        ├── module1-chat-prd.md        # Module 1: 对话 (2111 行)
-        ├── module2-tasks-prd.md       # Module 2: 任务 (2540 行)
-        ├── module3-projects-prd.md    # Module 3: 项目 (2212 行)
-        └── module4-team-prd.md        # Module 4: 团队 (2403 行)
+        ├── module1-chat-prd.md                   # Module 1: 对话 (2111 行)
+        ├── module2-tasks-prd.md                  # Module 2: 任务 (2540 行)
+        ├── module3-projects-prd.md               # Module 3: 项目 (2212 行)
+        ├── module4-team-prd.md                   # Module 4: 团队 (2403 行)
+        └── module8-settings-prd.md               # Module 8: 设置 (2345 行)
 ```
 
 ## SSOT 工作流
