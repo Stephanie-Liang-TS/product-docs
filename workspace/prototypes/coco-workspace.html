@@ -4,38 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>COCO Workspace — HxA Collaborative Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    RESET & BASE
    ============================================================ */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; scroll-behavior: smooth; }
+html { font-family: 'Inter', system-ui, -apple-system, sans-serif; scroll-behavior: smooth; }
 body {
-  background: #f8f9fa;
-  color: #0a0a0a;
+  background: var(--bg-main);
+  color: var(--text-heading);
   overflow-x: hidden;
   min-height: 100vh;
 }
 :root {
-  --bg-main: #f8f9fa;
+  --bg-main: #f7faff;
   --bg-card: #ffffff;
-  --bg-glass: rgba(255,255,255,0.7);
-  --bg-glass-strong: rgba(255,255,255,0.85);
-  --text-heading: #0a0a0a;
-  --text-body: #333333;
-  --text-muted: #888888;
-  --accent: #6c5ce7;
-  --accent-light: #a29bfe;
-  --accent-bg: rgba(108,92,231,0.08);
+  --bg-glass: rgba(255,255,255,0.85);
+  --bg-glass-strong: rgba(255,255,255,0.95);
+  --text-heading: #000000;
+  --text-body: #343639;
+  --text-muted: #b6b6b6;
+  --accent: #d357fe;
+  --accent-light: #96bbff;
+  --accent-bg: rgba(211,87,254,0.08);
   --success: #00cec9;
   --warning: #fdcb6e;
   --danger: #ff7675;
-  --border-glass: rgba(255,255,255,0.8);
-  --border-light: rgba(0,0,0,0.06);
-  --shadow-card: 0 8px 32px rgba(0,0,0,0.08);
-  --shadow-modal: 0 24px 64px rgba(0,0,0,0.12);
-  --shadow-hover: 0 16px 48px rgba(0,0,0,0.12);
+  --border-glass: rgba(0,0,0,0.08);
+  --border-light: rgba(0,0,0,0.08);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,0.1);
+  --shadow-hover: 0 4px 20px rgba(0,0,0,0.08);
   --radius-card: 16px;
   --radius-btn: 12px;
   --radius-modal: 24px;
@@ -43,6 +43,8 @@ body {
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-silky: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-splash: 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 /* ============================================================
@@ -67,7 +69,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: var(--bg-main);
   transition: opacity var(--transition-splash), transform var(--transition-splash);
 }
 #splash.hidden {
@@ -84,47 +86,53 @@ body {
   z-index: 2;
 }
 
-/* COCO big text behind octopus */
-.splash-title-bg {
-  font-size: clamp(100px, 18vw, 260px);
-  font-weight: 900;
-  color: rgba(10,10,10,0.06);
-  letter-spacing: -0.04em;
-  line-height: 1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  user-select: none;
-  pointer-events: none;
-  white-space: nowrap;
+/* Splash logo */
+.splash-logo {
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 3;
+}
+.splash-logo img {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  filter: brightness(0);
+}
+
+/* Splash label */
+.splash-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 3;
 }
 
 .splash-title {
-  font-size: clamp(48px, 8vw, 96px);
+  font-size: clamp(42px, 7vw, 80px);
   font-weight: 900;
   color: var(--text-heading);
   letter-spacing: -0.03em;
-  margin-top: 20px;
+  line-height: 1.1;
   position: relative;
   z-index: 3;
+}
+.splash-title .accent-word {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .splash-subtitle {
-  font-size: clamp(16px, 2.5vw, 28px);
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.8vw, 16px);
   font-weight: 400;
   color: var(--text-muted);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-top: 8px;
-  position: relative;
-  z-index: 3;
-}
-
-.splash-tagline {
-  font-size: 15px;
-  color: var(--text-muted);
+  letter-spacing: 0.08em;
   margin-top: 16px;
-  font-weight: 400;
   position: relative;
   z-index: 3;
 }
@@ -132,244 +140,47 @@ body {
 /* Mode selection buttons */
 .mode-buttons {
   display: flex;
-  gap: 20px;
-  margin-top: 48px;
+  gap: 16px;
+  margin-top: 40px;
   position: relative;
   z-index: 3;
 }
 .mode-btn {
-  padding: 18px 44px;
-  font-size: 17px;
-  font-weight: 700;
-  border: none;
-  border-radius: var(--radius-btn);
+  padding: 14px 36px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: 0;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
   transition: all var(--transition-smooth);
-  letter-spacing: 0.02em;
-  font-family: inherit;
 }
-.mode-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity var(--transition-smooth);
-}
-.mode-btn:hover { transform: translateY(-3px); }
+.mode-btn:hover { transform: translateY(-2px); }
 .mode-btn:active { transform: translateY(0) scale(0.97); }
 
 .mode-btn-code {
-  background: var(--text-heading);
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(10,10,10,0.2);
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 .mode-btn-code:hover {
-  box-shadow: 0 12px 40px rgba(10,10,10,0.3);
+  background: var(--accent);
+  border-color: var(--accent);
 }
-.mode-btn-code::before {
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
-}
-.mode-btn-code:hover::before { opacity: 0.15; }
 
 .mode-btn-office {
-  background: var(--bg-glass-strong);
+  background: transparent;
   color: var(--text-heading);
-  border: 1.5px solid var(--border-light);
-  backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-card);
+  border-color: var(--border-light);
 }
 .mode-btn-office:hover {
-  box-shadow: var(--shadow-hover);
-  border-color: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-/* ============================================================
-   OCTOPUS (CSS 3D)
-   ============================================================ */
-.octopus-container {
-  position: relative;
-  width: 220px;
-  height: 220px;
-  z-index: 2;
-  animation: octoFloat 4s ease-in-out infinite;
-  perspective: 600px;
-  transition: transform 0.3s ease-out;
-}
-@keyframes octoFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-18px); }
-}
-.octopus-body {
-  position: absolute;
-  width: 140px;
-  height: 160px;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%) rotateX(5deg);
-  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 140, 255, 0.45) 0%,
-    rgba(200, 160, 255, 0.35) 25%,
-    rgba(140, 200, 255, 0.3) 50%,
-    rgba(255, 160, 200, 0.35) 75%,
-    rgba(168, 140, 255, 0.4) 100%
-  );
-  backdrop-filter: blur(4px);
-  box-shadow:
-    inset 0 -20px 40px rgba(255,255,255,0.3),
-    inset 0 10px 30px rgba(168,140,255,0.2),
-    0 20px 60px rgba(108,92,231,0.15),
-    0 0 80px rgba(168,140,255,0.1);
-  animation: octoBreathe 3s ease-in-out infinite;
-  transform-style: preserve-3d;
-}
-@keyframes octoBreathe {
-  0%, 100% { transform: translateX(-50%) rotateX(5deg) scale(1); }
-  50% { transform: translateX(-50%) rotateX(5deg) scale(1.04); }
-}
-.octopus-body::before {
-  content: '';
-  position: absolute;
-  width: 60%;
-  height: 30%;
-  top: 15%;
-  left: 20%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 70%);
-}
-.octopus-body::after {
-  content: '';
-  position: absolute;
-  width: 80%;
-  height: 50%;
-  bottom: 5%;
-  left: 10%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(140,200,255,0.15) 0%, transparent 70%);
-}
-
-/* Iridescent shimmer overlay */
-.octopus-shimmer {
-  position: absolute;
-  width: 140px;
-  height: 160px;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255,180,220,0.15) 40%,
-    rgba(140,200,255,0.15) 50%,
-    transparent 60%
-  );
-  background-size: 200% 200%;
-  animation: shimmer 3s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes shimmer {
-  0% { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-/* Eyes */
-.octo-eye {
-  position: absolute;
-  width: 22px;
-  height: 26px;
-  top: 55px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 40%, #fff 0%, rgba(200,180,255,0.6) 100%);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-  z-index: 2;
-}
-.octo-eye::after {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 12px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #4a3a8a 0%, #2d1b69 100%);
-}
-.octo-eye.left { left: 36px; }
-.octo-eye.right { right: 36px; }
-
-/* Tentacles */
-.octo-tentacles {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 160px;
-  height: 80px;
-}
-.tentacle {
-  position: absolute;
-  width: 18px;
-  height: 70px;
-  border-radius: 0 0 50% 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(168, 140, 255, 0.35) 0%,
-    rgba(200, 160, 255, 0.2) 60%,
-    rgba(140, 200, 255, 0.1) 100%
-  );
-  transform-origin: top center;
-}
-.tentacle:nth-child(1) { left: 5px; animation: tentWave 2.5s ease-in-out 0s infinite; }
-.tentacle:nth-child(2) { left: 25px; animation: tentWave 2.5s ease-in-out 0.2s infinite; height: 60px; }
-.tentacle:nth-child(3) { left: 45px; animation: tentWave 2.5s ease-in-out 0.4s infinite; height: 75px; }
-.tentacle:nth-child(4) { left: 65px; animation: tentWave 2.5s ease-in-out 0.6s infinite; }
-.tentacle:nth-child(5) { left: 85px; animation: tentWave 2.5s ease-in-out 0.8s infinite; height: 65px; }
-.tentacle:nth-child(6) { left: 105px; animation: tentWave 2.5s ease-in-out 1.0s infinite; height: 72px; }
-.tentacle:nth-child(7) { left: 125px; animation: tentWave 2.5s ease-in-out 1.2s infinite; }
-.tentacle:nth-child(8) { left: 140px; animation: tentWave 2.5s ease-in-out 1.4s infinite; height: 58px; }
-@keyframes tentWave {
-  0%, 100% { transform: rotate(-8deg); }
-  50% { transform: rotate(8deg); }
-}
-
-/* Metallic floating shards */
-.metal-shard {
-  position: absolute;
-  border-radius: 30% 70% 50% 50%;
-  background: linear-gradient(135deg,
-    rgba(200,200,220,0.7) 0%,
-    rgba(255,255,255,0.9) 40%,
-    rgba(180,180,200,0.5) 100%
-  );
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  animation: shardFloat 6s ease-in-out infinite;
-  pointer-events: none;
-}
-.metal-shard::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255,255,255,0.8), transparent 60%);
-}
-.shard-1 { width: 40px; height: 24px; top: 15%; left: 10%; animation-delay: 0s; animation-duration: 7s; }
-.shard-2 { width: 28px; height: 18px; top: 25%; right: 12%; animation-delay: 1s; animation-duration: 5s; transform: rotate(45deg); }
-.shard-3 { width: 50px; height: 30px; bottom: 20%; left: 8%; animation-delay: 2s; animation-duration: 8s; transform: rotate(-20deg); }
-.shard-4 { width: 22px; height: 14px; top: 60%; right: 8%; animation-delay: 0.5s; animation-duration: 6s; transform: rotate(60deg); }
-.shard-5 { width: 35px; height: 20px; bottom: 30%; right: 20%; animation-delay: 3s; animation-duration: 7s; transform: rotate(-45deg); }
-.shard-6 { width: 30px; height: 16px; top: 40%; left: 18%; animation-delay: 1.5s; animation-duration: 5.5s; transform: rotate(30deg); }
-.shard-7 { width: 20px; height: 12px; top: 70%; left: 25%; animation-delay: 2.5s; animation-duration: 6.5s; transform: rotate(15deg); }
-.shard-8 { width: 45px; height: 22px; top: 10%; right: 25%; animation-delay: 0.8s; animation-duration: 7.5s; transform: rotate(-35deg); }
-@keyframes shardFloat {
-  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
-  33% { transform: translateY(-15px) rotate(calc(var(--r, 0deg) + 10deg)); }
-  66% { transform: translateY(8px) rotate(calc(var(--r, 0deg) - 5deg)); }
-}
+/* (octopus and metallic shards removed — clean light design) */
 
 /* ============================================================
    WORKSPACE CONTAINER
@@ -396,8 +207,7 @@ body {
   width: 240px;
   min-width: 240px;
   height: 100vh;
-  background: var(--bg-glass-strong);
-  backdrop-filter: blur(24px);
+  background: var(--bg-card);
   border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
@@ -431,8 +241,10 @@ body {
   flex-shrink: 0;
 }
 .sidebar-brand {
-  font-weight: 800;
-  font-size: 18px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.1em;
   color: var(--text-heading);
   white-space: nowrap;
   transition: opacity var(--transition-smooth);
@@ -463,7 +275,7 @@ body {
   overflow: hidden;
 }
 .nav-item:hover {
-  background: rgba(108,92,231,0.06);
+  background: rgba(211,87,254,0.06);
   color: var(--accent);
 }
 .nav-item.active {
@@ -492,6 +304,9 @@ body {
   flex-shrink: 0;
 }
 .nav-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
   transition: opacity var(--transition-smooth);
 }
 .sidebar.collapsed .nav-label { opacity: 0; }
@@ -538,13 +353,14 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: var(--bg-glass-strong);
-  backdrop-filter: blur(20px);
+  background: var(--bg-card);
   border-bottom: 1px solid var(--border-light);
 }
 .topbar-module-name {
-  font-size: 18px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--text-heading);
   flex: 1;
 }
@@ -558,15 +374,17 @@ body {
 }
 .topbar-mode-toggle .mode-opt {
   padding: 6px 16px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   border: none;
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
   color: var(--text-muted);
   transition: all var(--transition-fast);
-  font-family: inherit;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .topbar-mode-toggle .mode-opt.active {
   background: var(--bg-card);
@@ -575,18 +393,19 @@ body {
 }
 .topbar-cmdk {
   padding: 6px 14px;
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px solid var(--border-light);
   background: var(--bg-card);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 6px;
   transition: all var(--transition-fast);
-  font-family: inherit;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
 }
 .topbar-cmdk:hover {
   border-color: var(--accent-light);
@@ -654,45 +473,19 @@ body {
    GLASS CARDS
    ============================================================ */
 .glass-card {
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border-glass);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: 24px;
   transition: all var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
 }
 .glass-card:hover {
   box-shadow: var(--shadow-hover);
   transform: translateY(-2px);
-}
-/* Shimmer on hover for glass cards */
-.glass-card {
-  position: relative;
-  overflow: hidden;
-}
-.glass-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 40%,
-    rgba(255,255,255,0.3) 50%,
-    transparent 60%
-  );
-  transform: translateX(-100%);
-  transition: none;
-  pointer-events: none;
-}
-.glass-card:hover::after {
-  animation: cardShimmer 0.6s ease-out forwards;
-}
-@keyframes cardShimmer {
-  to { transform: translateX(100%); }
+  border-color: rgba(211,87,254,0.15);
 }
 
 /* ============================================================
@@ -700,11 +493,13 @@ body {
    ============================================================ */
 .btn {
   padding: 10px 20px;
-  border-radius: var(--radius-btn);
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
+  border-radius: 0;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
   transition: all var(--transition-fast);
   display: inline-flex;
@@ -713,20 +508,20 @@ body {
 }
 .btn:active { transform: scale(0.95); }
 .btn-primary {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(108,92,231,0.25);
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 .btn-primary:hover {
-  background: #5b4bd5;
-  box-shadow: 0 6px 20px rgba(108,92,231,0.35);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 .btn-secondary {
-  background: var(--bg-card);
+  background: transparent;
   color: var(--text-body);
-  border: 1px solid var(--border-light);
+  border-color: var(--border-light);
 }
-.btn-secondary:hover { background: #f0f0f2; }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 .btn-sm {
   padding: 6px 14px;
   font-size: 13px;
@@ -819,7 +614,7 @@ body {
 }
 .form-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(108,92,231,0.1);
+  box-shadow: 0 0 0 3px rgba(211,87,254,0.1);
 }
 .form-select {
   width: 100%;
@@ -836,7 +631,7 @@ body {
 }
 .form-select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(108,92,231,0.1);
+  box-shadow: 0 0 0 3px rgba(211,87,254,0.1);
 }
 
 /* Toggle switch */
@@ -886,7 +681,7 @@ body {
   font-weight: 600;
 }
 .badge-agent {
-  background: rgba(108,92,231,0.1);
+  background: rgba(211,87,254,0.1);
   color: var(--accent);
 }
 .badge-human {
@@ -926,60 +721,229 @@ body {
   height: calc(100vh - 64px - 56px);
   gap: 0;
 }
-.chat-channels {
-  width: 220px;
+
+/* ---- Left Panel: Conversation List ---- */
+.conv-list {
+  width: 260px;
   background: rgba(255,255,255,0.5);
   border-right: 1px solid var(--border-light);
-  padding: 16px 0;
   flex-shrink: 0;
-  overflow-y: auto;
-}
-.chat-channels h4 {
-  padding: 0 16px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-.channel-item {
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-body);
   display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all var(--transition-fast);
+  flex-direction: column;
+  overflow: hidden;
 }
-.channel-item:hover { background: rgba(108,92,231,0.04); }
-.channel-item.active {
-  background: var(--accent-bg);
+.conv-tabs {
+  display: flex;
+  gap: 0;
+  padding: 12px 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.conv-tab {
+  flex: 1;
+  padding: 8px 0 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+.conv-tab:hover { color: var(--text-body); }
+.conv-tab.active {
   color: var(--accent);
+  border-bottom-color: var(--accent);
   font-weight: 600;
 }
-.channel-icon { font-size: 16px; }
-.channel-unread {
+.conv-search {
+  padding: 10px 12px;
+}
+.conv-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  background: rgba(255,255,255,0.6);
+  color: var(--text-body);
+  transition: border-color var(--transition-fast);
+}
+.conv-search input::placeholder { color: var(--text-muted); }
+.conv-search input:focus { border-color: var(--accent); }
+.conv-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.conv-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+.conv-item:hover { background: rgba(211,87,254,0.04); }
+.conv-item.active {
+  background: var(--accent-bg);
+}
+.conv-item-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  color: #fff;
+}
+.conv-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.conv-item-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.conv-item-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.conv-item-tag {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.conv-item-tag.agent {
+  background: rgba(211,87,254,0.12);
+  color: var(--accent);
+}
+.conv-item-tag.connector {
+  background: rgba(0,206,201,0.12);
+  color: var(--success);
+}
+.conv-item-tag.group {
+  background: rgba(150,187,255,0.15);
+  color: #5b8def;
+}
+.conv-item-time {
+  font-size: 11px;
+  color: var(--text-muted);
   margin-left: auto;
+  flex-shrink: 0;
+}
+.conv-item-preview {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+.conv-item-unread {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
   background: var(--accent);
   color: #fff;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 10px;
   font-weight: 700;
+  padding: 0 5px;
 }
 
+/* ---- Center: Chat Main ---- */
 .chat-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+.chat-header-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+.chat-header-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+}
+.chat-header-model {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--accent);
+  background: rgba(211,87,254,0.08);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+}
+.chat-header-spacer { flex: 1; }
+.chat-header-menu {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+.chat-header-menu:hover { border-color: var(--accent); color: var(--accent); }
+.chat-header-toggle-info {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+.chat-header-toggle-info:hover { border-color: var(--accent); color: var(--accent); }
+.chat-header-toggle-info.active { border-color: var(--accent); color: var(--accent); background: rgba(211,87,254,0.06); }
+
 .chat-messages {
   flex: 1;
   padding: 20px 24px;
@@ -991,7 +955,7 @@ body {
 .chat-msg {
   display: flex;
   gap: 12px;
-  max-width: 80%;
+  max-width: 85%;
   animation: msgIn 0.3s ease-out forwards;
 }
 @keyframes msgIn {
@@ -1016,15 +980,80 @@ body {
   align-items: center;
   gap: 6px;
 }
+.chat-msg-model {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
 .chat-msg-time {
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 4px;
 }
 .chat-msg-agent .chat-msg-content {
-  background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(162,155,254,0.06));
-  border-color: rgba(108,92,231,0.12);
+  background: linear-gradient(135deg, rgba(211,87,254,0.06), rgba(150,187,255,0.06));
+  border-color: rgba(211,87,254,0.12);
 }
+
+/* Code blocks in messages */
+.chat-code-block {
+  background: #1e1e2e;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 8px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #cdd6f4;
+  position: relative;
+}
+.chat-code-block .code-comment { color: #6c7086; }
+.chat-code-block .code-keyword { color: #cba6f7; }
+.chat-code-block .code-string { color: #a6e3a1; }
+.chat-code-block .code-type { color: #89b4fa; }
+.chat-code-block .code-field { color: #f9e2af; }
+.chat-code-block .code-method { color: #89dceb; }
+.chat-code-block .code-punct { color: #bac2de; }
+.chat-code-block .code-label { color: #fab387; }
+
+/* @mentions in messages */
+.chat-mention {
+  color: var(--accent);
+  background: rgba(211,87,254,0.1);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* File/context tags */
+.chat-file-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.chat-file-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(211,87,254,0.08);
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.chat-file-tag .tag-close {
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.6;
+  margin-left: 2px;
+}
+.chat-file-tag .tag-close:hover { opacity: 1; }
 
 /* Typing indicator */
 .typing-indicator {
@@ -1047,47 +1076,305 @@ body {
   30% { transform: translateY(-6px); opacity: 1; }
 }
 
-.chat-input-area {
-  padding: 16px 24px;
+/* Enhanced Input Area */
+.chat-input-enhanced {
   border-top: 1px solid var(--border-light);
   display: flex;
-  gap: 12px;
-  align-items: flex-end;
+  flex-direction: column;
 }
-.chat-input {
-  flex: 1;
-  padding: 12px 16px;
-  border: 1.5px solid var(--border-light);
-  border-radius: 14px;
-  font-size: 14px;
-  font-family: inherit;
-  outline: none;
-  resize: none;
-  min-height: 44px;
-  max-height: 120px;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+.chat-category-chips {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.chat-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(108,92,231,0.1);
-}
-.chat-send-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
+.chat-category-chips::-webkit-scrollbar { display: none; }
+.chat-category-chip {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-card);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-body);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+.chat-category-chip:hover { border-color: var(--accent); background: var(--accent-bg); }
+.chat-category-chip.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+.chat-category-chip .chip-icon { font-size: 13px; }
+/* Prompt template cards */
+.chat-prompt-templates {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 8px 16px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.chat-prompt-card {
+  padding: 10px 12px;
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.chat-prompt-card:hover { border-color: var(--accent); background: var(--accent-bg); }
+.chat-prompt-card.selected { border-color: var(--accent); background: rgba(211,87,254,0.12); }
+/* Input container */
+.chat-input-container {
+  padding: 8px 16px 10px;
+  display: flex;
+  flex-direction: column;
+}
+.chat-input-top-actions {
+  display: flex;
+  gap: 2px;
+  padding-bottom: 4px;
+}
+.chat-input-action-btn {
+  width: 30px; height: 30px;
+  border: none; background: none;
+  border-radius: 6px; cursor: pointer;
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+.chat-input-action-btn:hover { background: rgba(211,87,254,0.08); color: var(--accent); }
+.chat-input-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  min-height: 56px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.chat-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(211,87,254,0.1);
+}
+.chat-input-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.chat-input-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 6px;
+  background: var(--accent); color: #fff;
+  font-size: 12px; font-weight: 500; white-space: nowrap;
+}
+.chat-input-tag .tag-close { cursor: pointer; margin-left: 2px; opacity: 0.8; }
+.chat-input-tag .tag-close:hover { opacity: 1; }
+.chat-input {
+  flex: 1; min-width: 120px;
+  padding: 2px 4px; border: none;
+  font-size: 14px; font-family: inherit;
+  outline: none; resize: none;
+  min-height: 24px; max-height: 120px;
+  line-height: 1.5; background: transparent;
+}
+/* Bottom toolbar */
+.chat-input-toolbar {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+.chat-toolbar-left { display: flex; gap: 4px; align-items: center; }
+.chat-toolbar-right { display: flex; gap: 2px; align-items: center; }
+.toolbar-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 12px;
+  border: 1px solid var(--border-glass);
+  border-radius: 8px; background: var(--bg-card);
+  font-size: 12px; font-weight: 500;
+  color: var(--text-body); cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap; position: relative;
+}
+.toolbar-btn:hover { border-color: var(--accent); background: var(--accent-bg); }
+.toolbar-btn-active { border-color: var(--accent); color: var(--accent); }
+.toolbar-icon { font-size: 13px; }
+.toolbar-arrow { font-size: 10px; opacity: 0.6; }
+/* Toolbar dropdown panels */
+.toolbar-dropdown {
+  position: absolute; bottom: 100%; left: 0;
+  margin-bottom: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px; box-shadow: var(--shadow-modal);
+  padding: 6px; min-width: 220px; z-index: 100;
+  animation: fadeInUp 0.2s ease;
+}
+.toolbar-dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  cursor: pointer; font-size: 13px;
+  transition: background var(--transition-fast);
+}
+.toolbar-dropdown-item:hover { background: var(--accent-bg); }
+.toolbar-dropdown-item.active { background: var(--accent-bg); }
+.toolbar-dropdown-item .tdi-icon { font-size: 16px; width: 24px; text-align: center; }
+.toolbar-dropdown-item .tdi-check { margin-left: auto; color: var(--success); font-size: 14px; }
+.toolbar-dropdown-item .tdi-info {
+  margin-left: auto; width: 18px; height: 18px;
+  border: 1px solid var(--border-glass); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text-muted); cursor: help;
+}
+.toolbar-dropdown-divider { height: 1px; background: var(--border-light); margin: 4px 0; }
+.toolbar-dropdown-label { font-size: 11px; color: var(--text-muted); padding: 4px 10px; font-weight: 500; }
+.chat-send-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px; border: none;
+  background: var(--accent); color: #fff;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
   transition: all var(--transition-fast);
   flex-shrink: 0;
 }
-.chat-send-btn:hover { background: #5b4bd5; transform: scale(1.05); }
+.chat-send-btn:hover { background: #b83de0; transform: scale(1.05); }
 .chat-send-btn:active { transform: scale(0.95); }
+
+/* ---- Right Panel: Info Panel ---- */
+.chat-info-panel {
+  width: 280px;
+  border-left: 1px solid var(--border-light);
+  background: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 20px 16px;
+  transition: width var(--transition-smooth), padding var(--transition-smooth), opacity var(--transition-smooth);
+}
+.chat-info-panel.collapsed {
+  width: 0;
+  padding: 20px 0;
+  opacity: 0;
+  overflow: hidden;
+  border-left: none;
+}
+.info-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 16px;
+}
+.info-section {
+  margin-bottom: 20px;
+}
+.info-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.info-group-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 4px;
+}
+.info-group-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.agent-mode-btns {
+  display: flex;
+  gap: 6px;
+}
+.agent-mode-btn {
+  flex: 1;
+  padding: 7px 0;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  color: var(--text-body);
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+.agent-mode-btn:hover { border-color: var(--accent); color: var(--accent); }
+.agent-mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.pinned-msg {
+  background: rgba(211,87,254,0.04);
+  border: 1px solid rgba(211,87,254,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.pinned-msg-author {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 3px;
+}
+.pinned-msg-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.info-members {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.info-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.info-member-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.info-member-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-heading);
+}
+.info-member-tag {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(211,87,254,0.12);
+  color: var(--accent);
+  margin-left: 4px;
+}
 
 /* ============================================================
    MODULE: TASKS (KANBAN)
@@ -1160,7 +1447,7 @@ body {
   padding: 4px;
 }
 .kanban-cards.drag-over {
-  background: rgba(108,92,231,0.04);
+  background: rgba(211,87,254,0.04);
 }
 .kanban-card {
   background: var(--bg-card);
@@ -1228,7 +1515,7 @@ body {
   border-radius: 20px;
 }
 .status-active { background: rgba(0,206,201,0.1); color: #00a8a3; }
-.status-planning { background: rgba(108,92,231,0.1); color: var(--accent); }
+.status-planning { background: rgba(211,87,254,0.1); color: var(--accent); }
 .status-review { background: rgba(253,203,110,0.15); color: #d4a017; }
 
 .progress-bar-bg {
@@ -1288,7 +1575,7 @@ body {
   transition: all var(--transition-fast);
 }
 .milestone-item:hover {
-  background: rgba(108,92,231,0.02);
+  background: rgba(211,87,254,0.02);
 }
 .milestone-check {
   width: 24px;
@@ -1725,12 +2012,22 @@ body {
 
 /* Section title */
 .section-title {
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  color: var(--accent);
   margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: '';
+  width: 16px;
+  height: 1px;
+  background: var(--accent);
 }
 
 /* ============================================================
@@ -1747,8 +2044,137 @@ body {
 @media (max-width: 900px) {
   .sidebar { width: 68px; min-width: 68px; }
   .sidebar .nav-label, .sidebar .sidebar-brand { opacity: 0; width: 0; }
-  .chat-channels { width: 180px; }
+  .conv-list { width: 200px; }
+  .chat-info-panel { width: 0; padding: 20px 0; opacity: 0; overflow: hidden; border-left: none; }
 }
+
+/* ============================================================
+   CHAT WALKTHROUGH (User Journey Onboarding)
+   ============================================================ */
+.chat-walkthrough {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+.chat-walkthrough.hidden { opacity: 0; pointer-events: none; }
+
+.wt-step { display: none; width: 100%; max-width: 560px; padding: 40px; text-align: center; }
+.wt-step.active { display: block; animation: wtFadeIn 0.4s ease; }
+@keyframes wtFadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+.wt-icon { font-size: 64px; margin-bottom: 24px; display: block; }
+.wt-title { font-size: 24px; font-weight: 700; color: var(--text-heading); margin-bottom: 12px; }
+.wt-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; }
+
+.wt-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.wt-btn-primary { background: var(--accent); color: #fff; }
+.wt-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.wt-btn-secondary { background: transparent; color: var(--accent); border: 1px solid rgba(211,87,254,0.3); margin-left: 8px; }
+.wt-btn-secondary:hover { background: rgba(211,87,254,0.06); }
+
+.wt-progress {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.wt-progress-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border-light);
+  transition: all 0.3s ease;
+}
+.wt-progress-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
+.wt-progress-dot.done { background: rgba(211,87,254,0.4); }
+
+/* Bot selection grid */
+.wt-bot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  text-align: left;
+  margin-bottom: 24px;
+}
+.wt-bot-card {
+  padding: 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.wt-bot-card:hover { border-color: rgba(211,87,254,0.4); background: rgba(211,87,254,0.03); }
+.wt-bot-card.selected { border-color: var(--accent); background: rgba(211,87,254,0.06); }
+.wt-bot-card .bot-avatar {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.wt-bot-card .bot-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-heading); }
+.wt-bot-card .bot-info p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+.wt-bot-card .bot-check {
+  margin-left: auto; color: var(--accent); font-size: 18px; opacity: 0; transition: opacity 0.2s;
+}
+.wt-bot-card.selected .bot-check { opacity: 1; }
+
+/* Create group form */
+.wt-form { text-align: left; margin-bottom: 24px; }
+.wt-form label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.03em; }
+.wt-form input, .wt-form textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border-light); border-radius: 10px;
+  font-size: 14px; font-family: inherit; outline: none; margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+.wt-form input:focus, .wt-form textarea:focus { border-color: var(--accent); }
+.wt-form textarea { resize: none; min-height: 60px; }
+
+/* Invite members */
+.wt-member-list { text-align: left; margin-bottom: 24px; }
+.wt-member-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 10px;
+  cursor: pointer; transition: background 0.15s;
+}
+.wt-member-item:hover { background: rgba(211,87,254,0.03); }
+.wt-member-item .avatar { width: 36px; height: 36px; font-size: 13px; }
+.wt-member-item .member-name { flex: 1; font-size: 14px; font-weight: 500; color: var(--text-heading); }
+.wt-member-item .member-role { font-size: 12px; color: var(--text-muted); }
+.wt-member-check {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 1.5px solid var(--border-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: transparent; transition: all 0.2s;
+}
+.wt-member-item.selected .wt-member-check {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+
+/* Restart walkthrough btn */
+.wt-restart-btn {
+  position: absolute; bottom: 12px; right: 12px; z-index: 5;
+  font-size: 11px; color: var(--text-muted); background: transparent;
+  border: 1px solid var(--border-light); border-radius: 8px;
+  padding: 4px 10px; cursor: pointer; transition: all 0.2s;
+}
+.wt-restart-btn:hover { color: var(--accent); border-color: rgba(211,87,254,0.3); }
 </style>
 </head>
 <body>
@@ -1762,41 +2188,13 @@ body {
      SPLASH SCREEN
      ============================================================ -->
 <div id="splash">
-  <!-- Metallic shards -->
-  <div class="metal-shard shard-1" style="--r:0deg"></div>
-  <div class="metal-shard shard-2" style="--r:45deg"></div>
-  <div class="metal-shard shard-3" style="--r:-20deg"></div>
-  <div class="metal-shard shard-4" style="--r:60deg"></div>
-  <div class="metal-shard shard-5" style="--r:-45deg"></div>
-  <div class="metal-shard shard-6" style="--r:30deg"></div>
-  <div class="metal-shard shard-7" style="--r:15deg"></div>
-  <div class="metal-shard shard-8" style="--r:-35deg"></div>
-
   <div class="splash-content">
-    <div class="splash-title-bg">COCO</div>
-
-    <!-- 3D Octopus -->
-    <div class="octopus-container" id="octoSplash">
-      <div class="octopus-body">
-        <div class="octopus-shimmer"></div>
-        <div class="octo-eye left"></div>
-        <div class="octo-eye right"></div>
-      </div>
-      <div class="octo-tentacles">
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-        <div class="tentacle"></div>
-      </div>
+    <div class="splash-logo">
+      <img src="coco-logo.png" alt="COCO">
     </div>
-
-    <div class="splash-title">COCO</div>
-    <div class="splash-subtitle">Workspace</div>
-    <div class="splash-tagline">Human x Agent Collaborative Platform</div>
+    <div class="splash-label">AI-Powered Platform</div>
+    <div class="splash-title">COCO <span class="accent-word">Workspace</span></div>
+    <div class="splash-subtitle">Human x Agent Collaborative Platform</div>
 
     <div class="mode-buttons">
       <button class="mode-btn mode-btn-code" onclick="enterWorkspace('code')">代码开发</button>
@@ -1866,43 +2264,213 @@ body {
       <button class="topbar-cmdk" onclick="openCmdK()">
         搜索命令 <kbd>⌘K</kbd>
       </button>
-      <div class="topbar-avatar" onclick="showToast('个人资料设置即将上线')">S</div>
+      <div class="topbar-avatar" onclick="switchModule('settings')">S</div>
     </header>
 
     <!-- CONTENT -->
     <div class="content-area">
 
       <!-- ======================== CHAT MODULE ======================== -->
-      <div class="module-view active" id="module-chat">
-        <div class="chat-layout">
-          <div class="chat-channels">
-            <h4>频道</h4>
-            <div class="channel-item active" data-channel="general" onclick="switchChannel('general')">
-              <span class="channel-icon">#</span> General
-              <span class="channel-unread">3</span>
+      <div class="module-view active" id="module-chat" style="position:relative;">
+        <!-- Walkthrough Overlay -->
+        <div class="chat-walkthrough" id="chatWalkthrough">
+          <div class="wt-progress" id="wtProgress"></div>
+
+          <!-- Step 0: Welcome Empty State -->
+          <div class="wt-step active" id="wtStep0">
+            <span class="wt-icon">💬</span>
+            <div class="wt-title">欢迎来到 COCO Workspace</div>
+            <div class="wt-desc">这是你的 AI 协作工作区。<br>让我们一起完成初始设置，只需要几步就能开始使用。</div>
+            <button class="wt-btn wt-btn-primary" onclick="wtNext()">开始设置</button>
+          </div>
+
+          <!-- Step 1: Add Bot -->
+          <div class="wt-step" id="wtStep1">
+            <div class="wt-title">选择你的 AI 助手</div>
+            <div class="wt-desc">从 Agent 市场选择你需要的 AI 助手，它们将帮助你和团队提升效率。</div>
+            <div class="wt-bot-grid" id="wtBotGrid">
+              <div class="wt-bot-card" data-bot="coco" onclick="wtToggleBot(this)">
+                <div class="bot-avatar" style="background:linear-gradient(135deg,#d357fe,#96bbff)">🐙</div>
+                <div class="bot-info"><h4>COCO Agent</h4><p>全能协作助手，任务协调、消息汇总、团队效率优化</p></div>
+                <span class="bot-check">✓</span>
+              </div>
+              <div class="wt-bot-card" data-bot="code" onclick="wtToggleBot(this)">
+                <div class="bot-avatar" style="background:linear-gradient(135deg,#fdcb6e,#f39c12)">⚡</div>
+                <div class="bot-info"><h4>代码助手</h4><p>代码审查、自动修复、API 文档生成、性能监控</p></div>
+                <span class="bot-check">✓</span>
+              </div>
+              <div class="wt-bot-card" data-bot="design" onclick="wtToggleBot(this)">
+                <div class="bot-avatar" style="background:linear-gradient(135deg,#e17055,#d63031)">🎨</div>
+                <div class="bot-info"><h4>Design AI</h4><p>设计规范检查、配色生成、响应式布局建议</p></div>
+                <span class="bot-check">✓</span>
+              </div>
+              <div class="wt-bot-card" data-bot="data" onclick="wtToggleBot(this)">
+                <div class="bot-avatar" style="background:linear-gradient(135deg,#0984e3,#74b9ff)">📊</div>
+                <div class="bot-info"><h4>Data Agent</h4><p>数据分析、报表生成、异常检测和趋势预测</p></div>
+                <span class="bot-check">✓</span>
+              </div>
             </div>
-            <div class="channel-item" data-channel="engineering" onclick="switchChannel('engineering')">
-              <span class="channel-icon">#</span> Engineering
+            <button class="wt-btn wt-btn-primary" onclick="wtNext()">添加选中的助手</button>
+            <button class="wt-btn wt-btn-secondary" onclick="wtNext()">跳过</button>
+          </div>
+
+          <!-- Step 2: Create Group -->
+          <div class="wt-step" id="wtStep2">
+            <div class="wt-title">创建你的第一个群聊</div>
+            <div class="wt-desc">群聊是团队协作的核心空间，人类和 AI 在同一个对话中协作。</div>
+            <div class="wt-form">
+              <label>群聊名称</label>
+              <input type="text" id="wtGroupName" value="产品开发群" placeholder="输入群聊名称...">
+              <label>群聊描述</label>
+              <textarea id="wtGroupDesc" placeholder="简单描述这个群聊的用途...">COCO Workspace 产品团队日常沟通频道</textarea>
+              <label>类型</label>
+              <div style="display:flex;gap:8px;">
+                <button class="wt-btn wt-btn-primary" style="padding:8px 20px;font-size:13px;" id="wtTypeGroup" onclick="wtSelectType('group')">群聊</button>
+                <button class="wt-btn wt-btn-secondary" style="padding:8px 20px;font-size:13px;" id="wtTypeChannel" onclick="wtSelectType('channel')">频道</button>
+              </div>
             </div>
-            <div class="channel-item" data-channel="design" onclick="switchChannel('design')">
-              <span class="channel-icon">#</span> Design
-            </div>
-            <div class="channel-item" data-channel="bot-arena" onclick="switchChannel('bot-arena')">
-              <span class="channel-icon">#</span> Bot-Arena
-              <span class="channel-unread">7</span>
+            <div style="margin-top:8px;">
+              <button class="wt-btn wt-btn-primary" onclick="wtNext()">创建群聊</button>
             </div>
           </div>
+
+          <!-- Step 3: Invite Members -->
+          <div class="wt-step" id="wtStep3">
+            <div class="wt-title">邀请团队成员</div>
+            <div class="wt-desc">选择要加入群聊的成员，AI 助手会自动加入。</div>
+            <div class="wt-member-list" id="wtMemberList">
+              <div class="wt-member-item selected" data-member="stephanie" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+                <span class="member-name">Stephanie</span>
+                <span class="member-role">产品负责人</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item" data-member="alex" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#00cec9,#55efc4)">A</div>
+                <span class="member-name">Alex</span>
+                <span class="member-role">全栈工程师</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item" data-member="maya" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#fd79a8,#e84393)">M</div>
+                <span class="member-name">Maya</span>
+                <span class="member-role">UI/UX 设计师</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item" data-member="zhangwei" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#636e72,#b2bec3)">张</div>
+                <span class="member-name">张伟</span>
+                <span class="member-role">前端工程师</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item" data-member="chenmh" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7)">陈</div>
+                <span class="member-name">陈明辉</span>
+                <span class="member-role">后端工程师</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item" data-member="lisiqi" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#fab1a0,#e17055)">李</div>
+                <span class="member-name">李思琪</span>
+                <span class="member-role">交互设计师</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+            </div>
+            <button class="wt-btn wt-btn-primary" onclick="wtFinish()">邀请并开始使用</button>
+          </div>
+
+          <!-- Step 4: Done -->
+          <div class="wt-step" id="wtStep4">
+            <span class="wt-icon">🎉</span>
+            <div class="wt-title">设置完成！</div>
+            <div class="wt-desc">你的工作区已准备就绪。<br>AI 助手已加入群聊，团队成员已收到邀请。</div>
+            <button class="wt-btn wt-btn-primary" onclick="wtEnterChat()">进入对话</button>
+          </div>
+        </div>
+
+        <!-- Restart walkthrough button (shown after walkthrough completes) -->
+        <button class="wt-restart-btn" id="wtRestartBtn" style="display:none;" onclick="wtRestart()">↻ 重新体验引导</button>
+
+        <div class="chat-layout" id="chatLayoutMain" style="display:none;">
+          <!-- Left: Conversation List -->
+          <div class="conv-list">
+            <div class="conv-tabs">
+              <button class="conv-tab active" data-filter="all" onclick="filterConversations('all')">全部</button>
+              <button class="conv-tab" data-filter="dm" onclick="filterConversations('dm')">DM</button>
+              <button class="conv-tab" data-filter="group" onclick="filterConversations('group')">群聊</button>
+            </div>
+            <div class="conv-search">
+              <input type="text" placeholder="搜索对话..." id="convSearchInput" oninput="filterConvSearch()">
+            </div>
+            <div class="conv-items" id="convItems">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <!-- Center: Chat Area -->
           <div class="chat-main">
+            <div class="chat-header" id="chatHeader">
+              <span class="chat-header-name" id="chatHeaderName">产品开发群</span>
+              <span class="chat-header-status"></span>
+              <span class="chat-header-model" id="chatHeaderModel" style="display:none;">Claude Sonnet</span>
+              <span class="chat-header-spacer"></span>
+              <button class="chat-header-toggle-info active" onclick="toggleInfoPanel()" title="信息面板">◧</button>
+              <button class="chat-header-menu" title="更多">≡</button>
+            </div>
             <div class="chat-messages" id="chatMessages">
               <!-- Messages populated by JS -->
             </div>
             <div class="typing-indicator" id="typingIndicator" style="display:none;">
               <span></span><span></span><span></span>
-              <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">COCO Agent 正在输入...</span>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">代码助手 正在输入...</span>
             </div>
-            <div class="chat-input-area">
-              <textarea class="chat-input" id="chatInput" placeholder="输入消息..." rows="1" onkeydown="handleChatKey(event)"></textarea>
-              <button class="chat-send-btn" onclick="sendChatMessage()">↑</button>
+            <!-- Enhanced Input Area -->
+            <div class="chat-input-enhanced">
+              <!-- Task Category Chips (mode-dependent) -->
+              <div class="chat-category-chips" id="chatCategoryChips">
+                <!-- Populated by JS based on code/office mode -->
+              </div>
+              <!-- Prompt Templates (shown when category selected) -->
+              <div class="chat-prompt-templates" id="chatPromptTemplates" style="display:none;">
+                <!-- Populated by JS -->
+              </div>
+              <!-- Input Container -->
+              <div class="chat-input-container">
+                <div class="chat-input-top-actions">
+                  <button class="chat-input-action-btn" title="@提及" onclick="insertAtSymbol()">@</button>
+                  <button class="chat-input-action-btn" title="附件">📎</button>
+                </div>
+                <div class="chat-input-wrap">
+                  <div class="chat-input-tags" id="chatInputTags">
+                    <!-- Selected category tag appears here -->
+                  </div>
+                  <textarea class="chat-input" id="chatInput" placeholder="输入消息..." rows="1" onkeydown="handleChatKey(event)"></textarea>
+                </div>
+                <!-- Bottom Toolbar -->
+                <div class="chat-input-toolbar">
+                  <div class="chat-toolbar-left">
+                    <button class="toolbar-btn toolbar-btn-active" id="toolbarModeBtn" onclick="toggleModeMenu(this)">
+                      <span class="toolbar-icon">💬</span> <span id="toolbarModeName">Ask</span> <span class="toolbar-arrow">▾</span>
+                    </button>
+                    <button class="toolbar-btn" id="toolbarAutoBtn" onclick="toggleAutoMenu(this)">
+                      <span class="toolbar-icon">⚡</span> Auto <span class="toolbar-arrow">▾</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleSkillsPanel(this)">
+                      <span class="toolbar-icon">🛠</span> Skills
+                    </button>
+                  </div>
+                  <div class="chat-toolbar-right">
+                    <button class="chat-input-action-btn" title="选择文件夹" style="font-size:14px;">📁</button>
+                    <button class="chat-input-action-btn" title="语音输入" style="font-size:14px;">🎤</button>
+                    <button class="chat-send-btn" onclick="sendChatMessage()">↑</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right: Info Panel -->
+          <div class="chat-info-panel" id="chatInfoPanel">
+            <div id="chatInfoContent">
+              <!-- Populated by JS -->
             </div>
           </div>
         </div>
@@ -2281,7 +2849,9 @@ body {
 // ================================================================
 let currentMode = 'code';
 let currentModule = 'chat';
-let currentChannel = 'general';
+let currentChannel = 'product-dev';
+let infoPanelVisible = true;
+let currentConvFilter = 'all';
 let sidebarCollapsed = false;
 let taskIdCounter = 100;
 
@@ -2299,41 +2869,122 @@ const moduleNames = {
   settings: '设置'
 };
 
+// Conversation list data
+const conversationsData = [
+  { id: 'code-assistant', name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#d357fe,#96bbff)', tag: 'Agent', type: 'dm', time: '10:32', preview: '已完成 API 文档初稿，请查看附件', unread: 3, model: 'Claude Sonnet' },
+  { id: 'product-dev', name: '产品开发群', avatar: '💻', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', tag: '群聊', type: 'group', time: '09:45', preview: '张伟: 前端组件库已更新到 v3.2', unread: 2, model: null },
+  { id: 'li-siqi', name: '李思琪', avatar: '琪', color: 'linear-gradient(135deg,#fd79a8,#e84393)', tag: null, type: 'dm', time: '09:20', preview: '设计稿已经更新，看下新的交互方案', unread: 0, model: null },
+  { id: 'test-agent', name: '测试 Agent', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', tag: 'Agent', type: 'dm', time: '08:55', preview: '自动化测试报告: 通过 47/50 个用例', unread: 0, model: 'Claude Sonnet' },
+  { id: 'general', name: 'General', avatar: '#', color: 'linear-gradient(135deg,#636e72,#b2bec3)', tag: '群聊', type: 'group', time: '08:30', preview: 'Maya: 新的设计稿已经上传到 Figma', unread: 0, model: null },
+  { id: 'engineering', name: 'Engineering', avatar: '#', color: 'linear-gradient(135deg,#00b894,#55efc4)', tag: '群聊', type: 'group', time: '08:00', preview: 'Code Bot: 部署监控已启动，一切正常', unread: 0, model: null },
+  { id: 'design', name: 'Design', avatar: '#', color: 'linear-gradient(135deg,#e17055,#fab1a0)', tag: '群聊', type: 'group', time: '昨天', preview: 'Maya: 好建议！我更新一下', unread: 0, model: null },
+  { id: 'bot-arena', name: 'Bot-Arena', avatar: '#', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', tag: '群聊', type: 'group', time: '昨天', preview: 'Design AI: 安全第一，已更新 Design Token', unread: 0, model: null },
+];
+
+// Info panel data per channel
+const channelInfoData = {
+  'product-dev': {
+    title: '群聊信息',
+    groupName: '产品开发群',
+    description: 'COCO Workspace 产品线核心开发群，包含前后端、设计和 AI Agent。',
+    agentMode: '自动回复',
+    pinned: [
+      { author: '张伟', text: '前端组件库已更新到 v3.2，新增 12 个组件，请大家及时更新依赖。' },
+      { author: '代码助手', text: 'API 文档规范已发布，所有新接口请按照 OpenAPI 3.0 格式编写。' }
+    ],
+    members: [
+      { name: '张伟', avatar: '伟', color: '#0984e3' },
+      { name: '陈明辉', avatar: '辉', color: '#00cec9' },
+      { name: '李思琪', avatar: '琪', color: '#fd79a8' },
+      { name: '代码助手', avatar: '🤖', color: '#d357fe', isAgent: true },
+      { name: '测试 Agent', avatar: '🧪', color: '#00cec9', isAgent: true },
+      { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', isAgent: true }
+    ]
+  },
+  'general': {
+    title: '群聊信息',
+    groupName: 'General',
+    description: '全员日常交流频道，分享动态、闲聊和公告。',
+    agentMode: '仅 @',
+    pinned: [
+      { author: 'Stephanie', text: '本周五下午 3 点全员例会，请准时参加。' }
+    ],
+    members: [
+      { name: 'Stephanie', avatar: 'S', color: '#f093fb' },
+      { name: 'Alex', avatar: 'A', color: '#00cec9' },
+      { name: 'Maya', avatar: 'M', color: '#fd79a8' },
+      { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', isAgent: true }
+    ]
+  },
+  'engineering': {
+    title: '群聊信息',
+    groupName: 'Engineering',
+    description: '工程技术讨论、代码审查、部署和 DevOps。',
+    agentMode: '自动回复',
+    pinned: [
+      { author: 'Alex', text: '灰度发布流程已更新，请查阅 Wiki。' }
+    ],
+    members: [
+      { name: 'Alex', avatar: 'A', color: '#00cec9' },
+      { name: '张伟', avatar: '伟', color: '#0984e3' },
+      { name: 'Code Bot', avatar: '⚡', color: '#fdcb6e', isAgent: true },
+      { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', isAgent: true }
+    ]
+  }
+};
+
 const channelMessages = {
+  'product-dev': [
+    { name: '张伟', avatar: '伟', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', text: '帮我生成 COCO Workspace 用户管理模块的 API 接口文档，参考 <span class="chat-mention">@API设计规范</span> 中的格式要求', time: '09:30', isAgent: false },
+    { name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '好的，我来生成用户管理模块的 API 接口文档。根据 <span class="chat-mention">@API设计规范</span> 的要求，使用 OpenAPI 3.0 格式：<div class="chat-code-block"><span class="code-comment"># 用户管理 API</span>\n\n<span class="code-comment">## POST /api/v1/users</span>\n<span class="code-label">创建用户（HoA 统一接口）</span>\n\n<span class="code-keyword">Request Body:</span>\n<span class="code-punct">{</span>\n  <span class="code-field">"type"</span><span class="code-punct">:</span> <span class="code-string">"human"</span> <span class="code-punct">|</span> <span class="code-string">"agent"</span><span class="code-punct">,</span>\n  <span class="code-field">"profile"</span><span class="code-punct">:</span> <span class="code-punct">{</span>\n    <span class="code-field">"name"</span><span class="code-punct">:</span> <span class="code-string">"string"</span><span class="code-punct">,</span>\n    <span class="code-field">"avatar"</span><span class="code-punct">:</span> <span class="code-string">"string"</span>\n  <span class="code-punct">},</span>\n  <span class="code-field">"space_id"</span><span class="code-punct">:</span> <span class="code-string">"string"</span>\n<span class="code-punct">}</span>\n\n<span class="code-comment">## GET /api/v1/users/:id</span>\n<span class="code-label">获取用户详情（含 Agent 扩展字段）</span>\n\n<span class="code-keyword">Response:</span>\n<span class="code-punct">{</span>\n  <span class="code-field">"id"</span><span class="code-punct">:</span> <span class="code-string">"string"</span><span class="code-punct">,</span>\n  <span class="code-field">"type"</span><span class="code-punct">:</span> <span class="code-string">"human"</span> <span class="code-punct">|</span> <span class="code-string">"agent"</span><span class="code-punct">,</span>\n  <span class="code-field">"profile"</span><span class="code-punct">:</span> <span class="code-punct">{</span> <span class="code-string">...</span> <span class="code-punct">},</span>\n  <span class="code-field">"permissions"</span><span class="code-punct">:</span> <span class="code-type">string[]</span>\n<span class="code-punct">}</span></div><div class="chat-file-tags"><span class="chat-file-tag">📎 API设计规范 <span class="tag-close">&times;</span></span><span class="chat-file-tag">📎 COCO Workspace MVP <span class="tag-close">&times;</span></span></div>', time: '09:32', isAgent: true },
+    { name: '陈明辉', avatar: '辉', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '接口设计看起来不错，<span class="code-keyword">space_id</span> 是必填的吗？', time: '09:38', isAgent: false },
+    { name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '根据规范，<span class="code-keyword">space_id</span> 在创建用户时是必填的，因为每个用户都需要关联到一个工作区。如果是通过邀请链接注册的用户，系统会自动填充 space_id。', time: '09:39', isAgent: true },
+    { name: '张伟', avatar: '伟', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', text: '前端组件库已更新到 v3.2，新增了 12 个组件。<span class="chat-mention">@李思琪</span> 看下新的交互组件是否符合设计规范', time: '09:45', isAgent: false }
+  ],
+  'code-assistant': [
+    { name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '已完成 API 文档初稿，包含以下模块：<div class="chat-code-block"><span class="code-comment"># API 模块清单</span>\n\n<span class="code-label">1.</span> <span class="code-type">用户管理</span> — 注册、登录、权限\n<span class="code-label">2.</span> <span class="code-type">工作区</span> — 创建、配置、成员管理\n<span class="code-label">3.</span> <span class="code-type">Agent 管理</span> — 注册、调度、监控\n<span class="code-label">4.</span> <span class="code-type">消息系统</span> — 发送、接收、历史</div><div class="chat-file-tags"><span class="chat-file-tag">📎 API 文档初稿.pdf <span class="tag-close">&times;</span></span></div>', time: '10:30', isAgent: true },
+    { name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '另外，我注意到认证模块还需要补充 OAuth 2.0 的接入流程，要现在添加吗？', time: '10:32', isAgent: true }
+  ],
+  'li-siqi': [
+    { name: '李思琪', avatar: '琪', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '设计稿已经更新了，主要改了以下几个地方：\n1. 对话列表增加了头像和预览\n2. 聊天区域增加了代码块样式\n3. 右侧面板新增群信息', time: '09:15', isAgent: false },
+    { name: '李思琪', avatar: '琪', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '看下新的交互方案，特别是 Agent 模式切换的部分', time: '09:20', isAgent: false }
+  ],
+  'test-agent': [
+    { name: '测试 Agent', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', model: 'Claude Sonnet', text: '自动化测试报告：<div class="chat-code-block"><span class="code-keyword">测试套件:</span> COCO Workspace v3.2\n<span class="code-keyword">执行时间:</span> <span class="code-string">2026-04-21 08:50</span>\n\n<span class="code-type">通过:</span> <span class="code-string">47/50</span> 个用例\n<span class="code-label">失败:</span> <span class="code-string">3/50</span> 个用例\n\n<span class="code-comment"># 失败用例:</span>\n<span class="code-label">1.</span> Agent 消息推送延迟 > 2s\n<span class="code-label">2.</span> 文件上传超过 50MB 时无提示\n<span class="code-label">3.</span> 移动端键盘遮挡输入框</div>', time: '08:55', isAgent: true }
+  ],
   general: [
-    { name: 'Stephanie', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', text: '大家早上好！今天的任务清单已经更新了', time: '9:00 AM', isAgent: false },
-    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', text: '已同步最新任务列表。当前有 3 个高优先级任务需要关注。', time: '9:01 AM', isAgent: true },
-    { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '收到，我先处理用户反馈的那个 bug', time: '9:05 AM', isAgent: false },
-    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', text: '该 bug 已记录在 Tasks #247。我已准备好相关日志，需要时可以分享。', time: '9:05 AM', isAgent: true },
-    { name: 'Maya', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '新的设计稿已经上传到 Figma 了，大家有空看看', time: '9:12 AM', isAgent: false }
+    { name: 'Stephanie', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', text: '大家早上好！今天的任务清单已经更新了 📋', time: '08:00', isAgent: false },
+    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '已同步最新任务列表。当前有 3 个高优先级任务需要关注。<span class="chat-mention">@Alex</span> 你负责的登录流程 bug 已经升级为 P0。', time: '08:05', isAgent: true },
+    { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '收到，我先处理用户反馈的那个 bug', time: '08:10', isAgent: false },
+    { name: 'Maya', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '新的设计稿已经上传到 Figma 了，大家有空看看 ✨', time: '08:30', isAgent: false }
   ],
   engineering: [
-    { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '部署脚本更新了，现在支持灰度发布', time: '8:30 AM', isAgent: false },
-    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', text: '代码审查完成：PR #128 通过所有测试，建议合并。检测到 2 个性能优化机会。', time: '8:45 AM', isAgent: true },
-    { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '好的，merge 了。@Code Bot 继续监控部署状态', time: '8:50 AM', isAgent: false },
-    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', text: '部署监控已启动。目前 CPU 使用率 23%，内存 45%，一切正常。', time: '8:51 AM', isAgent: true }
+    { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '部署脚本更新了，现在支持灰度发布', time: '07:30', isAgent: false },
+    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', model: 'Claude Sonnet', text: '代码审查完成：PR #128 通过所有测试，建议合并。检测到 2 个性能优化机会。<div class="chat-code-block"><span class="code-comment">// 优化建议</span>\n<span class="code-label">1.</span> <span class="code-method">fetchUsers()</span> 可添加缓存层\n<span class="code-label">2.</span> <span class="code-method">renderList()</span> 建议使用虚拟滚动</div>', time: '07:45', isAgent: true },
+    { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', text: '好的，merge 了。<span class="chat-mention">@Code Bot</span> 继续监控部署状态', time: '07:50', isAgent: false },
+    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', model: 'Claude Sonnet', text: '部署监控已启动。目前 CPU 使用率 23%，内存 45%，一切正常。', time: '08:00', isAgent: true }
   ],
   design: [
-    { name: 'Maya', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '新的组件库 v2 快完成了，预览链接：design.coco.app/v2', time: '10:00 AM', isAgent: false },
-    { name: 'Design AI', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', text: '已分析新组件库：色彩对比度满足 WCAG AA 标准。建议将按钮圆角从 8px 调整为 12px 以提升视觉一致性。', time: '10:02 AM', isAgent: true },
-    { name: 'Maya', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '好建议！我更新一下', time: '10:05 AM', isAgent: false },
-    { name: 'Stephanie', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', text: '看起来很棒！特别喜欢新的 glassmorphism 效果', time: '10:15 AM', isAgent: false }
+    { name: 'Maya', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '新的组件库 v2 快完成了，预览链接：design.coco.app/v2', time: '10:00', isAgent: false },
+    { name: 'Design AI', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', model: 'Claude Sonnet', text: '已分析新组件库：色彩对比度满足 WCAG AA 标准。建议将按钮圆角从 8px 调整为 12px 以提升视觉一致性。', time: '10:02', isAgent: true },
+    { name: 'Maya', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', text: '好建议！我更新一下', time: '10:05', isAgent: false },
+    { name: 'Stephanie', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', text: '看起来很棒！特别喜欢新的 glassmorphism 效果', time: '10:15', isAgent: false }
   ],
   'bot-arena': [
-    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', text: '今日 Agent 状态报告：所有 Agent 运行正常，平均响应时间 120ms', time: '8:00 AM', isAgent: true },
-    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', text: '我完成了代码优化任务，减少了 15% 的包体积', time: '8:30 AM', isAgent: true },
-    { name: 'Design AI', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', text: '自动生成了 3 套配色方案供团队选择', time: '9:00 AM', isAgent: true },
-    { name: 'Data Agent', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', text: '周报数据已整理完成，关键指标：用户增长 +12%，留存率 85%', time: '9:15 AM', isAgent: true },
-    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', text: '很好，大家效率都很高！我来汇总一下今天的工作进度给 Stephanie。', time: '9:20 AM', isAgent: true },
-    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', text: '另外，我发现了一个潜在的安全漏洞，已经自动修复并提交了 PR', time: '9:30 AM', isAgent: true },
-    { name: 'Design AI', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', text: '支持！安全第一。我也更新了 Design Token，确保新的安全提示样式一致', time: '9:35 AM', isAgent: true }
+    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '今日 Agent 状态报告：所有 Agent 运行正常，平均响应时间 120ms', time: '08:00', isAgent: true },
+    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', model: 'Claude Sonnet', text: '我完成了代码优化任务，减少了 15% 的包体积', time: '08:30', isAgent: true },
+    { name: 'Design AI', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', model: 'Claude Sonnet', text: '自动生成了 3 套配色方案供团队选择', time: '09:00', isAgent: true },
+    { name: 'Data Agent', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', model: 'Claude Sonnet', text: '周报数据已整理完成，关键指标：用户增长 +12%，留存率 85%', time: '09:15', isAgent: true },
+    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'Claude Sonnet', text: '很好，大家效率都很高！我来汇总一下今天的工作进度给 Stephanie。', time: '09:20', isAgent: true },
+    { name: 'Code Bot', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', model: 'Claude Sonnet', text: '另外，我发现了一个潜在的安全漏洞，已经自动修复并提交了 PR', time: '09:30', isAgent: true },
+    { name: 'Design AI', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', model: 'Claude Sonnet', text: '支持！安全第一。我也更新了 Design Token，确保新的安全提示样式一致', time: '09:35', isAgent: true }
   ]
 };
 
 const tasksData = [
   { id: 1, title: '实现用户登录流程', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9' },
   { id: 2, title: '设计首页 Banner 组件', assignee: 'Maya', priority: 'medium', status: 'progress', avatar: 'M', color: '#fd79a8' },
-  { id: 3, title: '编写 API 文档', assignee: 'COCO Agent', priority: 'low', status: 'todo', avatar: '🐙', color: '#6c5ce7', isAgent: true },
+  { id: 3, title: '编写 API 文档', assignee: 'COCO Agent', priority: 'low', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true },
   { id: 4, title: '数据库性能优化', assignee: 'Code Bot', priority: 'high', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true },
   { id: 5, title: '用户反馈收集分析', assignee: 'Stephanie', priority: 'medium', status: 'todo', avatar: 'S', color: '#f093fb' },
   { id: 6, title: '移动端适配测试', assignee: 'Alex', priority: 'medium', status: 'done', avatar: 'A', color: '#00cec9' },
@@ -2348,7 +2999,7 @@ const projectsData = [
     team: [
       { name: 'Stephanie', avatar: 'S', color: '#f093fb' },
       { name: 'Alex', avatar: 'A', color: '#00cec9' },
-      { name: 'COCO Agent', avatar: '🐙', color: '#6c5ce7', isAgent: true }
+      { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', isAgent: true }
     ],
     milestones: [
       { text: '需求分析与原型设计', done: true },
@@ -2406,7 +3057,7 @@ const teamData = [
   { name: 'Stephanie', role: '产品负责人', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', status: 'online', isAgent: false, activity: '刚刚更新了项目需求文档' },
   { name: 'Alex', role: '全栈工程师', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', status: 'online', isAgent: false, activity: '正在处理 PR #128' },
   { name: 'Maya', role: 'UI/UX 设计师', avatar: 'M', color: 'linear-gradient(135deg,#fd79a8,#e84393)', status: 'busy', isAgent: false, activity: '设计组件库 v2' },
-  { name: 'COCO Agent', role: 'AI 协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', status: 'online', isAgent: true, activity: '正在同步所有频道消息' },
+  { name: 'COCO Agent', role: 'AI 协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', status: 'online', isAgent: true, activity: '正在同步所有频道消息' },
   { name: 'Code Bot', role: 'AI 代码助手', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', status: 'online', isAgent: true, activity: '代码审查进行中' },
   { name: 'Design AI', role: 'AI 设计助手', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', status: 'idle', isAgent: true, activity: '等待新的设计任务' },
   { name: 'Data Agent', role: 'AI 数据分析师', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', status: 'online', isAgent: true, activity: '生成周报数据中' },
@@ -2414,7 +3065,7 @@ const teamData = [
 ];
 
 const agentsData = [
-  { name: 'COCO Agent', role: '协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', status: 'online', tasksCompleted: 142, accuracy: 96.5, responseTime: '120ms', description: '核心协作 Agent，负责任务协调、消息汇总和团队效率优化' },
+  { name: 'COCO Agent', role: '协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', status: 'online', tasksCompleted: 142, accuracy: 96.5, responseTime: '120ms', description: '核心协作 Agent，负责任务协调、消息汇总和团队效率优化' },
   { name: 'Code Bot', role: '代码助手', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', status: 'online', tasksCompleted: 89, accuracy: 94.2, responseTime: '85ms', description: '代码审查、自动修复、性能监控和部署自动化' },
   { name: 'Design AI', role: '设计助手', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', status: 'idle', tasksCompleted: 56, accuracy: 91.8, responseTime: '200ms', description: '设计规范检查、配色生成、响应式布局建议' },
   { name: 'Data Agent', role: '数据分析', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', status: 'busy', tasksCompleted: 203, accuracy: 98.1, responseTime: '150ms', description: '数据分析、报表生成、异常检测和趋势预测' }
@@ -2521,7 +3172,7 @@ class Particle {
     this.speedX = (Math.random() - 0.5) * 0.4;
     this.speedY = (Math.random() - 0.5) * 0.4;
     this.opacity = Math.random() * 0.3 + 0.05;
-    this.hue = Math.random() * 60 + 240; // purple-blue range
+    this.hue = Math.random() * 40 + 270; // purple-pink range
   }
   update() {
     this.x += this.speedX;
@@ -2560,7 +3211,7 @@ function animateParticles() {
         ctx.beginPath();
         ctx.moveTo(particles[i].x, particles[i].y);
         ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(108, 92, 231, ${0.04 * (1 - dist / 120)})`;
+        ctx.strokeStyle = `rgba(211, 87, 254, ${0.04 * (1 - dist / 120)})`;
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
@@ -2653,6 +3304,50 @@ function switchModule(mod) {
 // ================================================================
 // CHAT MODULE
 // ================================================================
+
+function renderConversationList() {
+  const container = document.getElementById('convItems');
+  const searchVal = (document.getElementById('convSearchInput')?.value || '').toLowerCase();
+  let items = conversationsData;
+  // Filter by tab
+  if (currentConvFilter === 'dm') items = items.filter(c => c.type === 'dm');
+  else if (currentConvFilter === 'group') items = items.filter(c => c.type === 'group');
+  // Filter by search
+  if (searchVal) items = items.filter(c => c.name.toLowerCase().includes(searchVal) || c.preview.toLowerCase().includes(searchVal));
+
+  container.innerHTML = items.map(conv => {
+    const activeClass = conv.id === currentChannel ? ' active' : '';
+    const tagHTML = conv.tag === 'Agent' ? '<span class="conv-item-tag agent">Agent</span>'
+      : conv.tag === 'Connector' ? '<span class="conv-item-tag connector">Connector</span>'
+      : conv.tag === '群聊' ? '<span class="conv-item-tag group">群聊</span>' : '';
+    const unreadHTML = conv.unread > 0 ? `<span class="conv-item-unread">${conv.unread}</span>` : '';
+    const avatarFontSize = conv.avatar.length > 1 ? '18px' : '14px';
+    return `
+      <div class="conv-item${activeClass}" data-conv="${conv.id}" onclick="switchChannel('${conv.id}')">
+        <div class="conv-item-avatar" style="background:${conv.color};font-size:${avatarFontSize}">${conv.avatar}</div>
+        <div class="conv-item-body">
+          <div class="conv-item-top">
+            <span class="conv-item-name">${conv.name}</span>
+            ${tagHTML}
+            <span class="conv-item-time">${conv.time}</span>
+          </div>
+          <div class="conv-item-preview">${conv.preview}</div>
+        </div>
+        ${unreadHTML}
+      </div>`;
+  }).join('');
+}
+
+function filterConversations(filter) {
+  currentConvFilter = filter;
+  document.querySelectorAll('.conv-tab').forEach(t => t.classList.toggle('active', t.dataset.filter === filter));
+  renderConversationList();
+}
+
+function filterConvSearch() {
+  renderConversationList();
+}
+
 function renderChat() {
   const container = document.getElementById('chatMessages');
   const messages = channelMessages[currentChannel] || [];
@@ -2665,33 +3360,108 @@ function renderChat() {
 
 function createMessageHTML(msg, index) {
   const agentClass = msg.isAgent ? ' chat-msg-agent' : '';
-  const agentBadge = msg.isAgent ? '<span class="badge badge-agent" style="font-size:10px;">AI</span>' : '';
+  const modelHTML = msg.model ? `<span class="chat-msg-model">${msg.model}</span>` : '';
+  const nameDisplay = msg.model ? `${msg.name} · <span style="font-weight:400;color:var(--text-muted);font-size:11px">${msg.model}</span>` : msg.name;
+  const agentBadge = msg.isAgent && !msg.model ? '<span class="badge badge-agent" style="font-size:10px;">AI</span>' : '';
   const avatarContent = msg.avatar;
   const fontSize = msg.avatar.length > 1 ? '18px' : '13px';
+  // Preserve newlines
+  const textContent = msg.text.replace(/\n/g, '<br>');
   return `
     <div class="chat-msg${agentClass}" style="animation-delay:${index * 0.05}s">
       <div class="avatar" style="background:${msg.color};font-size:${fontSize}">${avatarContent}</div>
-      <div>
-        <div class="chat-msg-name">${msg.name} ${agentBadge}</div>
-        <div class="chat-msg-content">${msg.text}</div>
+      <div style="min-width:0;flex:1;">
+        <div class="chat-msg-name">${nameDisplay} ${agentBadge}</div>
+        <div class="chat-msg-content">${textContent}</div>
         <div class="chat-msg-time">${msg.time}</div>
       </div>
     </div>
   `;
 }
 
+function updateChatHeader() {
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  if (!conv) return;
+  document.getElementById('chatHeaderName').textContent = conv.name;
+  const modelEl = document.getElementById('chatHeaderModel');
+  if (conv.model) {
+    modelEl.textContent = conv.model;
+    modelEl.style.display = '';
+  } else {
+    modelEl.style.display = 'none';
+  }
+}
+
+function renderInfoPanel() {
+  const container = document.getElementById('chatInfoContent');
+  const info = channelInfoData[currentChannel];
+  if (!info) {
+    // Default info for channels without detailed data
+    const conv = conversationsData.find(c => c.id === currentChannel);
+    container.innerHTML = `<div class="info-panel-title">${conv?.type === 'group' ? '群聊信息' : '对话信息'}</div>
+      <div class="info-section"><div class="info-group-name">${conv?.name || ''}</div></div>`;
+    return;
+  }
+  const pinnedHTML = info.pinned.map(p => `
+    <div class="pinned-msg">
+      <div class="pinned-msg-author">${p.author}</div>
+      <div class="pinned-msg-text">${p.text}</div>
+    </div>`).join('');
+  const membersHTML = info.members.map(m => {
+    const tagHTML = m.isAgent ? '<span class="info-member-tag">Agent</span>' : '';
+    const avFS = m.avatar.length > 1 ? '13px' : '12px';
+    return `<div class="info-member">
+      <div class="info-member-avatar" style="background:${m.color};font-size:${avFS}">${m.avatar}</div>
+      <span class="info-member-name">${m.name}${tagHTML}</span>
+    </div>`;
+  }).join('');
+  const modes = ['自动回复', '仅 @', '静默'];
+  const modeBtnsHTML = modes.map(m => `<button class="agent-mode-btn${m === info.agentMode ? ' active' : ''}" onclick="setAgentMode(this, '${currentChannel}')">${m}</button>`).join('');
+
+  container.innerHTML = `
+    <div class="info-panel-title">${info.title}</div>
+    <div class="info-section">
+      <div class="info-group-name">${info.groupName}</div>
+      <div class="info-group-desc">${info.description}</div>
+    </div>
+    <div class="info-section">
+      <div class="info-section-label">Agent 设置</div>
+      <div style="font-size:12px;color:var(--text-body);margin-bottom:8px;">群内 Agent 行为模式</div>
+      <div class="agent-mode-btns">${modeBtnsHTML}</div>
+    </div>
+    <div class="info-section">
+      <div class="info-section-label">置顶消息 (${info.pinned.length})</div>
+      ${pinnedHTML}
+    </div>
+    <div class="info-section">
+      <div class="info-section-label">成员 (${info.members.length})</div>
+      <div class="info-members">${membersHTML}</div>
+    </div>`;
+}
+
+function setAgentMode(btn, channel) {
+  btn.parentElement.querySelectorAll('.agent-mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (channelInfoData[channel]) channelInfoData[channel].agentMode = btn.textContent;
+}
+
+function toggleInfoPanel() {
+  infoPanelVisible = !infoPanelVisible;
+  const panel = document.getElementById('chatInfoPanel');
+  const toggleBtn = document.querySelector('.chat-header-toggle-info');
+  panel.classList.toggle('collapsed', !infoPanelVisible);
+  toggleBtn.classList.toggle('active', infoPanelVisible);
+}
+
 function switchChannel(channel) {
   currentChannel = channel;
-  document.querySelectorAll('.channel-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.channel === channel);
-  });
-  // Remove unread badge
-  const activeItem = document.querySelector(`.channel-item[data-channel="${channel}"]`);
-  if (activeItem) {
-    const badge = activeItem.querySelector('.channel-unread');
-    if (badge) badge.remove();
-  }
+  // Clear unread for this channel
+  const convData = conversationsData.find(c => c.id === channel);
+  if (convData) convData.unread = 0;
+  renderConversationList();
+  updateChatHeader();
   renderChat();
+  renderInfoPanel();
 }
 
 function handleChatKey(e) {
@@ -2743,12 +3513,13 @@ function sendChatMessage() {
       '好的，已经通知相关团队成员了。'
     ];
     const aiReply = {
-      name: 'COCO Agent',
-      avatar: '🐙',
-      color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)',
+      name: '代码助手',
+      avatar: '🤖',
+      color: 'linear-gradient(135deg,#d357fe,#96bbff)',
       text: replies[Math.floor(Math.random() * replies.length)],
       time: timeStr,
-      isAgent: true
+      isAgent: true,
+      model: 'Claude Sonnet'
     };
     channelMessages[currentChannel].push(aiReply);
     renderChat();
@@ -2849,7 +3620,7 @@ function createTask() {
     'Stephanie': { avatar: 'S', color: '#f093fb' },
     'Alex': { avatar: 'A', color: '#00cec9' },
     'Maya': { avatar: 'M', color: '#fd79a8' },
-    'COCO Agent': { avatar: '🐙', color: '#6c5ce7' },
+    'COCO Agent': { avatar: '🐙', color: '#d357fe' },
     'Code Bot': { avatar: '⚡', color: '#fdcb6e' },
     'Design AI': { avatar: '🎨', color: '#e17055' }
   };
@@ -3331,8 +4102,22 @@ function animateChart() {
 // SETTINGS MODULE
 // ================================================================
 function saveSettings() {
+  const name = document.getElementById('settingWorkspaceName').value.trim();
+  if (name) {
+    document.querySelector('.sidebar-brand').textContent = name;
+    document.querySelector('.sidebar-logo').textContent = name.charAt(0).toUpperCase();
+  }
   showToast('所有设置已保存');
 }
+
+// Live-update sidebar brand as user types workspace name
+document.getElementById('settingWorkspaceName').addEventListener('input', function() {
+  const name = this.value.trim();
+  if (name) {
+    document.querySelector('.sidebar-brand').textContent = name;
+    document.querySelector('.sidebar-logo').textContent = name.charAt(0).toUpperCase();
+  }
+});
 
 // ================================================================
 // CMD+K
@@ -3446,40 +4231,108 @@ function showToast(message) {
 // INIT ALL MODULES
 // ================================================================
 function initAllModules() {
+  renderConversationList();
+  updateChatHeader();
   renderChat();
+  renderInfoPanel();
   renderTasks();
   renderProjects();
   renderTeam();
   renderAgents();
   renderToolbox();
   renderAdmin();
+  initWalkthrough();
 }
 
 // ================================================================
-// OCTOPUS MOUSE PROXIMITY ON SPLASH
+// CHAT WALKTHROUGH (User Journey)
 // ================================================================
-(function() {
-  const octo = document.getElementById('octoSplash');
-  if (!octo) return;
-  document.addEventListener('mousemove', e => {
-    if (document.getElementById('splash').style.display === 'none') return;
-    const rect = octo.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 300) {
-      const angle = Math.atan2(dy, dx);
-      const push = (300 - dist) / 300 * 15;
-      const tx = -Math.cos(angle) * push;
-      const ty = -Math.sin(angle) * push;
-      octo.style.transform = `translate(${tx}px, ${ty}px)`;
-    } else {
-      octo.style.transform = '';
+let wtStep = 0;
+const WT_TOTAL_STEPS = 5;
+
+function initWalkthrough() {
+  renderWtProgress();
+}
+
+function renderWtProgress() {
+  const container = document.getElementById('wtProgress');
+  let html = '';
+  for (let i = 0; i < WT_TOTAL_STEPS; i++) {
+    const cls = i === wtStep ? 'active' : (i < wtStep ? 'done' : '');
+    html += '<div class="wt-progress-dot ' + cls + '"></div>';
+  }
+  container.innerHTML = html;
+}
+
+function wtNext() {
+  // Hide current step
+  document.getElementById('wtStep' + wtStep).classList.remove('active');
+  wtStep++;
+  // Show next step
+  const nextStep = document.getElementById('wtStep' + wtStep);
+  if (nextStep) {
+    nextStep.classList.add('active');
+    // Step 1: auto-select COCO Agent and Code Bot
+    if (wtStep === 1) {
+      const cards = document.querySelectorAll('.wt-bot-card[data-bot="coco"], .wt-bot-card[data-bot="code"]');
+      cards.forEach(c => c.classList.add('selected'));
     }
-  });
-})();
+  }
+  renderWtProgress();
+}
+
+function wtToggleBot(el) {
+  el.classList.toggle('selected');
+}
+
+function wtSelectType(type) {
+  document.getElementById('wtTypeGroup').classList.toggle('wt-btn-primary', type === 'group');
+  document.getElementById('wtTypeGroup').classList.toggle('wt-btn-secondary', type !== 'group');
+  document.getElementById('wtTypeChannel').classList.toggle('wt-btn-primary', type === 'channel');
+  document.getElementById('wtTypeChannel').classList.toggle('wt-btn-secondary', type !== 'channel');
+}
+
+function wtToggleMember(el) {
+  el.classList.toggle('selected');
+}
+
+function wtFinish() {
+  document.getElementById('wtStep' + wtStep).classList.remove('active');
+  wtStep = 4;
+  document.getElementById('wtStep4').classList.add('active');
+  renderWtProgress();
+}
+
+function wtEnterChat() {
+  const wt = document.getElementById('chatWalkthrough');
+  wt.classList.add('hidden');
+  setTimeout(() => { wt.style.display = 'none'; }, 400);
+  document.getElementById('chatLayoutMain').style.display = 'flex';
+  document.getElementById('wtRestartBtn').style.display = 'block';
+  // Trigger chat animations
+  renderChat();
+  showToast('工作区设置完成！欢迎使用 COCO Workspace');
+}
+
+function wtRestart() {
+  wtStep = 0;
+  // Reset all steps
+  document.querySelectorAll('.wt-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('wtStep0').classList.add('active');
+  // Reset selections
+  document.querySelectorAll('.wt-bot-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.wt-member-item').forEach(m => m.classList.remove('selected'));
+  document.querySelector('.wt-member-item[data-member="stephanie"]').classList.add('selected');
+  // Show walkthrough
+  const wt = document.getElementById('chatWalkthrough');
+  wt.style.display = 'flex';
+  wt.classList.remove('hidden');
+  document.getElementById('chatLayoutMain').style.display = 'none';
+  document.getElementById('wtRestartBtn').style.display = 'none';
+  renderWtProgress();
+}
+
+// (octopus mouse proximity removed)
 
 // ================================================================
 // SPRING DAMPING PHYSICS ENGINE
@@ -3590,7 +4443,7 @@ function initAllModules() {
     .custom-cursor {
       position: fixed; pointer-events: none; z-index: 99999;
       width: 20px; height: 20px;
-      border: 2px solid #6c5ce7;
+      border: 2px solid #d357fe;
       border-radius: 50%;
       transition: width 0.2s, height 0.2s, border-color 0.2s, background 0.2s;
       mix-blend-mode: normal;
@@ -3598,25 +4451,25 @@ function initAllModules() {
     }
     .custom-cursor.hovering {
       width: 40px; height: 40px;
-      background: rgba(108, 92, 231, 0.1);
-      border-color: #a29bfe;
+      background: rgba(211, 87, 254, 0.1);
+      border-color: #96bbff;
     }
     .custom-cursor.clicking {
       width: 16px; height: 16px;
-      background: rgba(108, 92, 231, 0.3);
-      border-color: #6c5ce7;
+      background: rgba(211, 87, 254, 0.3);
+      border-color: #d357fe;
     }
     .cursor-dot {
       position: fixed; pointer-events: none; z-index: 99998;
       width: 6px; height: 6px;
-      background: #6c5ce7;
+      background: #d357fe;
       border-radius: 50%;
       will-change: transform;
     }
     .cursor-glow {
       position: fixed; pointer-events: none; z-index: 99997;
       width: 120px; height: 120px;
-      background: radial-gradient(circle, rgba(108,92,231,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(211,87,254,0.08) 0%, transparent 70%);
       border-radius: 50%;
       will-change: transform;
       filter: blur(2px);
@@ -3624,7 +4477,7 @@ function initAllModules() {
     .cursor-trail {
       position: fixed; pointer-events: none; z-index: 99996;
       width: 4px; height: 4px;
-      background: rgba(108,92,231,0.4);
+      background: rgba(211,87,254,0.4);
       border-radius: 50%;
       will-change: transform, opacity;
     }
@@ -3684,7 +4537,7 @@ function initAllModules() {
   });
 
   document.addEventListener('mouseover', e => {
-    const interactive = e.target.closest('button, a, input, select, textarea, .mode-btn, .sidebar-item, .kanban-card, .glass-card, .team-card, .agent-card, .tool-card, .channel-item, .cmd-item');
+    const interactive = e.target.closest('button, a, input, select, textarea, .mode-btn, .sidebar-item, .kanban-card, .glass-card, .team-card, .agent-card, .tool-card, .channel-item, .conv-item, .cmd-item');
     isHovering = !!interactive;
     cursorRing.classList.toggle('hovering', isHovering);
   });
@@ -3754,36 +4607,381 @@ function initAllModules() {
 })();
 
 // ================================================================
-// ENHANCED GLASS MORPHISM LIGHT REFRACTION
+// SUBTLE CARD HOVER ACCENT
 // ================================================================
 (function() {
-  // Add light refraction effect to glass cards on mouse move
-  document.addEventListener('mousemove', e => {
-    const cards = document.querySelectorAll('.glass-card, .kanban-card, .team-card, .agent-card, .tool-card');
-    cards.forEach(card => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      const dist = Math.sqrt(
-        Math.pow(e.clientX - (rect.left + rect.width/2), 2) +
-        Math.pow(e.clientY - (rect.top + rect.height/2), 2)
-      );
-      if (dist < 400) {
-        const intensity = (400 - dist) / 400;
-        card.style.background = `
-          radial-gradient(circle at ${x}% ${y}%,
-            rgba(108,92,231,${0.04 * intensity}) 0%,
-            rgba(255,255,255,${0.7 + 0.15 * intensity}) 50%,
-            rgba(255,255,255,0.7) 100%)
-        `;
-        card.style.borderColor = `rgba(108,92,231,${0.15 * intensity})`;
-      } else {
-        card.style.background = '';
-        card.style.borderColor = '';
-      }
+  const cards = document.querySelectorAll('.glass-card, .kanban-card, .team-card, .agent-card, .tool-card');
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.borderColor = 'rgba(211,87,254,0.18)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.borderColor = '';
     });
   });
 })();
+
+// ================================================================
+// NEW CONVERSATION MENU + MODALS + ENHANCED INPUT TOOLBAR
+// ================================================================
+let newConvMenuOpen = false;
+
+function openNewConvMenu(btn) {
+  const existing = document.querySelector('.conv-new-menu');
+  if (existing) { existing.remove(); newConvMenuOpen = false; return; }
+  newConvMenuOpen = true;
+  const menu = document.createElement('div');
+  menu.className = 'conv-new-menu';
+  menu.innerHTML = `
+    <div class="conv-new-menu-item" onclick="openNewDMFlow(); this.parentElement.remove();">
+      <div class="menu-icon">💬</div>
+      <div><div>新建对话</div><div class="menu-desc">与 Agent 或成员私聊</div></div>
+    </div>
+    <div class="conv-new-menu-item" onclick="openNewGroupFlow(); this.parentElement.remove();">
+      <div class="menu-icon">👥</div>
+      <div><div>新建群聊</div><div class="menu-desc">创建群聊并邀请成员和 Agent</div></div>
+    </div>
+    <div class="conv-new-menu-item" onclick="openAgentMarket(); this.parentElement.remove();">
+      <div class="menu-icon">🤖</div>
+      <div><div>添加 Agent</div><div class="menu-desc">从 Agent 市场浏览和添加</div></div>
+    </div>`;
+  btn.parentElement.style.position = 'relative';
+  btn.parentElement.appendChild(menu);
+  setTimeout(() => {
+    document.addEventListener('click', function closeMenu(e) {
+      if (!menu.contains(e.target) && e.target !== btn) { menu.remove(); newConvMenuOpen = false; document.removeEventListener('click', closeMenu); }
+    });
+  }, 10);
+}
+
+const allAgents = [
+  { id:'coco', name:'COCO Agent', emoji:'🐙', color:'linear-gradient(135deg,#d357fe,#96bbff)', desc:'全能协作助手，任务协调、消息汇总' },
+  { id:'code', name:'代码助手', emoji:'⚡', color:'linear-gradient(135deg,#fdcb6e,#f39c12)', desc:'代码审查、自动修复、API 文档生成' },
+  { id:'design', name:'Design AI', emoji:'🎨', color:'linear-gradient(135deg,#e17055,#d63031)', desc:'设计规范检查、配色生成、布局建议' },
+  { id:'data', name:'Data Agent', emoji:'📊', color:'linear-gradient(135deg,#0984e3,#74b9ff)', desc:'数据分析、报表生成、异常检测' },
+  { id:'qa', name:'QA Bot', emoji:'🧪', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'自动化测试、Bug 追踪、质量报告' },
+  { id:'doc', name:'文档助手', emoji:'📝', color:'linear-gradient(135deg,#636e72,#b2bec3)', desc:'文档生成、知识库管理、搜索问答' },
+  { id:'security', name:'安全卫士', emoji:'🛡️', color:'linear-gradient(135deg,#e84393,#fd79a8)', desc:'漏洞扫描、安全审计、合规检查' },
+  { id:'devops', name:'DevOps Agent', emoji:'🚀', color:'linear-gradient(135deg,#a29bfe,#6c5ce7)', desc:'CI/CD 管理、部署监控、日志分析' },
+];
+let workspaceAgents = ['coco', 'code'];
+let groupAgents = { 'product-dev': ['coco', 'code'] };
+
+function openAgentMarket() {
+  const overlay = document.createElement('div');
+  overlay.className = 'chat-modal-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  const inGroup = groupAgents[currentChannel] || [];
+  const cardsHTML = allAgents.map(a => {
+    const inGrp = inGroup.includes(a.id);
+    const inWS = workspaceAgents.includes(a.id);
+    let statusHTML = '';
+    if (inGrp) statusHTML = '<span class="amc-status" style="background:rgba(0,206,201,0.12);color:var(--success);">已在群中</span>';
+    else if (inWS) statusHTML = '<span class="amc-status" style="background:var(--accent-bg);color:var(--accent);cursor:pointer;" onclick="addAgentToGroup(\''+a.id+'\',this)">加入群聊</span>';
+    else statusHTML = '<span class="amc-status" style="background:rgba(0,0,0,0.04);color:var(--text-body);cursor:pointer;" onclick="addAgentToWorkspace(\''+a.id+'\',this)">添加</span>';
+    return `<div class="agent-market-card${inGrp?' added':''}" data-agent="${a.id}"><div class="amc-avatar" style="background:${a.color}">${a.emoji}</div><div><div class="amc-name">${a.name}</div><div class="amc-desc">${a.desc}</div></div>${statusHTML}</div>`;
+  }).join('');
+  overlay.innerHTML = `<div class="chat-modal" style="position:relative;">
+    <button class="chat-modal-close" onclick="this.closest('.chat-modal-overlay').remove()">&times;</button>
+    <div class="chat-modal-title">Agent 市场</div>
+    <div class="chat-modal-desc">浏览和添加 AI Agent 到工作区或当前群聊</div>
+    <div style="margin-bottom:14px;"><input type="text" placeholder="搜索 Agent..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;" oninput="filterAgentMarket(this.value)"></div>
+    <div class="agent-market-grid" id="agentMarketGrid">${cardsHTML}</div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function filterAgentMarket(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('.agent-market-card').forEach(c => {
+    const t = (c.querySelector('.amc-name').textContent + c.querySelector('.amc-desc').textContent).toLowerCase();
+    c.style.display = t.includes(q) ? '' : 'none';
+  });
+}
+function addAgentToWorkspace(id, btn) {
+  workspaceAgents.push(id);
+  btn.textContent = '加入群聊'; btn.style.background = 'var(--accent-bg)'; btn.style.color = 'var(--accent)';
+  btn.setAttribute('onclick', "addAgentToGroup('" + id + "',this)");
+  showToast('Agent 已添加到工作区');
+}
+function addAgentToGroup(id, btn) {
+  if (!groupAgents[currentChannel]) groupAgents[currentChannel] = [];
+  groupAgents[currentChannel].push(id);
+  const a = allAgents.find(x => x.id === id);
+  btn.textContent = '已在群中'; btn.style.background = 'rgba(0,206,201,0.12)'; btn.style.color = 'var(--success)';
+  btn.style.cursor = 'default'; btn.removeAttribute('onclick');
+  btn.closest('.agent-market-card').classList.add('added');
+  if (channelInfoData[currentChannel]) {
+    channelInfoData[currentChannel].members.push({ name: a.name, avatar: a.emoji, color: a.color, isAgent: true });
+    renderInfoPanel();
+  }
+  showToast(a.name + ' 已加入群聊');
+}
+function openInviteMember() {
+  const overlay = document.createElement('div');
+  overlay.className = 'chat-modal-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `<div class="chat-modal" style="position:relative;">
+    <button class="chat-modal-close" onclick="this.closest('.chat-modal-overlay').remove()">&times;</button>
+    <div class="chat-modal-title">邀请成员</div>
+    <div class="chat-modal-desc">通过邮箱邀请同事或从 Agent 市场添加机器人</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button class="toolbar-btn toolbar-btn-active" onclick="showInviteTab('people',this)" id="invTabPeople">邀请成员</button>
+      <button class="toolbar-btn" onclick="showInviteTab('bot',this)" id="invTabBot">添加 Agent</button>
+    </div>
+    <div id="invitePeoplePane">
+      <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">输入邮箱</label>
+        <div style="display:flex;gap:8px;"><input type="email" id="modalInviteEmail" placeholder="colleague@company.com" style="flex:1;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;" onkeydown="if(event.key==='Enter')modalSendInvite()"><button class="wt-btn wt-btn-primary" onclick="modalSendInvite()" style="padding:8px 16px;font-size:13px;white-space:nowrap;">发送邀请</button></div></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--accent-bg);border-radius:10px;margin-bottom:12px;cursor:pointer;" onclick="showToast('邀请链接已复制')"><span style="font-size:16px;">🔗</span><div style="flex:1;"><div style="font-size:13px;font-weight:500;">复制邀请链接</div></div><span style="font-size:12px;color:var(--accent);font-weight:500;">复制</span></div>
+      <div id="modalInvitedList" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <div id="inviteBotPane" style="display:none;">
+      <div class="agent-market-grid">${allAgents.filter(a => workspaceAgents.includes(a.id)).map(a => {
+        const inGrp = (groupAgents[currentChannel]||[]).includes(a.id);
+        return '<div class="agent-market-card'+(inGrp?' added':'')+'" style="cursor:pointer;" onclick="'+(inGrp?'':("addAgentToGroup('"+a.id+"',this.querySelector('.amc-status'))"))+'"><div class="amc-avatar" style="background:'+a.color+'">'+a.emoji+'</div><div><div class="amc-name">'+a.name+'</div><div class="amc-desc">'+a.desc+'</div></div><span class="amc-status" style="background:'+(inGrp?'rgba(0,206,201,0.12);color:var(--success)':'var(--accent-bg);color:var(--accent)')+';">'+(inGrp?'已在群中':'加入群聊')+'</span></div>';
+      }).join('')}
+      <div class="agent-market-card" style="cursor:pointer;border-style:dashed;" onclick="this.closest('.chat-modal-overlay').remove();openAgentMarket()"><div class="amc-avatar" style="background:var(--accent-bg);font-size:20px;">+</div><div><div class="amc-name">更多 Agent</div><div class="amc-desc">浏览 Agent 市场</div></div></div>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function showInviteTab(tab, btn) {
+  btn.parentElement.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('toolbar-btn-active'));
+  btn.classList.add('toolbar-btn-active');
+  document.getElementById('invitePeoplePane').style.display = tab === 'people' ? '' : 'none';
+  document.getElementById('inviteBotPane').style.display = tab === 'bot' ? '' : 'none';
+}
+function modalSendInvite() {
+  const input = document.getElementById('modalInviteEmail');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) return;
+  const list = document.getElementById('modalInvitedList');
+  const colors = ['linear-gradient(135deg,#00cec9,#55efc4)','linear-gradient(135deg,#fd79a8,#e84393)','linear-gradient(135deg,#a29bfe,#6c5ce7)','linear-gradient(135deg,#fab1a0,#e17055)'];
+  const item = document.createElement('div');
+  item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,0.02);animation:fadeInUp 0.3s ease;';
+  item.innerHTML = `<div style="width:28px;height:28px;border-radius:8px;background:${colors[list.children.length%colors.length]};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:600;">${email[0].toUpperCase()}</div><span style="font-size:13px;flex:1;">${email}</span><span style="font-size:11px;color:var(--warning);">📩 待接受</span>`;
+  list.appendChild(item);
+  input.value = ''; input.focus();
+  showToast('邀请已发送至 ' + email);
+}
+function openNewDMFlow() {
+  const overlay = document.createElement('div');
+  overlay.className = 'chat-modal-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  const agentCards = workspaceAgents.map(id => { const a = allAgents.find(x=>x.id===id); if(!a) return ''; return `<div class="agent-market-card" style="cursor:pointer;" onclick="showToast('已开始与 ${a.name} 的对话');this.closest('.chat-modal-overlay').remove();"><div class="amc-avatar" style="background:${a.color}">${a.emoji}</div><div><div class="amc-name">${a.name}</div><div class="amc-desc">${a.desc}</div></div></div>`; }).join('');
+  overlay.innerHTML = `<div class="chat-modal" style="position:relative;">
+    <button class="chat-modal-close" onclick="this.closest('.chat-modal-overlay').remove()">&times;</button>
+    <div class="chat-modal-title">新建对话</div>
+    <div class="chat-modal-desc">选择 Agent 或输入成员邮箱开始对话</div>
+    <div style="margin-bottom:14px;"><input type="text" placeholder="搜索 Agent 或输入邮箱..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;"></div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:500;">工作区中的 Agent</div>
+    <div class="agent-market-grid">${agentCards}</div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function openNewGroupFlow() {
+  const overlay = document.createElement('div');
+  overlay.className = 'chat-modal-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `<div class="chat-modal" style="position:relative;">
+    <button class="chat-modal-close" onclick="this.closest('.chat-modal-overlay').remove()">&times;</button>
+    <div class="chat-modal-title">新建群聊</div>
+    <div class="chat-modal-desc">创建群聊并邀请成员和 AI Agent</div>
+    <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">群聊名称</label><input type="text" placeholder="输入群聊名称..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;"></div>
+    <div style="margin-bottom:16px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">添加 Agent</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">${workspaceAgents.map(id=>{const a=allAgents.find(x=>x.id===id);if(!a)return'';return '<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--accent-bg);border-radius:8px;font-size:12px;cursor:pointer;border:1.5px solid var(--accent);" onclick="this.style.borderColor=this.style.borderColor?\\"\\":\\"var(--accent)\\""><span style="font-size:14px;">'+a.emoji+'</span> '+a.name+'</div>';}).join('')}<div style="display:flex;align-items:center;gap:4px;padding:6px 10px;border:1.5px dashed var(--border-glass);border-radius:8px;font-size:12px;color:var(--accent);cursor:pointer;" onclick="this.closest('.chat-modal-overlay').remove();openAgentMarket()">+ 更多</div></div></div>
+    <div style="margin-bottom:16px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">邀请成员</label><div style="display:flex;gap:8px;"><input type="email" placeholder="输入邮箱..." style="flex:1;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;"><button class="wt-btn wt-btn-secondary" style="padding:8px 14px;font-size:12px;">添加</button></div></div>
+    <button class="wt-btn wt-btn-primary" style="width:100%;" onclick="showToast('群聊已创建');this.closest('.chat-modal-overlay').remove();">创建群聊</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function insertAtSymbol() {
+  const input = document.getElementById('chatInput');
+  input.value += '@'; input.focus();
+}
+
+// ================================================================
+// ENHANCED INPUT: CATEGORY CHIPS + PROMPT TEMPLATES + TOOLBAR
+// ================================================================
+const categoryData = {
+  office: [
+    { icon: '📄', name: '文档处理', prompts: ['帮我写一份项目周报，包含本周进展和下周计划','将这份会议纪要整理成行动项清单','帮我润色这封客户邮件，语气更专业'] },
+    { icon: '📊', name: '数据分析及可视化', prompts: ['分析这份销售数据，找出增长趋势和异常','用图表展示过去6个月的用户增长情况','帮我做一份竞品数据对比分析'] },
+    { icon: '🔍', name: '深度研究', prompts: ['调研 AI Agent 市场的最新发展趋势','分析 SaaS 产品的 PLG 增长策略案例','帮我整理企业级 IM 工具的功能对比'] },
+    { icon: '📋', name: '产品管理', prompts: ['帮我写一份功能需求文档 PRD','分析用户反馈，提炼优先级最高的需求','制定下个季度的产品路线图'] },
+    { icon: '🖥', name: '幻灯片', prompts: ['帮我设计一份产品发布会的演示大纲','把这份数据分析做成可视化幻灯片','制作一份融资路演 PPT 框架'] },
+    { icon: '🎨', name: '设计', prompts: ['帮我设计一套配色方案，科技感+专业','审查这个页面的UI规范一致性','生成一份设计系统的组件清单'] },
+    { icon: '✉️', name: '邮件编辑', prompts: ['帮我写一封跟进客户的邮件','草拟一份合作邀请邮件','帮我回复这封投诉邮件，态度诚恳'] },
+    { icon: '💰', name: '金融服务', prompts: ['分析这只股票的基本面和技术面','帮我制定一份资产配置方案','生成今日A股晨间策略简报'] },
+  ],
+  code: [
+    { icon: '<>', name: '日常开发', prompts: ['帮我 review 这段代码，找出潜在问题','重构这个函数，提高可读性和性能','帮我写单元测试覆盖这个模块'] },
+    { icon: '🌐', name: '网站开发', prompts: ['帮我搭建一个 Next.js 项目脚手架','实现一个响应式导航栏组件','优化这个页面的 Core Web Vitals'] },
+    { icon: '🤖', name: 'Agent 应用', prompts: ['设计一个多 Agent 协作的架构方案','帮我写一个 MCP Server','实现 Agent 之间的消息路由逻辑'] },
+    { icon: '🔧', name: 'Skill 开发', prompts: ['帮我创建一个新的 Skill 框架','为这个 Skill 添加参数验证','写一份 Skill 的使用文档'] },
+    { icon: '⚙️', name: 'CI/CD', prompts: ['帮我配置 GitHub Actions 自动部署','设置 Docker 多阶段构建优化镜像大小','配置自动化测试和覆盖率报告'] },
+    { icon: '📝', name: '文档', prompts: ['帮我生成 API 文档','写一份项目的 README','为这个模块生成 JSDoc 注释'] },
+  ]
+};
+
+let currentInputMode = 'office'; // synced with the code/office mode toggle
+let selectedCategory = null;
+
+function renderCategoryChips() {
+  const container = document.getElementById('chatCategoryChips');
+  if (!container) return;
+  // Determine mode from the mode toggle
+  const modeToggle = document.querySelector('.mode-toggle .mode-btn.active');
+  currentInputMode = (modeToggle && modeToggle.textContent.includes('代码')) ? 'code' : 'office';
+  const cats = categoryData[currentInputMode] || categoryData.office;
+  container.innerHTML = cats.map((c, i) => `<div class="chat-category-chip${selectedCategory === i ? ' active' : ''}" onclick="selectCategory(${i})"><span class="chip-icon">${c.icon}</span> ${c.name}</div>`).join('');
+}
+
+function selectCategory(idx) {
+  const cats = categoryData[currentInputMode] || categoryData.office;
+  const templates = document.getElementById('chatPromptTemplates');
+  const tags = document.getElementById('chatInputTags');
+  if (selectedCategory === idx) {
+    // Deselect
+    selectedCategory = null;
+    templates.style.display = 'none';
+    tags.innerHTML = '';
+    renderCategoryChips();
+    return;
+  }
+  selectedCategory = idx;
+  renderCategoryChips();
+  const cat = cats[idx];
+  // Show prompt templates
+  templates.style.display = 'grid';
+  templates.innerHTML = cat.prompts.map(p => `<div class="chat-prompt-card" onclick="usePrompt(this, '${p.replace(/'/g,"\\\'")}')">${p}</div>`).join('');
+  // Show tag in input
+  tags.innerHTML = `<span class="chat-input-tag"><span class="chip-icon">${cat.icon}</span> ${cat.name} <span class="tag-close" onclick="clearCategoryTag(event)">&times;</span></span>`;
+}
+
+function usePrompt(card, text) {
+  document.querySelectorAll('.chat-prompt-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('chatInput').value = text;
+  document.getElementById('chatInput').focus();
+  document.getElementById('chatPromptTemplates').style.display = 'none';
+}
+
+function clearCategoryTag(e) {
+  e.stopPropagation();
+  selectedCategory = null;
+  document.getElementById('chatInputTags').innerHTML = '';
+  document.getElementById('chatPromptTemplates').style.display = 'none';
+  renderCategoryChips();
+}
+
+// Agent mode toolbar dropdowns
+let currentAgentMode = 'Ask';
+const agentModes = [
+  { id: 'craft', icon: '📦', name: 'Craft', desc: '可以执行文件操作、命令等', tools: '文件及系统操作 · 任务管理 · 网络搜索' },
+  { id: 'plan', icon: '📋', name: 'Plan', desc: '擅长制定多步骤计划', tools: '文件读取' },
+  { id: 'ask', icon: '💬', name: 'Ask', desc: '仅能读取文件', tools: '文件读取' },
+];
+
+function toggleModeMenu(btn) {
+  const existing = btn.querySelector('.toolbar-dropdown');
+  if (existing) { existing.remove(); return; }
+  closeAllToolbarDropdowns();
+  const dd = document.createElement('div');
+  dd.className = 'toolbar-dropdown';
+  dd.innerHTML = agentModes.map(m =>
+    `<div class="toolbar-dropdown-item${m.name===currentAgentMode?' active':''}" onclick="selectAgentMode('${m.name}',this)">
+      <span class="tdi-icon">${m.icon}</span>
+      <div><div>${m.name}</div></div>
+      ${m.name===currentAgentMode?'<span class="tdi-check">✓</span>':''}
+      <span class="tdi-info" title="${m.desc}\nTools: ${m.tools}">i</span>
+    </div>`
+  ).join('') + `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('召唤专家功能即将上线')"><span class="tdi-icon">✨</span><div>召唤专家</div></div>`;
+  btn.appendChild(dd);
+  dd.onclick = (e) => e.stopPropagation();
+  setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
+}
+
+function selectAgentMode(mode, item) {
+  currentAgentMode = mode;
+  const m = agentModes.find(a => a.name === mode);
+  document.getElementById('toolbarModeName').textContent = mode;
+  document.querySelector('#toolbarModeBtn .toolbar-icon').textContent = m.icon;
+  item.closest('.toolbar-dropdown').remove();
+}
+
+const modelList = [
+  { icon: '⚡', name: 'Auto', checked: true },
+  { icon: '🔷', name: 'Claude Sonnet 4', checked: false },
+  { icon: '🔷', name: 'Claude Opus 4', checked: false },
+  { icon: '🟢', name: 'GPT-4o', checked: false },
+  { icon: '🔵', name: 'DeepSeek-V3', checked: false },
+  { icon: '🟣', name: 'Kimi-K2', checked: false },
+];
+
+function toggleAutoMenu(btn) {
+  const existing = btn.querySelector('.toolbar-dropdown');
+  if (existing) { existing.remove(); return; }
+  closeAllToolbarDropdowns();
+  const dd = document.createElement('div');
+  dd.className = 'toolbar-dropdown';
+  dd.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;font-size:13px;font-weight:500;">自动模式 <div style="width:36px;height:20px;border-radius:10px;background:var(--accent);cursor:pointer;" onclick="showToast('自动模式已切换')"></div></div>
+    <div class="toolbar-dropdown-divider"></div>
+    <div class="toolbar-dropdown-label">内置模型</div>` +
+    modelList.map(m => `<div class="toolbar-dropdown-item${m.checked?' active':''}" onclick="selectModel('${m.name}',this)"><span class="tdi-icon">${m.icon}</span><div>${m.name}</div>${m.checked?'<span class="tdi-check">✓</span>':''}</div>`).join('') +
+    `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('自定义模型配置即将上线')"><span class="tdi-icon">+</span><div>配置自定义模型</div></div>`;
+  btn.appendChild(dd);
+  dd.onclick = (e) => e.stopPropagation();
+  setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
+}
+
+function selectModel(name, item) {
+  modelList.forEach(m => m.checked = (m.name === name));
+  item.closest('.toolbar-dropdown').remove();
+  showToast('已切换到 ' + name);
+}
+
+function toggleSkillsPanel(btn) {
+  const existing = btn.querySelector('.toolbar-dropdown');
+  if (existing) { existing.remove(); return; }
+  closeAllToolbarDropdowns();
+  const skills = [
+    { icon: '🐼', name: '腾讯ima', desc: '统一的 IMA OpenAPI 技能，支持笔记管...' },
+    { icon: '🎨', name: '多模态内容生成', desc: '多模态内容生成能力，支持文生视频、图...' },
+    { icon: '🔧', name: 'skill-creator', desc: 'Guide for creating effective skills...' },
+    { icon: '🌐', name: 'Browser Automation', desc: 'This should be used when the us...' },
+    { icon: '🎭', name: 'playwright-cli', desc: 'Automates browser interactions for w...' },
+    { icon: '🔍', name: 'find-skills', desc: 'Helps users discover and install agent...' },
+  ];
+  const dd = document.createElement('div');
+  dd.className = 'toolbar-dropdown';
+  dd.style.minWidth = '280px';
+  dd.innerHTML = `<div style="padding:6px 10px;"><input type="text" placeholder="搜索技能" style="width:100%;padding:6px 10px;border:1px solid var(--border-glass);border-radius:6px;font-size:12px;outline:none;" oninput="filterSkills(this.value)"></div>` +
+    skills.map(s => `<div class="toolbar-dropdown-item skill-item"><span class="tdi-icon">${s.icon}</span><div style="flex:1;overflow:hidden;"><div style="font-size:13px;font-weight:500;">${s.name}</div><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.desc}</div></div></div>`).join('') +
+    `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('技能导入即将上线')"><span class="tdi-icon">📦</span><div>导入技能</div></div>`;
+  btn.style.position = 'relative';
+  btn.appendChild(dd);
+  dd.onclick = (e) => e.stopPropagation();
+  setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
+}
+function filterSkills(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('.skill-item').forEach(s => {
+    s.style.display = s.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+function closeAllToolbarDropdowns() {
+  document.querySelectorAll('.toolbar-dropdown').forEach(d => d.remove());
+}
+
+// Initialize category chips when chat is shown
+const origRenderChat = typeof renderChat === 'function' ? renderChat : null;
+if (origRenderChat) {
+  const _origRC = renderChat;
+  renderChat = function() { _origRC(); renderCategoryChips(); };
+}
+// Also init on page load
+setTimeout(renderCategoryChips, 500);
 </script>
 </body>
 </html>
