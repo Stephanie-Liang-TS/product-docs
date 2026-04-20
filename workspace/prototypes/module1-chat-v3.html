@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CODE-YI Module 1: Chat — Interactive Prototype v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117; --bg2: #010409; --surface: #161b22; --surface2: #1c2128; --surface3: #21262d;
+  --border: #30363d; --border2: #21262d; --text: #e6edf3; --text2: #7d8590; --text3: #484f58;
+  --human: #58a6ff; --bot: #3fb950; --bot-bg: rgba(63,185,80,0.06); --workflow: #bc8cff;
+  --danger: #f85149; --warning: #d29922; --accent: #58a6ff; --accent-bg: rgba(88,166,255,0.08);
+  --observer: #f0883e; --font: 'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono: 'JetBrains Mono','Fira Code',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+.app{display:flex;height:100vh;width:100vw}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:280px;min-width:280px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sidebar-header{padding:16px;border-bottom:1px solid var(--border)}
+.sidebar-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sidebar-logo h1{font-size:18px;font-weight:700;letter-spacing:1px}
+.sidebar-logo h1 span{color:var(--bot)}
+.sidebar-logo .tag{font-size:10px;background:var(--surface3);color:var(--text2);padding:2px 6px;border-radius:4px;margin-left:4px;font-weight:500}
+.search-box{position:relative}
+.search-box input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 34px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
+.search-box input:focus{border-color:var(--accent)}
+.search-box input::placeholder{color:var(--text3)}
+.search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);width:16px;height:16px}
+
+.conv-list{flex:1;overflow-y:auto;padding:8px}
+.conv-section{margin-bottom:4px}
+.conv-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px 4px}
+.conv-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;transition:background .15s;position:relative}
+.conv-item:hover{background:var(--surface)}
+.conv-item.active{background:var(--surface2);border:1px solid var(--border)}
+.conv-item .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;position:relative}
+.conv-item .avatar.channel{border-radius:10px;background:var(--surface3);color:var(--text2);font-size:16px}
+.conv-item .avatar.human{background:linear-gradient(135deg,#2d5fa0,#1a3a6a);color:#8db8e8}
+.conv-item .avatar.bot{background:linear-gradient(135deg,#1a4a2a,#0d2f18);color:var(--bot);border-radius:12px;transform:rotate(0deg)}
+.conv-item .avatar .status-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg2)}
+.conv-item .status-dot.online{background:var(--bot)}
+.conv-item .status-dot.offline{background:var(--text3)}
+.conv-info{flex:1;min-width:0}
+.conv-name{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
+.conv-name .type-badge{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;flex-shrink:0}
+.conv-name .type-badge.mixed{background:rgba(188,140,255,.15);color:var(--workflow)}
+.conv-name .type-badge.b2b{background:rgba(63,185,80,.12);color:var(--bot)}
+.conv-name .type-badge.bot-dm{background:rgba(63,185,80,.1);color:var(--bot)}
+.conv-name .type-badge.dm{background:rgba(88,166,255,.1);color:var(--human)}
+.conv-preview{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.conv-time{font-size:11px;color:var(--text3)}
+.conv-unread{background:var(--accent);color:#fff;font-size:10px;font-weight:600;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+
+/* ===== CHAT AREA ===== */
+.chat-area{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-header{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.chat-header-left{display:flex;align-items:center;gap:12px}
+.chat-header-left h2{font-size:15px;font-weight:600}
+.chat-header-left .channel-desc{font-size:12px;color:var(--text2)}
+.member-count{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.member-count span{display:flex;align-items:center;gap:3px}
+.visibility-badge{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:500;cursor:pointer;transition:background .2s}
+.visibility-badge.full{background:rgba(63,185,80,.12);color:var(--bot)}
+.visibility-badge.observer{background:rgba(240,136,62,.12);color:var(--observer)}
+.chat-header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:16px}
+.icon-btn:hover{background:var(--surface3);color:var(--text);border-color:var(--text3)}
+
+.messages{flex:1;overflow-y:auto;padding:16px 20px}
+.msg{display:flex;gap:12px;padding:6px 0;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg+.msg{margin-top:4px}
+.msg .msg-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;margin-top:2px}
+.msg .msg-avatar.human{background:linear-gradient(135deg,#2d5fa0,#1a3a6a);color:#8db8e8}
+.msg .msg-avatar.bot{background:linear-gradient(135deg,#1a4a2a,#0d2f18);color:var(--bot);border-radius:12px}
+.msg .msg-avatar.observer{background:linear-gradient(135deg,#4a3a1a,#2f2510);color:var(--observer);border-radius:12px}
+.msg-body{flex:1;min-width:0}
+.msg-header{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.msg-name{font-size:13px;font-weight:600}
+.msg-name.human-name{color:var(--human)}
+.msg-name.bot-name{color:var(--bot)}
+.msg-name.observer-name{color:var(--observer)}
+.msg-role{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:500}
+.msg-role.human-role{background:rgba(88,166,255,.1);color:var(--human)}
+.msg-role.bot-role{background:rgba(63,185,80,.1);color:var(--bot)}
+.msg-role.observer-role{background:rgba(240,136,62,.1);color:var(--observer)}
+.msg-time{font-size:11px;color:var(--text3)}
+.msg-content{font-size:14px;line-height:1.65;color:var(--text)}
+.msg-content .mention{color:var(--accent);font-weight:500;cursor:pointer}
+.msg-content .mention:hover{text-decoration:underline}
+.msg-content code{font-family:var(--mono);font-size:12px;background:rgba(110,118,129,.2);padding:1px 5px;border-radius:4px;color:#f0883e}
+.msg-content pre{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px;margin:8px 0;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+.msg-content pre .kw{color:#ff7b72}.msg-content pre .fn{color:#d2a8ff}
+.msg-content pre .str{color:#a5d6ff}.msg-content pre .cm{color:#7d8590;font-style:italic}
+.msg-content pre .tp{color:#79c0ff}.msg-content pre .op{color:#ff7b72}
+.msg-content .warning-item{padding:4px 0;display:flex;align-items:flex-start;gap:6px}
+
+/* Workflow Card */
+.workflow-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0;max-width:520px}
+.workflow-card .wf-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--workflow);margin-bottom:8px}
+.workflow-card .wf-status{font-size:12px;color:var(--text2);margin-bottom:12px}
+.workflow-card .wf-steps{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.wf-step{font-size:11px;padding:4px 10px;border-radius:6px;font-weight:500;display:flex;align-items:center;gap:4px}
+.wf-step.done{background:rgba(63,185,80,.12);color:var(--bot)}
+.wf-step.active{background:rgba(188,140,255,.15);color:var(--workflow);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.wf-step.pending{background:var(--surface3);color:var(--text3)}
+.wf-arrow{color:var(--text3);font-size:12px}
+.wf-progress{background:var(--surface3);height:4px;border-radius:2px;overflow:hidden;margin-bottom:10px}
+.wf-progress-bar{height:100%;background:linear-gradient(90deg,var(--bot),var(--workflow));border-radius:2px;transition:width 1s ease}
+.wf-bot-status{font-size:12px;color:var(--text2);margin-bottom:10px}
+.wf-actions{display:flex;gap:8px}
+.wf-actions button{font-size:11px;padding:4px 12px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--font)}
+.wf-actions button:hover{background:var(--surface3);color:var(--text)}
+
+/* Input Area */
+.chat-input{padding:12px 20px;border-top:1px solid var(--border);background:var(--surface)}
+.input-toolbar{display:flex;gap:4px;margin-bottom:8px}
+.input-toolbar button{background:transparent;border:none;color:var(--text3);cursor:pointer;width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.input-toolbar button:hover{background:var(--surface3);color:var(--text)}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-row textarea{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:13px;resize:none;outline:none;min-height:40px;max-height:120px;transition:border-color .2s;line-height:1.5}
+.input-row textarea:focus{border-color:var(--accent)}
+.input-row textarea::placeholder{color:var(--text3)}
+.send-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;font-family:var(--font);white-space:nowrap}
+.send-btn:hover{opacity:.85}
+
+/* Mention Autocomplete */
+.mention-dropdown{position:absolute;bottom:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px;display:none;max-height:200px;overflow-y:auto;z-index:100;margin-bottom:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.mention-dropdown.show{display:block}
+.mention-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;transition:background .1s}
+.mention-item:hover,.mention-item.selected{background:var(--surface3)}
+.mention-item .mi-avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.mention-item .mi-avatar.human{background:rgba(88,166,255,.15);color:var(--human)}
+.mention-item .mi-avatar.bot{background:rgba(63,185,80,.1);color:var(--bot);border-radius:8px}
+.mention-item .mi-type{font-size:10px;color:var(--text3);margin-left:auto}
+
+/* Right Panel */
+.right-panel{width:280px;min-width:280px;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;transition:width .2s}
+.right-panel.hidden{width:0;min-width:0;overflow:hidden;border:none}
+.rp-tabs{display:flex;border-bottom:1px solid var(--border)}
+.rp-tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.rp-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.rp-tab:hover{color:var(--text2)}
+.rp-content{flex:1;overflow-y:auto;padding:16px}
+
+.member-list .member-entry{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)}
+.member-entry .me-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.member-entry .me-avatar.human{background:rgba(88,166,255,.12);color:var(--human)}
+.member-entry .me-avatar.bot{background:rgba(63,185,80,.1);color:var(--bot);border-radius:10px}
+.member-entry .me-info{flex:1}
+.member-entry .me-name{font-size:13px;font-weight:500}
+.member-entry .me-role{font-size:11px;color:var(--text3)}
+.member-entry .me-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.member-entry .me-status.online{background:var(--bot)}
+.member-entry .me-status.idle{background:var(--warning)}
+.member-entry .me-status.offline{background:var(--text3)}
+
+/* Bot Profile */
+.bot-profile{text-align:center}
+.bot-profile .bp-avatar{width:64px;height:64px;border-radius:16px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px;background:linear-gradient(135deg,#1a4a2a,#0d2f18);color:var(--bot)}
+.bot-profile .bp-name{font-size:16px;font-weight:600;margin-bottom:4px}
+.bot-profile .bp-model{font-size:12px;color:var(--text2);margin-bottom:16px}
+.bot-profile .bp-stat{display:flex;justify-content:center;gap:16px;margin-bottom:16px}
+.bot-profile .bp-stat div{text-align:center}
+.bot-profile .bp-stat .num{font-size:18px;font-weight:600;color:var(--bot)}
+.bot-profile .bp-stat .label{font-size:11px;color:var(--text3)}
+.bp-section{text-align:left;margin-bottom:16px}
+.bp-section h4{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.bp-section .cap-item{font-size:12px;color:var(--text);padding:4px 0;display:flex;align-items:center;gap:6px}
+.bp-section .cap-item::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--bot);flex-shrink:0}
+.bp-btn{width:100%;padding:8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:12px;font-family:var(--font);transition:all .15s;margin-top:8px}
+.bp-btn:hover{background:var(--surface3);color:var(--text)}
+
+/* Typing indicator */
+.typing-indicator{display:flex;gap:3px;align-items:center;padding:4px 0}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+/* Streaming cursor */
+.stream-cursor{display:inline-block;width:2px;height:14px;background:var(--bot);animation:cursorBlink .8s infinite;vertical-align:text-bottom;margin-left:1px}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Cmd+K Modal */
+.search-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-start;justify-content:center;padding-top:15vh;z-index:1000;backdrop-filter:blur(4px)}
+.search-modal.show{display:flex}
+.search-modal-inner{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:560px;max-height:400px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.search-modal input{width:100%;padding:16px 20px;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:15px;outline:none;font-family:var(--font)}
+.search-modal input::placeholder{color:var(--text3)}
+.search-results{padding:8px;max-height:320px;overflow-y:auto}
+.search-result-item{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .1s;font-size:13px}
+.search-result-item:hover{background:var(--surface3)}
+.search-result-item .sri-icon{color:var(--text3);font-size:14px;width:20px;text-align:center}
+.search-result-item .sri-text{flex:1;color:var(--text)}
+.search-result-item .sri-hint{font-size:11px;color:var(--text3)}
+
+/* Bot Demo Button */
+.demo-bar{padding:8px 20px;background:var(--surface2);border-top:1px solid var(--border);display:flex;gap:8px;align-items:center}
+.demo-btn{font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .15s}
+.demo-btn:hover{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+.demo-btn.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+.demo-label{font-size:11px;color:var(--text3);margin-left:auto}
+</style>
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <h1>CODE<span>-YI</span></h1>
+      <span class="tag">v0.1</span>
+    </div>
+    <div class="search-box">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.5 7a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04Z"/></svg>
+      <input type="text" placeholder="搜索对话... ⌘K" id="searchInput">
+    </div>
+  </div>
+  <div class="conv-list" id="convList">
+    <div class="conv-section">
+      <div class="conv-section-title">Channels</div>
+      <div class="conv-item active" data-conv="general" onclick="switchConv('general')">
+        <div class="avatar channel">#</div>
+        <div class="conv-info"><div class="conv-name">general <span class="type-badge mixed">混合</span></div><div class="conv-preview">审查完成。发现 2 个问题...</div></div>
+        <div class="conv-meta"><span class="conv-time">10:08</span><span class="conv-unread">5</span></div>
+      </div>
+      <div class="conv-item" data-conv="codereview" onclick="switchConv('codereview')">
+        <div class="avatar channel" style="color:var(--bot)">#</div>
+        <div class="conv-info"><div class="conv-name">code-review <span class="type-badge b2b">B↔B</span></div><div class="conv-preview">APPROVED ✅ 代码质量: 92/100</div></div>
+        <div class="conv-meta"><span class="conv-time">09:45</span></div>
+      </div>
+    </div>
+    <div class="conv-section">
+      <div class="conv-section-title">Direct Messages</div>
+      <div class="conv-item" data-conv="codebot" onclick="switchConv('codebot')">
+        <div class="avatar bot">C<span class="status-dot online"></span></div>
+        <div class="conv-info"><div class="conv-name">Code-Bot <span class="type-badge bot-dm">Bot</span></div><div class="conv-preview">Redis缓存层已实现...</div></div>
+        <div class="conv-meta"><span class="conv-time">09:30</span></div>
+      </div>
+      <div class="conv-item" data-conv="stephanie" onclick="switchConv('stephanie')">
+        <div class="avatar human">S<span class="status-dot online"></span></div>
+        <div class="conv-info"><div class="conv-name">Stephanie Liang <span class="type-badge dm">DM</span></div><div class="conv-preview">明天下午3点开会讨论...</div></div>
+        <div class="conv-meta"><span class="conv-time">昨天</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT AREA -->
+<div class="chat-area">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <h2 id="chatTitle"># general</h2>
+      <span class="channel-desc" id="chatDesc">登录模块代码审查</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="member-count" id="memberCount">
+        <span>👤 3</span><span>🤖 2</span>
+      </div>
+      <span class="visibility-badge full" id="visBadge" onclick="toggleVisibility()">Full</span>
+    </div>
+    <div class="chat-header-right">
+      <button class="icon-btn" onclick="togglePanel()" title="成员面板">👥</button>
+      <button class="icon-btn" onclick="openSearch()" title="搜索 ⌘K">🔍</button>
+    </div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="demo-bar">
+    <button class="demo-btn" onclick="triggerBotStream()">⚡ 触发Bot回复</button>
+    <button class="demo-btn" onclick="triggerWorkflow()">🔄 运行工作流</button>
+    <span class="demo-label">Demo Controls</span>
+  </div>
+
+  <div class="chat-input" style="position:relative">
+    <div class="mention-dropdown" id="mentionDropdown"></div>
+    <div class="input-toolbar">
+      <button title="粗体"><b>B</b></button>
+      <button title="斜体"><i>I</i></button>
+      <button title="代码" style="font-family:var(--mono);font-size:12px">&lt;/&gt;</button>
+      <button title="附件">📎</button>
+      <button title="表情">😊</button>
+      <button title="@提及" onclick="showMentions()">@</button>
+    </div>
+    <div class="input-row">
+      <textarea rows="1" placeholder="发送消息... (⌘+Enter)" id="msgInput" oninput="handleInput(event)" onkeydown="handleKeydown(event)"></textarea>
+      <button class="send-btn" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel" id="rightPanel">
+  <div class="rp-tabs">
+    <div class="rp-tab active" onclick="switchTab('members')">成员</div>
+    <div class="rp-tab" onclick="switchTab('botprofile')">Bot 详情</div>
+    <div class="rp-tab" onclick="switchTab('info')">信息</div>
+  </div>
+  <div class="rp-content" id="rpContent"></div>
+</div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal" onclick="if(event.target===this)closeSearch()">
+  <div class="search-modal-inner">
+    <input type="text" placeholder="搜索消息、频道、成员..." id="searchModalInput" oninput="handleSearchInput(event)">
+    <div class="search-results" id="searchResults">
+      <div class="search-result-item"><span class="sri-icon">#</span><span class="sri-text">general</span><span class="sri-hint">频道</span></div>
+      <div class="search-result-item"><span class="sri-icon">#</span><span class="sri-text">code-review</span><span class="sri-hint">Bot↔Bot</span></div>
+      <div class="search-result-item"><span class="sri-icon">🤖</span><span class="sri-text">Code-Bot</span><span class="sri-hint">Bot DM</span></div>
+      <div class="search-result-item"><span class="sri-icon">👤</span><span class="sri-text">Stephanie Liang</span><span class="sri-hint">DM</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONVERSATION DATA =====
+const conversations = {
+  general: {
+    title: '# general',
+    desc: '登录模块代码审查',
+    members: '👤 3 · 🤖 2',
+    vis: 'full',
+    messages: [
+      {sender:'Stephanie',type:'human',avatar:'S',time:'10:02',
+       content:'今天的目标：完成登录模块的代码审查 <span class="mention">@Code-Bot</span> 开始吧'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'10:02',
+       content:'收到！正在分析登录模块代码...'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'10:03',
+       content:'PR #42 已创建，包含 3 个文件改动，+247 行 -12 行。核心改动：<pre><span class="cm">// OAuth2 token refresh with mutex lock</span>\n<span class="kw">async function</span> <span class="fn">refreshToken</span>(userId: <span class="tp">string</span>) {\n  <span class="kw">const</span> lock = <span class="kw">await</span> mutex.<span class="fn">acquire</span>(userId);\n  <span class="kw">try</span> {\n    <span class="kw">const</span> token = <span class="kw">await</span> oauth2Client.<span class="fn">refreshAccessToken</span>();\n    <span class="kw">await</span> tokenStore.<span class="fn">set</span>(userId, token);\n    <span class="kw">return</span> token;\n  } <span class="kw">finally</span> {\n    lock.<span class="fn">release</span>();\n  }\n}</pre>'},
+      {sender:'workflow',type:'workflow',time:'10:03',
+       content:'__WORKFLOW__'},
+      {sender:'Review-Bot',type:'bot',avatar:'R',time:'10:05',
+       content:'审查完成。发现 2 个问题：\n<div class="warning-item">⚠️ <code>refreshToken</code> 缺少网络超时处理 — 当 OAuth 服务不可达时会无限等待</div><div class="warning-item">⚠️ <code>tokenStore.set</code> 未处理写入失败场景 — 数据库连接断开时 token 会丢失</div>\n建议：添加重试机制和 fallback 策略。'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'10:06',
+       content:'收到反馈，已修改：\n• 添加网络超时重试（3次，指数退避 1s→2s→4s）\n• <code>tokenStore</code> 写入失败时回退到内存缓存\n• 新增 <code>circuit breaker</code> 防止级联故障\n\nPR #42 已更新 ✅'},
+      {sender:'Monitor-Bot',type:'observer',avatar:'M',time:'10:07',
+       content:'🔍 检测到 PR #42 涉及安全相关代码（token handling），建议增加安全审查步骤。已自动将 <span class="mention">@Security-Bot</span> 加入审查队列。'},
+      {sender:'Stephanie',type:'human',avatar:'S',time:'10:08',
+       content:'好的 <span class="mention">@Review-Bot</span> 再看一遍，特别注意安全相关的部分'},
+      {sender:'Kevin',type:'human',avatar:'K',time:'10:10',
+       content:'我也看了一下，mutex 那块的实现很干净 👍 建议加个单元测试覆盖 edge case'}
+    ]
+  },
+  codereview: {
+    title: '# code-review',
+    desc: 'Bot↔Bot 自主代码审查',
+    members: '🤖 2',
+    vis: 'full',
+    messages: [
+      {sender:'System',type:'system',time:'09:30',
+       content:'<div style="text-align:center;color:var(--text3);font-size:12px;padding:8px;background:var(--surface);border-radius:6px;margin:4px 0">🔄 工作流已启动：代码审查自动循环 v2 — 用户注册模块</div>'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'09:31',
+       content:'需求分析完成。目标：实现用户注册模块（邮箱+密码，含验证码流程）。开始编码...'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'09:35',
+       content:'编码完成。PR #43 已创建：<pre><span class="kw">export class</span> <span class="fn">UserRegistrationService</span> {\n  <span class="kw">async</span> <span class="fn">register</span>(dto: <span class="tp">RegisterDto</span>) {\n    <span class="kw">const</span> exists = <span class="kw">await</span> <span class="kw">this</span>.userRepo.<span class="fn">findByEmail</span>(dto.email);\n    <span class="kw">if</span> (exists) <span class="kw">throw new</span> <span class="fn">ConflictException</span>(<span class="str">\'Email already registered\'</span>);\n    \n    <span class="kw">const</span> hash = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(dto.password, <span class="tp">12</span>);\n    <span class="kw">const</span> user = <span class="kw">await</span> <span class="kw">this</span>.userRepo.<span class="fn">create</span>({ ...dto, password: hash });\n    <span class="kw">await</span> <span class="kw">this</span>.emailService.<span class="fn">sendVerification</span>(user);\n    <span class="kw">return</span> user;\n  }\n}</pre>'},
+      {sender:'Review-Bot',type:'bot',avatar:'R',time:'09:38',
+       content:'审查完成 ✅\n\n代码质量评分: <b style="color:var(--bot)">92/100</b>\n\n优点：\n• 密码使用 bcrypt 哈希（cost factor 12）\n• 邮箱唯一性校验\n• 验证码邮件异步发送\n\n建议（非阻塞）：\n• 考虑添加 rate limiting 防止注册轰炸\n\n<b style="color:var(--bot)">APPROVED ✅</b> — 可以合并'},
+      {sender:'System',type:'system',time:'09:38',
+       content:'<div style="text-align:center;color:var(--bot);font-size:12px;padding:8px;background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.15);border-radius:6px;margin:4px 0">✅ 工作流完成 — PR #43 已自动合并。耗时 8 分钟，1 轮审查通过</div>'}
+    ]
+  },
+  codebot: {
+    title: 'Code-Bot',
+    desc: 'AI 代码助手',
+    members: '👤 1 · 🤖 1',
+    vis: 'full',
+    messages: [
+      {sender:'Stephanie',type:'human',avatar:'S',time:'09:25',
+       content:'帮我实现一个 Redis 缓存层，需要支持 TTL 和 LRU 淘汰策略'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'09:25',
+       content:'好的，正在实现 Redis 缓存层...'},
+      {sender:'Code-Bot',type:'bot',avatar:'C',time:'09:28',
+       content:'Redis 缓存层已实现 ✅<pre><span class="kw">import</span> Redis <span class="kw">from</span> <span class="str">\'ioredis\'</span>;\n\n<span class="kw">export class</span> <span class="fn">CacheService</span> {\n  <span class="kw">private</span> redis: <span class="tp">Redis</span>;\n  <span class="kw">private</span> defaultTTL = <span class="tp">3600</span>; <span class="cm">// 1 hour</span>\n\n  <span class="kw">async</span> <span class="fn">get</span>&lt;<span class="tp">T</span>&gt;(key: <span class="tp">string</span>): <span class="tp">Promise</span>&lt;<span class="tp">T</span> | <span class="tp">null</span>&gt; {\n    <span class="kw">const</span> data = <span class="kw">await</span> <span class="kw">this</span>.redis.<span class="fn">get</span>(key);\n    <span class="kw">return</span> data ? JSON.<span class="fn">parse</span>(data) : <span class="tp">null</span>;\n  }\n\n  <span class="kw">async</span> <span class="fn">set</span>(key: <span class="tp">string</span>, val: <span class="tp">any</span>, ttl?: <span class="tp">number</span>) {\n    <span class="kw">await</span> <span class="kw">this</span>.redis.<span class="fn">setex</span>(key, ttl ?? <span class="kw">this</span>.defaultTTL, JSON.<span class="fn">stringify</span>(val));\n  }\n}</pre>\n\n包含：\n• TTL 自动过期（默认 1h）\n• Redis 自带 LRU（通过 <code>maxmemory-policy allkeys-lru</code> 配置）\n• 泛型类型安全\n• JSON 序列化/反序列化'}
+    ]
+  },
+  stephanie: {
+    title: 'Stephanie Liang',
+    desc: 'Product Manager',
+    members: '👤 2',
+    vis: 'full',
+    messages: [
+      {sender:'Stephanie',type:'human',avatar:'S',time:'昨天 18:30',
+       content:'明天下午3点开会讨论产品路线图，你帮我准备一下 Q2 的功能规划'},
+      {sender:'You',type:'human',avatar:'Y',time:'昨天 18:32',
+       content:'好的，已记录。我先整理一下当前 sprint 进度和用户反馈数据，明天会前发给你。'},
+      {sender:'Stephanie',type:'human',avatar:'S',time:'昨天 18:33',
+       content:'谢谢！重点关注 Bot↔Bot 工作流引擎的进度，投资人很感兴趣'},
+      {sender:'You',type:'human',avatar:'Y',time:'昨天 18:35',
+       content:'收到，我会准备一个 Bot↔Bot demo 视频，配合数据一起展示 👍'}
+    ]
+  }
+};
+
+const members = {
+  general: [
+    {name:'Stephanie Liang',role:'Product Manager',type:'human',status:'online'},
+    {name:'Kevin Chen',role:'Engineer',type:'human',status:'online'},
+    {name:'You',role:'Engineer',type:'human',status:'online'},
+    {name:'Code-Bot',role:'代码生成 · Claude Opus 4.6',type:'bot',status:'online'},
+    {name:'Review-Bot',role:'代码审查 · Claude Sonnet 4.6',type:'bot',status:'online'},
+    {name:'Monitor-Bot',role:'安全监控 · Observer 模式',type:'bot',status:'idle'}
+  ]
+};
+
+const mentionList = [
+  {name:'Stephanie Liang',type:'human',initial:'S'},
+  {name:'Kevin Chen',type:'human',initial:'K'},
+  {name:'Code-Bot',type:'bot',initial:'C'},
+  {name:'Review-Bot',type:'bot',initial:'R'},
+  {name:'Monitor-Bot',type:'bot',initial:'M'},
+  {name:'Security-Bot',type:'bot',initial:'S'}
+];
+
+// ===== STATE =====
+let currentConv = 'general';
+let panelVisible = true;
+let currentTab = 'members';
+
+// ===== RENDER =====
+function renderMessages(convId) {
+  const conv = conversations[convId];
+  const el = document.getElementById('messages');
+  el.innerHTML = '';
+  conv.messages.forEach(m => {
+    if (m.type === 'system') { el.innerHTML += m.content; return; }
+    if (m.content === '__WORKFLOW__') { el.innerHTML += renderWorkflowCard(); return; }
+    const avatarClass = m.type === 'observer' ? 'observer' : m.type === 'bot' ? 'bot' : 'human';
+    const nameClass = m.type === 'observer' ? 'observer-name' : m.type === 'bot' ? 'bot-name' : 'human-name';
+    const roleClass = m.type === 'observer' ? 'observer-role' : m.type === 'bot' ? 'bot-role' : 'human-role';
+    const roleLabel = m.type === 'observer' ? 'Observer' : m.type === 'bot' ? 'Bot' : 'Human';
+    el.innerHTML += `<div class="msg">
+      <div class="msg-avatar ${avatarClass}">${m.avatar||''}</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name ${nameClass}">${m.sender}</span>
+          <span class="msg-role ${roleClass}">${roleLabel}</span>
+          <span class="msg-time">${m.time}</span>
+        </div>
+        <div class="msg-content">${m.content.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>`;
+  });
+  el.scrollTop = el.scrollHeight;
+}
+
+function renderWorkflowCard() {
+  return `<div style="padding:6px 0;margin-left:48px"><div class="workflow-card">
+    <div class="wf-title">🔄 代码审查自动循环</div>
+    <div class="wf-status">Status: <b style="color:var(--workflow)">RUNNING</b> · Step 2/4 · 2m 34s</div>
+    <div class="wf-steps">
+      <span class="wf-step done">✅ write_code</span><span class="wf-arrow">→</span>
+      <span class="wf-step active">⏳ review</span><span class="wf-arrow">→</span>
+      <span class="wf-step pending">revise</span><span class="wf-arrow">→</span>
+      <span class="wf-step pending">notify</span>
+    </div>
+    <div class="wf-progress"><div class="wf-progress-bar" style="width:50%"></div></div>
+    <div class="wf-bot-status">Review-Bot 正在分析 PR #42...</div>
+    <div class="wf-actions">
+      <button onclick="this.textContent='Paused';this.style.color='var(--warning)'">Pause</button>
+      <button>Cancel</button>
+      <button onclick="alert('Workflow Details:\\n\\nStep 1: write_code (Code-Bot) — 完成 ✅\\nStep 2: review (Review-Bot) — 进行中...\\nStep 3: revise (Code-Bot) — 等待\\nStep 4: notify — 等待\\n\\n迭代: 1/5\\n超时: 4h')">View Details</button>
+    </div>
+  </div></div>`;
+}
+
+function renderRightPanel() {
+  const el = document.getElementById('rpContent');
+  if (currentTab === 'members') {
+    const mList = members.general || [];
+    el.innerHTML = '<div class="member-list">' + mList.map(m => `
+      <div class="member-entry" style="cursor:pointer" onclick="${m.type==='bot'?`switchTab('botprofile','${m.name}')`:''}" >
+        <div class="me-avatar ${m.type}">${m.name[0]}</div>
+        <div class="me-info"><div class="me-name">${m.name}</div><div class="me-role">${m.role}</div></div>
+        <div class="me-status ${m.status}"></div>
+      </div>`).join('') + '</div>';
+  } else if (currentTab === 'botprofile') {
+    el.innerHTML = `<div class="bot-profile">
+      <div class="bp-avatar">C</div>
+      <div class="bp-name">Code-Bot</div>
+      <div class="bp-model">Claude Opus 4.6 · Active</div>
+      <div class="bp-stat">
+        <div><div class="num">247</div><div class="label">行代码/日</div></div>
+        <div><div class="num">12</div><div class="label">PR 本周</div></div>
+        <div><div class="num">94%</div><div class="label">通过率</div></div>
+      </div>
+      <div class="bp-section"><h4>Capabilities</h4>
+        <div class="cap-item">代码生成 (TypeScript, Python, Go)</div>
+        <div class="cap-item">PR 创建与管理</div>
+        <div class="cap-item">代码审查回复</div>
+        <div class="cap-item">测试用例生成</div>
+        <div class="cap-item">文档生成</div>
+      </div>
+      <div class="bp-section"><h4>Visibility</h4>
+        <div style="font-size:12px;color:var(--text)">Mode: <span style="color:var(--bot)">Full</span> — 可见所有消息</div>
+      </div>
+      <button class="bp-btn">⚙️ Configure Bot</button>
+      <button class="bp-btn">📋 View Activity Logs</button>
+    </div>`;
+  } else {
+    el.innerHTML = `<div style="padding:8px 0">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">CHANNEL INFO</div>
+      <div style="margin-bottom:16px"><div style="font-size:13px;font-weight:600;margin-bottom:4px"># general</div><div style="font-size:12px;color:var(--text2)">登录模块代码审查 — 人机混合频道</div></div>
+      <div style="margin-bottom:16px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">VISIBILITY MODE</div><div style="font-size:12px;color:var(--text)">Full — 所有参与者（含Bot）可见全部消息</div></div>
+      <div style="margin-bottom:16px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">CREATED</div><div style="font-size:12px;color:var(--text)">2026-04-19 by Stephanie Liang</div></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">UMB STATUS</div><div style="font-size:12px;color:var(--bot)">● Connected — 0ms latency</div></div>
+    </div>`;
+  }
+}
+
+// ===== ACTIONS =====
+function switchConv(id) {
+  currentConv = id;
+  document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[data-conv="${id}"]`).classList.add('active');
+  const conv = conversations[id];
+  document.getElementById('chatTitle').textContent = conv.title;
+  document.getElementById('chatDesc').textContent = conv.desc;
+  document.getElementById('memberCount').innerHTML = conv.members.split('·').map(s=>`<span>${s.trim()}</span>`).join('');
+  const badge = document.getElementById('visBadge');
+  badge.textContent = conv.vis === 'full' ? 'Full' : 'Observer';
+  badge.className = 'visibility-badge ' + conv.vis;
+  // Clear unread
+  const item = document.querySelector(`[data-conv="${id}"] .conv-unread`);
+  if (item) item.remove();
+  renderMessages(id);
+}
+
+function togglePanel() {
+  panelVisible = !panelVisible;
+  document.getElementById('rightPanel').classList.toggle('hidden', !panelVisible);
+}
+
+function switchTab(tab, botName) {
+  currentTab = tab;
+  document.querySelectorAll('.rp-tab').forEach((el,i) => {
+    el.classList.toggle('active', ['members','botprofile','info'][i] === tab);
+  });
+  if (!panelVisible) togglePanel();
+  renderRightPanel();
+}
+
+function toggleVisibility() {
+  const badge = document.getElementById('visBadge');
+  const modes = [{text:'Full',cls:'full'},{text:'Observer',cls:'observer'}];
+  const current = modes.findIndex(m => m.text === badge.textContent);
+  const next = modes[(current + 1) % modes.length];
+  badge.textContent = next.text;
+  badge.className = 'visibility-badge ' + next.cls;
+}
+
+// ===== STREAMING BOT =====
+function triggerBotStream() {
+  const el = document.getElementById('messages');
+  // Add typing indicator
+  const typingId = 'typing-' + Date.now();
+  el.innerHTML += `<div class="msg" id="${typingId}">
+    <div class="msg-avatar bot">C</div>
+    <div class="msg-body">
+      <div class="msg-header">
+        <span class="msg-name bot-name">Code-Bot</span>
+        <span class="msg-role bot-role">Bot</span>
+        <span class="msg-time">now</span>
+      </div>
+      <div class="msg-content"><div class="typing-indicator"><span></span><span></span><span></span></div></div>
+    </div>
+  </div>`;
+  el.scrollTop = el.scrollHeight;
+
+  const streamText = `收到指令，正在分析当前代码库...\n\n发现可优化项 3 处：\n1. \`getUserById\` 查询未使用缓存，P99 延迟 320ms\n2. \`listUsers\` 缺少分页，大数据量时 OOM 风险\n3. 数据库连接池配置偏小（当前 5，建议 20）\n\n正在生成修复 PR...`;
+
+  setTimeout(() => {
+    const msgEl = document.getElementById(typingId);
+    const contentEl = msgEl.querySelector('.msg-content');
+    contentEl.innerHTML = '<span class="stream-cursor"></span>';
+    let i = 0;
+    const chars = streamText.split('');
+    function streamNext() {
+      if (i >= chars.length) {
+        const cursor = contentEl.querySelector('.stream-cursor');
+        if (cursor) cursor.remove();
+        return;
+      }
+      let char = chars[i];
+      const cursor = contentEl.querySelector('.stream-cursor');
+      if (char === '\n') {
+        cursor.insertAdjacentHTML('beforebegin', '<br>');
+      } else if (char === '`') {
+        // Find closing backtick
+        let end = streamText.indexOf('`', i+1);
+        if (end > i) {
+          const code = streamText.substring(i+1, end);
+          cursor.insertAdjacentHTML('beforebegin', `<code>${code}</code>`);
+          i = end;
+        }
+      } else {
+        cursor.insertAdjacentText('beforebegin', char);
+      }
+      i++;
+      el.scrollTop = el.scrollHeight;
+      const delay = char === '\n' ? 80 : char === '。' || char === '.' ? 120 : char === '，' || char === ',' ? 60 : 15 + Math.random() * 25;
+      setTimeout(streamNext, delay);
+    }
+    streamNext();
+  }, 1500);
+}
+
+function triggerWorkflow() {
+  const el = document.getElementById('messages');
+  el.innerHTML += `<div style="text-align:center;color:var(--workflow);font-size:12px;padding:8px;background:rgba(188,140,255,.06);border:1px solid rgba(188,140,255,.15);border-radius:6px;margin:12px 0">🔄 新工作流启动：内容质检流水线 — Content-Bot → QA-Bot → 发布</div>`;
+  el.scrollTop = el.scrollHeight;
+
+  setTimeout(() => {
+    el.innerHTML += `<div class="msg">
+      <div class="msg-avatar bot" style="background:linear-gradient(135deg,#2a1a4a,#1a0d30);color:var(--workflow)">W</div>
+      <div class="msg-body">
+        <div class="msg-header"><span class="msg-name" style="color:var(--workflow)">Workflow Engine</span><span class="msg-role" style="background:rgba(188,140,255,.1);color:var(--workflow)">System</span><span class="msg-time">now</span></div>
+        <div class="msg-content"><div class="workflow-card">
+          <div class="wf-title">📝 内容质检流水线</div>
+          <div class="wf-status">Status: <b style="color:var(--workflow)">RUNNING</b> · Step 1/3</div>
+          <div class="wf-steps">
+            <span class="wf-step active">⏳ generate</span><span class="wf-arrow">→</span>
+            <span class="wf-step pending">qa_check</span><span class="wf-arrow">→</span>
+            <span class="wf-step pending">publish</span>
+          </div>
+          <div class="wf-progress"><div class="wf-progress-bar" id="wfProgress2" style="width:15%"></div></div>
+          <div class="wf-bot-status" id="wfStatus2">Content-Bot 正在生成内容...</div>
+          <div class="wf-actions"><button>Pause</button><button>Cancel</button></div>
+        </div></div>
+      </div>
+    </div>`;
+    el.scrollTop = el.scrollHeight;
+
+    // Animate progress
+    setTimeout(() => {
+      const bar = document.getElementById('wfProgress2');
+      const status = document.getElementById('wfStatus2');
+      if (bar) { bar.style.width = '60%'; }
+      if (status) status.textContent = 'QA-Bot 正在质检...';
+    }, 3000);
+    setTimeout(() => {
+      const bar = document.getElementById('wfProgress2');
+      const status = document.getElementById('wfStatus2');
+      if (bar) { bar.style.width = '100%'; bar.style.background = 'var(--bot)'; }
+      if (status) { status.innerHTML = '<span style="color:var(--bot)">✅ 流水线完成 — 内容已发布</span>'; }
+    }, 6000);
+  }, 800);
+}
+
+// ===== MENTION AUTOCOMPLETE =====
+function showMentions() {
+  const dd = document.getElementById('mentionDropdown');
+  dd.innerHTML = mentionList.map(m => `
+    <div class="mention-item" onclick="insertMention('${m.name}')">
+      <div class="mi-avatar ${m.type}">${m.initial}</div>
+      <span>${m.name}</span>
+      <span class="mi-type">${m.type === 'bot' ? 'Bot' : 'Human'}</span>
+    </div>`).join('');
+  dd.classList.add('show');
+}
+
+function insertMention(name) {
+  const input = document.getElementById('msgInput');
+  input.value += `@${name} `;
+  input.focus();
+  document.getElementById('mentionDropdown').classList.remove('show');
+}
+
+function handleInput(e) {
+  const val = e.target.value;
+  const dd = document.getElementById('mentionDropdown');
+  const atIndex = val.lastIndexOf('@');
+  if (atIndex >= 0 && atIndex === val.length - 1) {
+    showMentions();
+  } else if (atIndex >= 0) {
+    const query = val.substring(atIndex + 1).toLowerCase();
+    const filtered = mentionList.filter(m => m.name.toLowerCase().includes(query));
+    if (filtered.length && query.length > 0) {
+      dd.innerHTML = filtered.map(m => `
+        <div class="mention-item" onclick="insertMention('${m.name}')">
+          <div class="mi-avatar ${m.type}">${m.initial}</div>
+          <span>${m.name}</span>
+          <span class="mi-type">${m.type === 'bot' ? 'Bot' : 'Human'}</span>
+        </div>`).join('');
+      dd.classList.add('show');
+    } else {
+      dd.classList.remove('show');
+    }
+  } else {
+    dd.classList.remove('show');
+  }
+  // Auto-resize textarea
+  e.target.style.height = 'auto';
+  e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+}
+
+function handleKeydown(e) {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    e.preventDefault();
+    sendMessage();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('mentionDropdown').classList.remove('show');
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const el = document.getElementById('messages');
+  el.innerHTML += `<div class="msg">
+    <div class="msg-avatar human">Y</div>
+    <div class="msg-body">
+      <div class="msg-header">
+        <span class="msg-name human-name">You</span>
+        <span class="msg-role human-role">Human</span>
+        <span class="msg-time">now</span>
+      </div>
+      <div class="msg-content">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/@(\w[\w\s-]*)/g,'<span class="mention">@$1</span>')}</div>
+    </div>
+  </div>`;
+  el.scrollTop = el.scrollHeight;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('mentionDropdown').classList.remove('show');
+}
+
+// ===== SEARCH MODAL =====
+function openSearch() { document.getElementById('searchModal').classList.add('show'); document.getElementById('searchModalInput').focus(); }
+function closeSearch() { document.getElementById('searchModal').classList.remove('show'); }
+function handleSearchInput(e) {
+  const q = e.target.value.toLowerCase();
+  const items = document.querySelectorAll('.search-result-item');
+  items.forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) || !q ? '' : 'none';
+  });
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Click outside mention dropdown
+document.addEventListener('click', e => {
+  if (!e.target.closest('.mention-dropdown') && !e.target.closest('[onclick*="showMentions"]')) {
+    document.getElementById('mentionDropdown').classList.remove('show');
+  }
+});
+
+// ===== INIT =====
+renderMessages('general');
+renderRightPanel();
+</script>
+</body>
+</html>
