@@ -1,6 +1,6 @@
-# CODE-YI Product Documentation
+# Product Documentation
 
-CODE-YI 是一个 AI-Native 工作空间产品，将 Human 和 Agent 作为对等团队成员进行统一管理。
+是一个 AI-Native 工作空间产品，将 Human 和 Agent 作为对等团队成员进行统一管理。
 
 ## 产品架构
 
