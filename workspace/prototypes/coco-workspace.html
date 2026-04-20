@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COCO Workspace — Slack for the HxA Era</title>
+<style>
+/* ============================================================
+   COCO Workspace Interactive Prototype
+   Inspired by Noomo Labs creative design
+   ============================================================ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg-surface: #12121a;
+  --bg-card: #1a1a25;
+  --bg-hover: #22223a;
+  --border: #2a2a3a;
+  --border-light: #3a3a4f;
+  --text: #e8e8f0;
+  --text-dim: #8888aa;
+  --text-muted: #555570;
+  --accent: #6c5ce7;
+  --accent-light: #a29bfe;
+  --accent-glow: rgba(108, 92, 231, 0.3);
+  --green: #00d2d3;
+  --green-glow: rgba(0, 210, 211, 0.3);
+  --orange: #ffa502;
+  --red: #ff6b6b;
+  --pink: #fd79a8;
+  --sidebar-w: 260px;
+  --topbar-h: 56px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: local('Inter'), local('Inter-Regular');
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   SPLASH / LANDING SCREEN
+   ============================================================ */
+#splash {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#splash.hidden {
+  opacity: 0; transform: scale(1.05); pointer-events: none;
+}
+
+/* Octopus SVG animation */
+.octopus-logo {
+  width: 180px; height: 180px;
+  margin-bottom: 32px;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px var(--accent-glow));
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(2deg); }
+  75% { transform: translateY(8px) rotate(-2deg); }
+}
+
+.splash-title {
+  font-size: 56px; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-light), var(--green), var(--pink));
+  background-size: 200% 200%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s ease-in-out infinite;
+  letter-spacing: -2px;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.splash-subtitle {
+  font-size: 18px; color: var(--text-dim); margin-top: 12px;
+  letter-spacing: 4px; text-transform: uppercase;
+}
+
+.splash-tagline {
+  font-size: 15px; color: var(--text-muted); margin-top: 24px;
+  max-width: 500px; text-align: center; line-height: 1.6;
+}
+
+/* Identity Selection */
+.identity-select {
+  display: flex; gap: 24px; margin-top: 48px;
+}
+.identity-card {
+  width: 260px; padding: 32px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.identity-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--accent-glow), transparent);
+  opacity: 0; transition: opacity 0.4s;
+}
+.identity-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(108, 92, 231, 0.15);
+}
+.identity-card:hover::before { opacity: 1; }
+.identity-card .icon {
+  font-size: 48px; margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.identity-card h3 {
+  font-size: 18px; font-weight: 700; margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+.identity-card p {
+  font-size: 13px; color: var(--text-dim); line-height: 1.5;
+  position: relative; z-index: 1;
+}
+
+/* Particles canvas */
+#particles {
+  position: fixed; inset: 0; z-index: 999;
+  pointer-events: none;
+}
+
+/* ============================================================
+   MAIN APP LAYOUT
+   ============================================================ */
+#app {
+  display: none;
+  height: 100vh;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#app.visible {
+  display: flex !important;
+  opacity: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.sidebar-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.sidebar-logo {
+  width: 36px; height: 36px;
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+.sidebar-brand {
+  font-size: 16px; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-light), var(--green));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.sidebar-mode {
+  font-size: 11px; color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 2px 8px; border-radius: 4px;
+  margin-left: auto;
+}
+
+.sidebar-nav {
+  flex: 1; overflow-y: auto; padding: 12px 8px;
+}
+.nav-section {
+  margin-bottom: 8px;
+}
+.nav-section-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text-muted);
+  padding: 8px 12px 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: var(--transition);
+  font-size: 14px; color: var(--text-dim);
+  position: relative;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text); }
+.nav-item.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+.nav-item .nav-icon {
+  width: 20px; text-align: center; font-size: 16px;
+  flex-shrink: 0;
+}
+.nav-item .badge {
+  margin-left: auto;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px;
+  min-width: 18px; text-align: center;
+}
+
+/* Channels sub-list */
+.channel-list { padding: 0 8px; }
+.channel-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 6px;
+  cursor: pointer; font-size: 13px; color: var(--text-dim);
+  transition: var(--transition);
+}
+.channel-item:hover { background: var(--bg-hover); color: var(--text); }
+.channel-item.active { color: var(--text); font-weight: 600; }
+.channel-hash { color: var(--text-muted); font-size: 14px; }
+.channel-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  margin-left: auto; flex-shrink: 0;
+}
+.channel-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
+.channel-dot.busy { background: var(--orange); }
+
+/* Sidebar footer */
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13px; font-weight: 600; }
+.user-status { font-size: 11px; color: var(--green); }
+
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
+.main-content {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* Top bar */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.topbar-title {
+  font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.topbar-desc {
+  font-size: 12px; color: var(--text-muted);
+  margin-left: 4px;
+}
+.topbar-actions {
+  margin-left: auto;
+  display: flex; gap: 8px; align-items: center;
+}
+.topbar-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 6px 12px; border-radius: 8px;
+  font-size: 12px; cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; gap: 6px;
+}
+.topbar-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* Cmd+K trigger */
+.cmdk-trigger {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 16px;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; transition: var(--transition);
+  font-size: 13px; color: var(--text-muted);
+}
+.cmdk-trigger:hover { border-color: var(--accent); }
+.cmdk-trigger kbd {
+  background: var(--bg-hover);
+  padding: 2px 6px; border-radius: 4px;
+  font-size: 11px; font-family: inherit;
+  border: 1px solid var(--border);
+}
+
+/* Content panels */
+.content-area {
+  flex: 1; overflow: hidden;
+  position: relative;
+}
+.panel {
+  display: none;
+  height: 100%;
+  animation: fadeIn 0.3s ease;
+}
+.panel.active { display: flex; flex-direction: column; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   MODULE 1: CHAT
+   ============================================================ */
+.chat-panel {
+  flex: 1; display: flex; flex-direction: column;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 20px 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.message {
+  display: flex; gap: 12px;
+  max-width: 85%;
+  animation: msgIn 0.4s ease;
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.message.agent { }
+.message.human { align-self: flex-end; flex-direction: row-reverse; }
+.msg-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.msg-avatar.agent-avatar {
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+.msg-avatar.human-avatar {
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+}
+.msg-body { flex: 1; }
+.msg-header {
+  display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;
+}
+.msg-name { font-size: 13px; font-weight: 600; }
+.msg-name.agent-name { color: var(--accent-light); }
+.msg-time { font-size: 11px; color: var(--text-muted); }
+.msg-tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 4px;
+  background: var(--accent); color: #fff; font-weight: 600;
+}
+.msg-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px; line-height: 1.6;
+  color: var(--text);
+}
+.message.human .msg-content {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.msg-content code {
+  background: var(--bg); padding: 2px 6px; border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+}
+.code-block {
+  background: #0d0d15;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 8px; overflow: hidden;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.code-copy {
+  background: var(--bg-hover); border: none;
+  color: var(--text-dim); padding: 3px 10px;
+  border-radius: 4px; cursor: pointer;
+  font-size: 11px; transition: var(--transition);
+}
+.code-copy:hover { background: var(--accent); color: #fff; }
+.code-content {
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px; line-height: 1.5;
+  color: var(--text);
+  overflow-x: auto;
+}
+.code-content .kw { color: var(--pink); }
+.code-content .fn { color: var(--accent-light); }
+.code-content .str { color: var(--green); }
+.code-content .cmt { color: var(--text-muted); }
+.code-content .num { color: var(--orange); }
+
+/* Streaming indicator */
+.streaming {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--accent-light); font-size: 13px;
+}
+.streaming-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-light);
+  animation: blink 1.4s ease-in-out infinite;
+}
+.streaming-dot:nth-child(2) { animation-delay: 0.2s; }
+.streaming-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* Chat input */
+.chat-input-area {
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+.chat-input-wrapper {
+  display: flex; align-items: flex-end;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  transition: var(--transition);
+}
+.chat-input-wrapper:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.chat-input {
+  flex: 1; background: none; border: none;
+  color: var(--text); font-size: 14px;
+  outline: none; resize: none;
+  font-family: inherit; min-height: 20px; max-height: 120px;
+}
+.chat-input::placeholder { color: var(--text-muted); }
+.chat-toolbar {
+  display: flex; gap: 4px; margin-left: 12px;
+}
+.chat-tool-btn {
+  background: none; border: none;
+  color: var(--text-muted);
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition);
+  font-size: 16px;
+}
+.chat-tool-btn:hover { background: var(--bg-hover); color: var(--text); }
+.chat-send-btn {
+  background: var(--accent); border: none;
+  color: #fff; width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition);
+  font-size: 14px;
+}
+.chat-send-btn:hover { background: var(--accent-light); transform: scale(1.05); }
+
+/* ============================================================
+   MODULE 2: TASKS (Kanban)
+   ============================================================ */
+.kanban-panel { flex: 1; display: flex; flex-direction: column; }
+.kanban-toolbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.filter-chip {
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  transition: var(--transition);
+}
+.filter-chip:hover { border-color: var(--accent); color: var(--text); }
+.filter-chip.active {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+
+.kanban-board {
+  flex: 1; display: flex; gap: 16px;
+  padding: 20px 24px; overflow-x: auto;
+}
+.kanban-col {
+  min-width: 280px; width: 280px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+}
+.kanban-col-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 600;
+}
+.col-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.col-dot.todo { background: var(--text-muted); }
+.col-dot.progress { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+.col-dot.done { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+.col-dot.archived { background: var(--text-muted); opacity: 0.5; }
+.col-count {
+  margin-left: auto;
+  background: var(--bg-card);
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; color: var(--text-muted);
+}
+
+.kanban-cards {
+  flex: 1; padding: 12px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  cursor: grab;
+  transition: var(--transition);
+}
+.task-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+.task-card.dragging {
+  opacity: 0.5; transform: rotate(2deg);
+}
+.task-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+.task-meta {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap;
+}
+.task-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600;
+}
+.task-tag.p0 { background: rgba(255, 107, 107, 0.15); color: var(--red); }
+.task-tag.p1 { background: rgba(255, 165, 2, 0.15); color: var(--orange); }
+.task-tag.p2 { background: rgba(108, 92, 231, 0.15); color: var(--accent-light); }
+.task-tag.agent {
+  background: rgba(0, 210, 211, 0.15); color: var(--green);
+  display: flex; align-items: center; gap: 3px;
+}
+.task-assignee {
+  margin-left: auto;
+  display: flex; gap: -4px;
+}
+.task-assignee-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--bg-card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+
+/* ============================================================
+   MODULE 3: PROJECTS
+   ============================================================ */
+.projects-panel { flex: 1; display: flex; flex-direction: column; }
+.projects-grid {
+  flex: 1; padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  overflow-y: auto;
+  align-content: start;
+}
+.project-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.project-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+.project-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.project-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.project-name { font-size: 15px; font-weight: 700; }
+.project-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px; }
+.project-progress {
+  margin-bottom: 12px;
+}
+.progress-bar {
+  height: 6px; background: var(--bg-card);
+  border-radius: 3px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 3px;
+  transition: width 1s ease;
+}
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text-muted);
+  margin-top: 6px;
+}
+.project-footer {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.project-team {
+  display: flex; gap: -4px;
+}
+.project-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+.project-sprint {
+  font-size: 11px; color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 3px 10px; border-radius: 12px;
+}
+.project-alert {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--red); color: #fff;
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   MODULE 4: TEAM
+   ============================================================ */
+.team-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+.team-section { padding: 24px; }
+.team-section-title {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.team-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.team-card:hover { border-color: var(--accent); transform: translateX(4px); }
+.team-member-avatar {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.team-member-avatar.human { background: linear-gradient(135deg, var(--pink), var(--orange)); }
+.team-member-avatar.agent { background: linear-gradient(135deg, var(--accent), var(--green)); }
+.team-member-info { flex: 1; }
+.team-member-name { font-size: 14px; font-weight: 600; }
+.team-member-role { font-size: 12px; color: var(--text-dim); }
+.team-member-status {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.team-member-status.online { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+.team-member-status.offline { background: var(--text-muted); }
+.team-member-status.busy { background: var(--orange); }
+
+/* ============================================================
+   MODULE 5: AGENT MANAGEMENT
+   ============================================================ */
+.agents-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; }
+.agent-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.agent-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.agent-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+}
+.agent-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+.agent-card-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.agent-card-avatar {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+.agent-card-name { font-size: 15px; font-weight: 700; }
+.agent-card-model { font-size: 11px; color: var(--green); }
+.agent-card-status {
+  margin-left: auto;
+  padding: 4px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 600;
+}
+.agent-card-status.online { background: rgba(0,210,211,0.15); color: var(--green); }
+.agent-card-status.paused { background: rgba(255,165,2,0.15); color: var(--orange); }
+.agent-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 14px;
+}
+.agent-stat {
+  text-align: center;
+  padding: 10px; background: var(--bg-card);
+  border-radius: 8px;
+}
+.agent-stat-value { font-size: 18px; font-weight: 700; }
+.agent-stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.agent-skills {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.agent-skill {
+  font-size: 11px; padding: 3px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text-dim);
+}
+
+/* ============================================================
+   MODULE 6: TOOLBOX
+   ============================================================ */
+.toolbox-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; }
+.toolbox-categories {
+  display: flex; gap: 8px; margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.toolbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.tool-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.tool-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.tool-icon { font-size: 32px; margin-bottom: 10px; }
+.tool-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.tool-desc { font-size: 11px; color: var(--text-dim); line-height: 1.4; margin-bottom: 10px; }
+.tool-install-btn {
+  padding: 5px 16px; border-radius: 6px;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: var(--transition);
+  border: 1px solid var(--border);
+  background: none; color: var(--text-dim);
+}
+.tool-install-btn.installed { background: var(--green); color: #fff; border-color: var(--green); }
+.tool-install-btn:not(.installed):hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============================================================
+   MODULE 7: ADMIN DASHBOARD
+   ============================================================ */
+.admin-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; }
+.admin-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.kpi-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+.kpi-value { font-size: 28px; font-weight: 800; }
+.kpi-change {
+  font-size: 12px; margin-top: 6px;
+  display: flex; align-items: center; gap: 4px;
+}
+.kpi-change.up { color: var(--green); }
+.kpi-change.down { color: var(--red); }
+
+.admin-chart {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+.chart-svg { width: 100%; height: 200px; }
+
+.admin-seats {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.seats-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px; font-weight: 600;
+}
+.seats-table { width: 100%; border-collapse: collapse; }
+.seats-table th, .seats-table td {
+  padding: 12px 20px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.seats-table th {
+  font-weight: 600; color: var(--text-muted);
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.seats-table tr:hover td { background: var(--bg-hover); }
+.seat-type {
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 600;
+}
+.seat-type.human { background: rgba(253, 121, 168, 0.15); color: var(--pink); }
+.seat-type.agent { background: rgba(0, 210, 211, 0.15); color: var(--green); }
+.seat-toggle {
+  width: 36px; height: 20px; border-radius: 10px;
+  background: var(--text-muted);
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+}
+.seat-toggle.on { background: var(--green); }
+.seat-toggle::after {
+  content: '';
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff;
+  transition: var(--transition);
+}
+.seat-toggle.on::after { left: 18px; }
+
+/* ============================================================
+   MODULE 8: SETTINGS
+   ============================================================ */
+.settings-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; }
+.settings-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.settings-section-title {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px; font-weight: 600;
+}
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 13px; }
+.setting-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.oauth-btn {
+  padding: 6px 16px; border-radius: 8px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: var(--transition);
+  border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text);
+  display: flex; align-items: center; gap: 6px;
+}
+.oauth-btn:hover { border-color: var(--accent); }
+.oauth-btn.connected { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* ============================================================
+   CMD+K OVERLAY
+   ============================================================ */
+.cmdk-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 20vh;
+  animation: fadeIn 0.2s ease;
+}
+.cmdk-overlay.visible { display: flex; }
+.cmdk-modal {
+  width: 580px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.cmdk-input-wrapper {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.cmdk-search-icon { font-size: 18px; color: var(--text-muted); }
+.cmdk-input {
+  flex: 1; background: none; border: none;
+  color: var(--text); font-size: 16px;
+  outline: none; font-family: inherit;
+}
+.cmdk-input::placeholder { color: var(--text-muted); }
+.cmdk-results {
+  max-height: 340px; overflow-y: auto;
+  padding: 8px;
+}
+.cmdk-group-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text-muted);
+  padding: 8px 12px 4px;
+}
+.cmdk-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  cursor: pointer; transition: var(--transition);
+}
+.cmdk-item:hover, .cmdk-item.selected {
+  background: var(--accent);
+  color: #fff;
+}
+.cmdk-item-icon { width: 20px; text-align: center; font-size: 14px; }
+.cmdk-item-label { font-size: 14px; flex: 1; }
+.cmdk-item-shortcut {
+  font-size: 11px; color: var(--text-muted);
+}
+.cmdk-item:hover .cmdk-item-shortcut { color: rgba(255,255,255,0.6); }
+.cmdk-footer {
+  padding: 10px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 16px;
+  font-size: 11px; color: var(--text-muted);
+}
+.cmdk-footer kbd {
+  background: var(--bg-card);
+  padding: 1px 5px; border-radius: 3px;
+  font-family: inherit;
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .admin-kpis { grid-template-columns: repeat(2, 1fr); }
+  .identity-select { flex-direction: column; }
+  .splash-title { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PARTICLES CANVAS
+     ============================================================ -->
+<canvas id="particles"></canvas>
+
+<!-- ============================================================
+     SPLASH SCREEN
+     ============================================================ -->
+<div id="splash">
+  <svg class="octopus-logo" viewBox="0 0 200 200" fill="none">
+    <!-- Octopus body -->
+    <ellipse cx="100" cy="75" rx="55" ry="50" fill="url(#octoGrad)" opacity="0.95"/>
+    <!-- Eyes -->
+    <ellipse cx="82" cy="68" rx="10" ry="12" fill="#fff"/>
+    <ellipse cx="118" cy="68" rx="10" ry="12" fill="#fff"/>
+    <circle cx="84" cy="70" r="5" fill="#0a0a0f"/>
+    <circle cx="120" cy="70" r="5" fill="#0a0a0f"/>
+    <circle cx="86" cy="68" r="2" fill="#fff"/>
+    <circle cx="122" cy="68" r="2" fill="#fff"/>
+    <!-- Tentacles -->
+    <path d="M55 105 Q40 140 30 170 Q28 180 38 175 Q48 170 50 150 Q52 135 60 120" stroke="url(#tentGrad)" stroke-width="8" fill="none" stroke-linecap="round">
+      <animate attributeName="d" values="M55 105 Q40 140 30 170 Q28 180 38 175 Q48 170 50 150 Q52 135 60 120;M55 105 Q35 135 28 165 Q25 178 35 172 Q45 165 48 145 Q50 130 58 118;M55 105 Q40 140 30 170 Q28 180 38 175 Q48 170 50 150 Q52 135 60 120" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <path d="M70 115 Q60 150 55 180 Q54 190 64 185 Q74 180 72 160 Q70 140 72 125" stroke="url(#tentGrad)" stroke-width="8" fill="none" stroke-linecap="round">
+      <animate attributeName="d" values="M70 115 Q60 150 55 180 Q54 190 64 185 Q74 180 72 160 Q70 140 72 125;M70 115 Q65 148 60 178 Q58 188 68 183 Q78 178 75 158 Q72 138 73 123;M70 115 Q60 150 55 180 Q54 190 64 185 Q74 180 72 160 Q70 140 72 125" dur="3.5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M90 120 Q88 158 85 188 Q84 198 94 193 Q100 188 98 168 Q96 148 93 130" stroke="url(#tentGrad)" stroke-width="8" fill="none" stroke-linecap="round">
+      <animate attributeName="d" values="M90 120 Q88 158 85 188 Q84 198 94 193 Q100 188 98 168 Q96 148 93 130;M90 120 Q92 155 90 185 Q89 195 99 190 Q105 185 102 165 Q99 145 95 128;M90 120 Q88 158 85 188 Q84 198 94 193 Q100 188 98 168 Q96 148 93 130" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M110 120 Q112 158 115 188 Q116 198 106 193 Q100 188 102 168 Q104 148 107 130" stroke="url(#tentGrad)" stroke-width="8" fill="none" stroke-linecap="round">
+      <animate attributeName="d" values="M110 120 Q112 158 115 188 Q116 198 106 193 Q100 188 102 168 Q104 148 107 130;M110 120 Q108 155 110 185 Q111 195 101 190 Q95 185 98 165 Q101 145 105 128;M110 120 Q112 158 115 188 Q116 198 106 193 Q100 188 102 168 Q104 148 107 130" dur="3.8s" repeatCount="indefinite"/>
+    </path>
+    <path d="M130 115 Q140 150 145 180 Q146 190 136 185 Q126 180 128 160 Q130 140 128 125" stroke="url(#tentGrad)" stroke-width="8" fill="none" stroke-linecap="round">
+      <animate attributeName="d" values="M130 115 Q140 150 145 180 Q146 190 136 185 Q126 180 128 160 Q130 140 128 125;M130 115 Q135 148 140 178 Q142 188 132 183 Q122 178 125 158 Q128 138 127 123;M130 115 Q140 150 145 180 Q146 190 136 185 Q126 180 128 160 Q130 140 128 125" dur="3.2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M145 105 Q160 140 170 170 Q172 180 162 175 Q152 170 150 150 Q148 135 140 120" stroke="url(#tentGrad)" stroke-width="8" fill="none" stroke-linecap="round">
+      <animate attributeName="d" values="M145 105 Q160 140 170 170 Q172 180 162 175 Q152 170 150 150 Q148 135 140 120;M145 105 Q165 135 172 165 Q175 178 165 172 Q155 165 152 145 Q150 130 142 118;M145 105 Q160 140 170 170 Q172 180 162 175 Q152 170 150 150 Q148 135 140 120" dur="2.8s" repeatCount="indefinite"/>
+    </path>
+    <defs>
+      <linearGradient id="octoGrad" x1="45" y1="25" x2="155" y2="125">
+        <stop offset="0%" stop-color="#6c5ce7"/>
+        <stop offset="50%" stop-color="#a29bfe"/>
+        <stop offset="100%" stop-color="#00d2d3"/>
+      </linearGradient>
+      <linearGradient id="tentGrad" x1="0" y1="100" x2="0" y2="200">
+        <stop offset="0%" stop-color="#a29bfe"/>
+        <stop offset="100%" stop-color="#00d2d3" stop-opacity="0.4"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <h1 class="splash-title">COCO Workspace</h1>
+  <p class="splash-subtitle">Slack for the HxA Era</p>
+  <p class="splash-tagline">
+    让人与 AI Agent 在同一个工作空间中协作<br>
+    不是给人一个 AI 工具，而是给企业一支 AI 团队
+  </p>
+
+  <div class="identity-select">
+    <div class="identity-card" onclick="enterApp('code')">
+      <div class="icon">&lt;/&gt;</div>
+      <h3>代码开发</h3>
+      <p>AI 结对编程、代码审查、自动化部署<br>给开发者的智能工作空间</p>
+    </div>
+    <div class="identity-card" onclick="enterApp('office')">
+      <div class="icon">&#128188;</div>
+      <h3>日常办公</h3>
+      <p>文档协作、数据分析、内容创作<br>给团队的全能 AI 助手</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN APPLICATION
+     ============================================================ -->
+<div id="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="sidebar-logo" viewBox="0 0 200 200" fill="none">
+        <ellipse cx="100" cy="75" rx="55" ry="50" fill="url(#octoGrad2)"/>
+        <ellipse cx="82" cy="68" rx="10" ry="12" fill="#fff"/>
+        <ellipse cx="118" cy="68" rx="10" ry="12" fill="#fff"/>
+        <circle cx="84" cy="70" r="5" fill="#0a0a0f"/>
+        <circle cx="120" cy="70" r="5" fill="#0a0a0f"/>
+        <defs><linearGradient id="octoGrad2" x1="45" y1="25" x2="155" y2="125"><stop offset="0%" stop-color="#6c5ce7"/><stop offset="100%" stop-color="#00d2d3"/></linearGradient></defs>
+      </svg>
+      <span class="sidebar-brand">COCO</span>
+      <span class="sidebar-mode" id="modeLabel">Code</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Workspace</div>
+        <div class="nav-item active" data-panel="chat" onclick="switchPanel('chat')">
+          <span class="nav-icon">&#128172;</span> 对话
+          <span class="badge">3</span>
+        </div>
+        <div class="nav-item" data-panel="tasks" onclick="switchPanel('tasks')">
+          <span class="nav-icon">&#9744;</span> 任务
+        </div>
+        <div class="nav-item" data-panel="projects" onclick="switchPanel('projects')">
+          <span class="nav-icon">&#128194;</span> 项目
+        </div>
+        <div class="nav-item" data-panel="team" onclick="switchPanel('team')">
+          <span class="nav-icon">&#128101;</span> 团队
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">AI</div>
+        <div class="nav-item" data-panel="agents" onclick="switchPanel('agents')">
+          <span class="nav-icon">&#129302;</span> Agent 管理
+        </div>
+        <div class="nav-item" data-panel="toolbox" onclick="switchPanel('toolbox')">
+          <span class="nav-icon">&#128295;</span> 工具箱
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">频道</div>
+        <div class="channel-list">
+          <div class="channel-item active">
+            <span class="channel-hash">#</span> general
+            <span class="channel-dot online"></span>
+          </div>
+          <div class="channel-item">
+            <span class="channel-hash">#</span> dev-frontend
+          </div>
+          <div class="channel-item">
+            <span class="channel-hash">#</span> design-review
+          </div>
+          <div class="channel-item">
+            <span class="channel-hash">#</span> agent-logs
+            <span class="channel-dot busy"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">系统</div>
+        <div class="nav-item" data-panel="admin" onclick="switchPanel('admin')">
+          <span class="nav-icon">&#128200;</span> 管理后台
+        </div>
+        <div class="nav-item" data-panel="settings" onclick="switchPanel('settings')">
+          <span class="nav-icon">&#9881;</span> 设置
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar" id="userAvatar">S</div>
+      <div class="user-info">
+        <div class="user-name">Stephanie</div>
+        <div class="user-status">Online</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">
+        &#128172; <span>对话</span>
+        <span class="topbar-desc" id="topbarDesc">#general &middot; 5 members &middot; 2 agents</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="cmdk-trigger" onclick="openCmdK()">
+          &#128269; 搜索或执行命令...
+          <kbd>&#8984;K</kbd>
+        </div>
+        <button class="topbar-btn" onclick="switchMode()">&#128260; 切换模式</button>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+
+      <!-- CHAT PANEL -->
+      <div class="panel active" id="panel-chat">
+        <div class="chat-panel">
+          <div class="chat-messages" id="chatMessages">
+            <!-- Messages populated by JS -->
+          </div>
+          <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+              <textarea class="chat-input" id="chatInput" placeholder="输入消息，@Agent 召唤 AI 队友..." rows="1" onkeydown="handleChatKey(event)"></textarea>
+              <div class="chat-toolbar">
+                <button class="chat-tool-btn" title="附件">&#128206;</button>
+                <button class="chat-tool-btn" title="@提及">@</button>
+                <button class="chat-send-btn" onclick="sendMessage()" title="发送">&#9654;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASKS PANEL -->
+      <div class="panel" id="panel-tasks">
+        <div class="kanban-panel">
+          <div class="kanban-toolbar">
+            <span class="filter-chip active">全部</span>
+            <span class="filter-chip" onclick="this.classList.toggle('active')">我负责的</span>
+            <span class="filter-chip" onclick="this.classList.toggle('active')">Agent 执行中</span>
+            <span class="filter-chip" onclick="this.classList.toggle('active')">P0 优先</span>
+            <button class="topbar-btn" style="margin-left:auto">+ 新建任务</button>
+          </div>
+          <div class="kanban-board" id="kanbanBoard">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECTS PANEL -->
+      <div class="panel" id="panel-projects">
+        <div class="projects-panel">
+          <div class="kanban-toolbar">
+            <span style="font-size:14px;font-weight:600;">项目总览</span>
+            <button class="topbar-btn" style="margin-left:auto">+ 新建项目</button>
+          </div>
+          <div class="projects-grid" id="projectsGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TEAM PANEL -->
+      <div class="panel" id="panel-team">
+        <div class="team-panel">
+          <div class="team-section">
+            <div class="team-section-title">&#128100; 人类成员 <span style="font-size:12px;color:var(--text-dim);font-weight:400">(5)</span></div>
+            <div class="team-grid" id="humanTeam">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div class="team-section">
+            <div class="team-section-title">&#129302; Agent 成员 <span style="font-size:12px;color:var(--text-dim);font-weight:400">(4)</span></div>
+            <div class="team-grid" id="agentTeam">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENTS PANEL -->
+      <div class="panel" id="panel-agents">
+        <div class="agents-panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <h2 style="font-size:18px;font-weight:700">Agent 管理</h2>
+            <button class="topbar-btn">+ 从模板创建</button>
+          </div>
+          <div class="agent-dashboard-grid" id="agentDashboard">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOLBOX PANEL -->
+      <div class="panel" id="panel-toolbox">
+        <div class="toolbox-panel">
+          <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">工具箱</h2>
+          <div class="toolbox-categories">
+            <span class="filter-chip active">全部</span>
+            <span class="filter-chip" onclick="this.classList.toggle('active')">内置</span>
+            <span class="filter-chip" onclick="this.classList.toggle('active')">MCP</span>
+            <span class="filter-chip" onclick="this.classList.toggle('active')">社区</span>
+          </div>
+          <div class="toolbox-grid" id="toolboxGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN PANEL -->
+      <div class="panel" id="panel-admin">
+        <div class="admin-panel">
+          <h2 style="font-size:18px;font-weight:700;margin-bottom:20px">管理后台</h2>
+          <div class="admin-kpis" id="adminKpis">
+            <!-- Populated by JS -->
+          </div>
+          <div class="admin-chart">
+            <div class="chart-title">API 调用趋势 (7天)</div>
+            <svg class="chart-svg" id="apiChart"></svg>
+          </div>
+          <div class="admin-seats">
+            <div class="seats-header">席位管理</div>
+            <table class="seats-table" id="seatsTable">
+              <!-- Populated by JS -->
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PANEL -->
+      <div class="panel" id="panel-settings">
+        <div class="settings-panel">
+          <h2 style="font-size:18px;font-weight:700;margin-bottom:20px">设置</h2>
+          <div class="settings-section">
+            <div class="settings-section-title">OAuth 连接</div>
+            <div class="setting-row">
+              <div><div class="setting-label">&#128025; GitHub</div><div class="setting-desc">允许 Agent 访问代码仓库</div></div>
+              <button class="oauth-btn connected" onclick="this.classList.toggle('connected');this.textContent=this.classList.contains('connected')?'&#10003; 已连接':'连接'">&#10003; 已连接</button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">&#128196; Notion</div><div class="setting-desc">同步文档和知识库</div></div>
+              <button class="oauth-btn" onclick="this.classList.toggle('connected');this.textContent=this.classList.contains('connected')?'&#10003; 已连接':'连接'">连接</button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">&#128232; Slack</div><div class="setting-desc">消息通知和频道同步</div></div>
+              <button class="oauth-btn" onclick="this.classList.toggle('connected');this.textContent=this.classList.contains('connected')?'&#10003; 已连接':'连接'">连接</button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">&#9729; Jira</div><div class="setting-desc">任务同步和项目管理</div></div>
+              <button class="oauth-btn connected" onclick="this.classList.toggle('connected');this.textContent=this.classList.contains('connected')?'&#10003; 已连接':'连接'">&#10003; 已连接</button>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Agent 权限</div>
+            <div class="setting-row">
+              <div><div class="setting-label">数据库操作</div><div class="setting-desc">允许 Agent 执行数据库读写</div></div>
+              <button class="seat-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">高风险操作人工审批</div><div class="setting-desc">文件删除、生产环境部署需要人工确认</div></div>
+              <button class="seat-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">外部 API 调用</div><div class="setting-desc">允许 Agent 调用第三方 API</div></div>
+              <button class="seat-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">通知</div>
+            <div class="setting-row">
+              <div><div class="setting-label">Agent 任务完成通知</div><div class="setting-desc">Agent 完成任务时发送通知</div></div>
+              <button class="seat-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Agent 错误告警</div><div class="setting-desc">Agent 执行失败时立即通知</div></div>
+              <button class="seat-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CMD+K OVERLAY -->
+<div class="cmdk-overlay" id="cmdkOverlay" onclick="if(event.target===this)closeCmdK()">
+  <div class="cmdk-modal">
+    <div class="cmdk-input-wrapper">
+      <span class="cmdk-search-icon">&#128269;</span>
+      <input class="cmdk-input" id="cmdkInput" placeholder="搜索任务、项目、频道、命令..." autofocus oninput="filterCmdK(this.value)">
+    </div>
+    <div class="cmdk-results" id="cmdkResults">
+      <div class="cmdk-group-label">快速操作</div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('chat')"><span class="cmdk-item-icon">&#128172;</span><span class="cmdk-item-label">打开对话</span><span class="cmdk-item-shortcut">G then C</span></div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('tasks')"><span class="cmdk-item-icon">&#9744;</span><span class="cmdk-item-label">打开任务看板</span><span class="cmdk-item-shortcut">G then T</span></div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('agents')"><span class="cmdk-item-icon">&#129302;</span><span class="cmdk-item-label">Agent 管理</span><span class="cmdk-item-shortcut">G then A</span></div>
+      <div class="cmdk-group-label">最近项目</div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('projects')"><span class="cmdk-item-icon">&#128194;</span><span class="cmdk-item-label">CODE-YI 前端重构</span></div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('projects')"><span class="cmdk-item-icon">&#128194;</span><span class="cmdk-item-label">官网 Landing Page</span></div>
+      <div class="cmdk-group-label">频道</div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('chat')"><span class="cmdk-item-icon">#</span><span class="cmdk-item-label">#general</span></div>
+      <div class="cmdk-item" onclick="closeCmdK();switchPanel('chat')"><span class="cmdk-item-icon">#</span><span class="cmdk-item-label">#dev-frontend</span></div>
+    </div>
+    <div class="cmdk-footer">
+      <span><kbd>&#8593;&#8595;</kbd> 导航</span>
+      <span><kbd>&#9166;</kbd> 选择</span>
+      <span><kbd>Esc</kbd> 关闭</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+let currentMode = 'code';
+let currentPanel = 'chat';
+
+const chatMessages = {
+  code: [
+    { type: 'human', name: 'Stephanie', avatar: 'S', text: '大家好，今天要把登录模块的 OAuth 集成完成，@Coder-1 你来负责后端接口', time: '09:15' },
+    { type: 'agent', name: 'Coder-1', avatar: '&#129302;', tag: 'Agent', text: '收到！我先分析一下现有的认证流程。<br><br>发现当前使用的是 JWT + session 混合方案，建议统一为纯 JWT：', time: '09:15', code: { lang: 'typescript', content: `<span class="cmt">// auth.service.ts</span>\n<span class="kw">export class</span> <span class="fn">AuthService</span> {\n  <span class="kw">async</span> <span class="fn">handleOAuthCallback</span>(provider: <span class="str">string</span>, code: <span class="str">string</span>) {\n    <span class="kw">const</span> tokens = <span class="kw">await</span> <span class="kw">this</span>.exchangeCode(provider, code);\n    <span class="kw">const</span> user = <span class="kw">await</span> <span class="kw">this</span>.findOrCreateUser(tokens);\n    <span class="kw">return</span> <span class="kw">this</span>.issueJWT(user);\n  }\n}` } },
+    { type: 'human', name: 'Kevin', avatar: 'K', text: '方案 LGTM，记得加 refresh token 的逻辑', time: '09:18' },
+    { type: 'agent', name: 'Reviewer-Bot', avatar: '&#128270;', tag: 'Agent', text: '我对 Coder-1 的方案做了安全审查：<br>&#10003; JWT 签名算法使用 RS256 &#10003;<br>&#10003; Token 过期时间 15 min &#10003;<br>&#9888; 建议：添加 token revocation 机制应对紧急情况', time: '09:20' },
+    { type: 'agent', name: 'Coder-1', avatar: '&#129302;', tag: 'Agent', streaming: true },
+  ],
+  office: [
+    { type: 'human', name: 'Stephanie', avatar: 'S', text: '帮我整理一下上周的客户反馈数据，分类汇总一下 @Data-Analyst', time: '09:30' },
+    { type: 'agent', name: 'Data-Analyst', avatar: '&#128202;', tag: 'Agent', text: '好的，我来分析上周的客户反馈。共收到 156 条反馈：<br><br>&#128309; <b>产品体验</b>: 52 条 (33%)<br>&#128992; <b>功能需求</b>: 41 条 (26%)<br>&#128994; <b>好评</b>: 38 条 (24%)<br>&#128993; <b>性能问题</b>: 25 条 (16%)<br><br>最高频关键词：「响应速度」「Agent 准确率」「界面美观」', time: '09:31' },
+    { type: 'human', name: 'Owen', avatar: 'O', text: '能不能做成一个 PPT 给下周的全员会议用？', time: '09:33' },
+    { type: 'agent', name: 'Doc-Writer', avatar: '&#128221;', tag: 'Agent', text: '我来帮你生成 PPT。基于 Data-Analyst 的数据，我建议 6 页幻灯片结构：<br>1. 概览数据<br>2. 分类分析<br>3. Top 10 高频问题<br>4. 趋势对比 (本周 vs 上周)<br>5. 行动建议<br>6. 下一步计划<br><br>现在开始生成...', time: '09:34' },
+    { type: 'agent', name: 'Doc-Writer', avatar: '&#128221;', tag: 'Agent', streaming: true },
+  ]
+};
+
+const kanbanData = {
+  todo: [
+    { title: '实现 WebSocket 实时消息推送', tags: ['p0'], agent: null, assignee: { name: 'K', color: 'var(--pink)' } },
+    { title: '设计 Agent 权限控制面板 UI', tags: ['p1'], agent: null, assignee: { name: 'L', color: 'var(--orange)' } },
+    { title: '编写 API 文档 (OpenAPI 3.0)', tags: ['p2'], agent: 'Doc-Bot', assignee: null },
+  ],
+  progress: [
+    { title: 'OAuth 2.0 集成 — GitHub / Google', tags: ['p0', 'agent'], agent: 'Coder-1', assignee: null },
+    { title: '任务看板拖拽功能开发', tags: ['p1'], agent: null, assignee: { name: 'K', color: 'var(--pink)' } },
+    { title: '自动化测试覆盖率提升到 80%', tags: ['p1', 'agent'], agent: 'QA-Bot', assignee: null },
+  ],
+  done: [
+    { title: '用户注册 / 登录页面', tags: ['p0'], agent: null, assignee: { name: 'S', color: 'var(--accent)' } },
+    { title: '数据库 Schema 设计 v2', tags: ['p1', 'agent'], agent: 'Coder-1', assignee: null },
+  ],
+  archived: [
+    { title: '技术选型调研 (React vs Vue)', tags: ['p2'], agent: null, assignee: { name: 'K', color: 'var(--pink)' } },
+  ]
+};
+
+const projectsData = [
+  { name: 'CODE-YI 前端重构', icon: '&#128187;', color: 'var(--accent)', desc: 'HxA 工作空间前端架构升级，React 18 + TypeScript', progress: 68, sprint: 'Sprint 7', team: ['S', 'K', '&#129302;'], alert: false },
+  { name: '官网 Landing Page', icon: '&#127912;', color: 'var(--pink)', desc: 'COCO 产品官网设计与开发，含 3D 动效', progress: 45, sprint: 'Sprint 7', team: ['L', '&#129302;'], alert: false },
+  { name: 'Agent Runtime v2', icon: '&#9881;', color: 'var(--green)', desc: 'Agent 运行时引擎重构，支持多 Agent 协同', progress: 82, sprint: 'Sprint 8', team: ['K', '&#129302;', '&#129302;'], alert: false },
+  { name: '移动端 MVP', icon: '&#128241;', color: 'var(--orange)', desc: 'React Native 移动端第一版，核心对话功能', progress: 22, sprint: 'Sprint 9', team: ['S', 'K'], alert: true },
+  { name: '知识库引擎', icon: '&#128218;', color: 'var(--accent-light)', desc: 'RAG + 向量数据库，组织知识沉淀', progress: 91, sprint: 'Sprint 6', team: ['&#129302;', '&#129302;'], alert: false },
+  { name: 'MCP 集成框架', icon: '&#128268;', color: 'var(--green)', desc: '标准化 MCP 工具协议接入层', progress: 55, sprint: 'Sprint 7', team: ['K', '&#129302;'], alert: false },
+];
+
+const agentsData = [
+  { name: 'Coder-1', model: 'Claude Opus 4.6', emoji: '&#128187;', status: 'online', tasks: 24, success: 96, avgTime: '3.2m', skills: ['代码生成', '重构', 'Code Review', 'Git 操作'] },
+  { name: 'Reviewer-Bot', model: 'Claude Sonnet 4.6', emoji: '&#128270;', status: 'online', tasks: 18, success: 99, avgTime: '1.8m', skills: ['安全审计', '代码审查', '性能分析'] },
+  { name: 'QA-Bot', model: 'Claude Sonnet 4.6', emoji: '&#129514;', status: 'online', tasks: 31, success: 88, avgTime: '5.1m', skills: ['单元测试', '集成测试', 'E2E 测试', 'Bug 复现'] },
+  { name: 'Doc-Writer', model: 'Claude Haiku 4.5', emoji: '&#128221;', status: 'paused', tasks: 12, success: 94, avgTime: '2.5m', skills: ['文档生成', 'API 文档', '用户手册'] },
+  { name: 'Data-Analyst', model: 'Claude Opus 4.6', emoji: '&#128202;', status: 'online', tasks: 15, success: 97, avgTime: '4.0m', skills: ['数据分析', '可视化', '报表生成', 'SQL'] },
+  { name: 'DevOps-Agent', model: 'Claude Sonnet 4.6', emoji: '&#9881;', status: 'online', tasks: 42, success: 92, avgTime: '6.8m', skills: ['CI/CD', 'Docker', 'K8s', '监控'] },
+];
+
+const toolsData = [
+  { icon: '&#128025;', name: 'GitHub', desc: '代码仓库、PR、Issues', installed: true },
+  { icon: '&#128230;', name: 'Docker', desc: '容器管理和部署', installed: true },
+  { icon: '&#128202;', name: 'PostgreSQL', desc: '数据库查询和管理', installed: true },
+  { icon: '&#128269;', name: 'Web Search', desc: '联网搜索实时信息', installed: true },
+  { icon: '&#128196;', name: 'Notion', desc: '文档和知识库同步', installed: false },
+  { icon: '&#128232;', name: 'Slack', desc: '消息通知集成', installed: false },
+  { icon: '&#127760;', name: 'Browser', desc: '网页自动化操作', installed: true },
+  { icon: '&#9729;', name: 'AWS', desc: '云服务管理', installed: false },
+  { icon: '&#128200;', name: 'Grafana', desc: '监控仪表板', installed: false },
+  { icon: '&#128231;', name: 'SendGrid', desc: '邮件发送服务', installed: false },
+  { icon: '&#128274;', name: 'Vault', desc: '密钥和证书管理', installed: true },
+  { icon: '&#128640;', name: 'Vercel', desc: '前端部署平台', installed: false },
+];
+
+// ============================================================
+// PARTICLES
+// ============================================================
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function initParticles() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  particles = [];
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: Math.random() * 2 + 0.5,
+      opacity: Math.random() * 0.3 + 0.1
+    });
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(108, 92, 231, ${p.opacity})`;
+    ctx.fill();
+  });
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(108, 92, 231, ${0.08 * (1 - dist / 120)})`;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+
+initParticles();
+drawParticles();
+window.addEventListener('resize', initParticles);
+
+// ============================================================
+// APP LOGIC
+// ============================================================
+function enterApp(mode) {
+  currentMode = mode;
+  document.getElementById('splash').classList.add('hidden');
+  document.getElementById('particles').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  setTimeout(() => app.classList.add('visible'), 50);
+  document.getElementById('modeLabel').textContent = mode === 'code' ? 'Code' : 'Office';
+  renderChat();
+  renderKanban();
+  renderProjects();
+  renderTeam();
+  renderAgents();
+  renderToolbox();
+  renderAdmin();
+}
+
+function switchMode() {
+  currentMode = currentMode === 'code' ? 'office' : 'code';
+  document.getElementById('modeLabel').textContent = currentMode === 'code' ? 'Code' : 'Office';
+  renderChat();
+}
+
+function switchPanel(panel) {
+  currentPanel = panel;
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.panel === panel);
+  });
+  document.querySelectorAll('.panel').forEach(el => {
+    el.classList.remove('active');
+  });
+  const p = document.getElementById('panel-' + panel);
+  if (p) p.classList.add('active');
+
+  const titles = {
+    chat: ['&#128172;', '对话', '#general &middot; 5 members &middot; 2 agents'],
+    tasks: ['&#9744;', '任务看板', '4 列 &middot; 9 张任务卡'],
+    projects: ['&#128194;', '项目', '6 个活跃项目'],
+    team: ['&#128101;', '团队', '5 人类 + 4 Agent'],
+    agents: ['&#129302;', 'Agent 管理', '6 个 Agent &middot; 5 在线'],
+    toolbox: ['&#128295;', '工具箱', '12 个工具 &middot; 6 已安装'],
+    admin: ['&#128200;', '管理后台', '系统概览'],
+    settings: ['&#9881;', '设置', '账户和权限配置'],
+  };
+  const t = titles[panel] || ['', '', ''];
+  document.getElementById('topbarTitle').innerHTML = `${t[0]} <span>${t[1]}</span><span class="topbar-desc">${t[2]}</span>`;
+}
+
+// ============================================================
+// CHAT
+// ============================================================
+function renderChat() {
+  const container = document.getElementById('chatMessages');
+  const msgs = chatMessages[currentMode] || [];
+  container.innerHTML = '';
+  msgs.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = `message ${m.type}`;
+    div.style.animationDelay = `${i * 0.1}s`;
+
+    if (m.streaming) {
+      div.innerHTML = `
+        <div class="msg-avatar agent-avatar">${m.avatar}</div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-name agent-name">${m.name}</span>
+            <span class="msg-tag">${m.tag}</span>
+          </div>
+          <div class="msg-content">
+            <div class="streaming">
+              <span class="streaming-dot"></span>
+              <span class="streaming-dot"></span>
+              <span class="streaming-dot"></span>
+              <span style="margin-left:4px">正在思考...</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      let codeHTML = '';
+      if (m.code) {
+        codeHTML = `<div class="code-block"><div class="code-header"><span>${m.code.lang}</span><button class="code-copy" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('.code-content').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button></div><pre class="code-content">${m.code.content}</pre></div>`;
+      }
+      const avatarClass = m.type === 'agent' ? 'agent-avatar' : 'human-avatar';
+      const nameClass = m.type === 'agent' ? 'agent-name' : '';
+      div.innerHTML = `
+        <div class="msg-avatar ${avatarClass}">${m.avatar}</div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-name ${nameClass}">${m.name}</span>
+            ${m.tag ? `<span class="msg-tag">${m.tag}</span>` : ''}
+            <span class="msg-time">${m.time}</span>
+          </div>
+          <div class="msg-content">${m.text}${codeHTML}</div>
+        </div>
+      `;
+    }
+    container.appendChild(div);
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const msgs = chatMessages[currentMode];
+  // Remove streaming message
+  const streamIdx = msgs.findIndex(m => m.streaming);
+  if (streamIdx > -1) msgs.splice(streamIdx, 1);
+
+  msgs.push({ type: 'human', name: 'Stephanie', avatar: 'S', text, time: new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false }) });
+  renderChat();
+
+  // Simulate agent response
+  setTimeout(() => {
+    msgs.push({
+      type: 'agent', name: currentMode === 'code' ? 'Coder-1' : 'Data-Analyst',
+      avatar: currentMode === 'code' ? '&#129302;' : '&#128202;',
+      tag: 'Agent',
+      text: currentMode === 'code'
+        ? '收到！我来处理这个需求。让我先分析一下...'
+        : '好的，我这就去处理。请稍等片刻...',
+      time: new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false })
+    });
+    renderChat();
+  }, 1200);
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+// ============================================================
+// KANBAN
+// ============================================================
+function renderKanban() {
+  const board = document.getElementById('kanbanBoard');
+  const cols = [
+    { key: 'todo', label: '待办', dotClass: 'todo' },
+    { key: 'progress', label: '进行中', dotClass: 'progress' },
+    { key: 'done', label: '已完成', dotClass: 'done' },
+    { key: 'archived', label: '已归档', dotClass: 'archived' },
+  ];
+  board.innerHTML = cols.map(col => {
+    const items = kanbanData[col.key] || [];
+    return `<div class="kanban-col">
+      <div class="kanban-col-header">
+        <span class="col-dot ${col.dotClass}"></span>
+        ${col.label}
+        <span class="col-count">${items.length}</span>
+      </div>
+      <div class="kanban-cards">
+        ${items.map(item => `
+          <div class="task-card" draggable="true" ondragstart="this.classList.add('dragging')" ondragend="this.classList.remove('dragging')">
+            <div class="task-title">${item.title}</div>
+            <div class="task-meta">
+              ${item.tags.map(t => {
+                if (t === 'agent') return `<span class="task-tag agent">&#129302; ${item.agent}</span>`;
+                return `<span class="task-tag ${t}">${t.toUpperCase()}</span>`;
+              }).join('')}
+              ${item.assignee ? `<span class="task-assignee"><span class="task-assignee-avatar" style="background:${item.assignee.color};color:#fff">${item.assignee.name}</span></span>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PROJECTS
+// ============================================================
+function renderProjects() {
+  const grid = document.getElementById('projectsGrid');
+  grid.innerHTML = projectsData.map(p => {
+    const progressColor = p.progress >= 80 ? 'var(--green)' : p.progress >= 50 ? 'var(--accent)' : p.progress >= 30 ? 'var(--orange)' : 'var(--red)';
+    return `<div class="project-card" style="position:relative">
+      ${p.alert ? '<div class="project-alert">&#9888; 进度落后</div>' : ''}
+      <div class="project-header">
+        <div class="project-icon" style="background:${p.color}20;color:${p.color}">${p.icon}</div>
+        <div>
+          <div class="project-name">${p.name}</div>
+        </div>
+      </div>
+      <div class="project-desc">${p.desc}</div>
+      <div class="project-progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%;background:${progressColor}"></div></div>
+        <div class="progress-label"><span>${p.progress}% 完成</span><span>${p.sprint}</span></div>
+      </div>
+      <div class="project-footer">
+        <div class="project-team">${p.team.map(t => `<span class="project-avatar" style="background:${t.length > 1 ? 'linear-gradient(135deg,var(--accent),var(--green))' : 'var(--pink)'};color:#fff;font-size:${t.length > 1 ? '10px' : '11px'}">${t}</span>`).join('')}</div>
+        <span class="project-sprint">${p.sprint}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// TEAM
+// ============================================================
+function renderTeam() {
+  const humans = [
+    { name: 'Stephanie', role: '产品负责人', status: 'online' },
+    { name: 'Kevin', role: '前端开发', status: 'online' },
+    { name: 'Athan', role: '后端开发', status: 'busy' },
+    { name: 'Tyler', role: '全栈开发', status: 'offline' },
+    { name: 'Owen', role: '设计师', status: 'online' },
+  ];
+  const agents = [
+    { name: 'Coder-1', role: '执行者 &middot; Claude Opus', status: 'online' },
+    { name: 'Reviewer-Bot', role: '审核者 &middot; Claude Sonnet', status: 'online' },
+    { name: 'QA-Bot', role: '执行者 &middot; Claude Sonnet', status: 'online' },
+    { name: 'Doc-Writer', role: '执行者 &middot; Claude Haiku', status: 'busy' },
+  ];
+  document.getElementById('humanTeam').innerHTML = humans.map(h => `
+    <div class="team-card">
+      <div class="team-member-avatar human">${h.name[0]}</div>
+      <div class="team-member-info">
+        <div class="team-member-name">${h.name}</div>
+        <div class="team-member-role">${h.role}</div>
+      </div>
+      <div class="team-member-status ${h.status}"></div>
+    </div>
+  `).join('');
+  document.getElementById('agentTeam').innerHTML = agents.map(a => `
+    <div class="team-card">
+      <div class="team-member-avatar agent">&#129302;</div>
+      <div class="team-member-info">
+        <div class="team-member-name">${a.name}</div>
+        <div class="team-member-role">${a.role}</div>
+      </div>
+      <div class="team-member-status ${a.status}"></div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// AGENTS
+// ============================================================
+function renderAgents() {
+  document.getElementById('agentDashboard').innerHTML = agentsData.map(a => `
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-card-avatar">${a.emoji}</div>
+        <div>
+          <div class="agent-card-name">${a.name}</div>
+          <div class="agent-card-model">${a.model}</div>
+        </div>
+        <span class="agent-card-status ${a.status}">${a.status === 'online' ? '&#128994; 在线' : '&#128993; 暂停'}</span>
+      </div>
+      <div class="agent-stats">
+        <div class="agent-stat"><div class="agent-stat-value">${a.tasks}</div><div class="agent-stat-label">本周任务</div></div>
+        <div class="agent-stat"><div class="agent-stat-value" style="color:${a.success >= 90 ? 'var(--green)' : 'var(--orange)'}">${a.success}%</div><div class="agent-stat-label">成功率</div></div>
+        <div class="agent-stat"><div class="agent-stat-value">${a.avgTime}</div><div class="agent-stat-label">平均耗时</div></div>
+      </div>
+      <div class="agent-skills">${a.skills.map(s => `<span class="agent-skill">${s}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// TOOLBOX
+// ============================================================
+function renderToolbox() {
+  document.getElementById('toolboxGrid').innerHTML = toolsData.map(t => `
+    <div class="tool-card">
+      <div class="tool-icon">${t.icon}</div>
+      <div class="tool-name">${t.name}</div>
+      <div class="tool-desc">${t.desc}</div>
+      <button class="tool-install-btn ${t.installed ? 'installed' : ''}" onclick="this.classList.toggle('installed');this.textContent=this.classList.contains('installed')?'&#10003; 已安装':'安装'">${t.installed ? '&#10003; 已安装' : '安装'}</button>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function renderAdmin() {
+  const kpis = [
+    { label: 'Agent 席位', value: '6', change: '+2', up: true },
+    { label: '活跃用户', value: '9', change: '+3', up: true },
+    { label: 'API 调用', value: '12.4k', change: '+18%', up: true },
+    { label: 'Credits 消耗', value: '$847', change: '-5%', up: false },
+  ];
+  document.getElementById('adminKpis').innerHTML = kpis.map(k => `
+    <div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-change ${k.up ? 'up' : 'down'}">${k.up ? '&#9650;' : '&#9660;'} ${k.change} 周环比</div>
+    </div>
+  `).join('');
+
+  // Simple chart
+  const svg = document.getElementById('apiChart');
+  const data = [1200, 1800, 1500, 2200, 1900, 2400, 2100];
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const maxVal = Math.max(...data) * 1.1;
+  const w = svg.clientWidth || 700;
+  const h = 200;
+  const padding = 40;
+  const stepX = (w - padding * 2) / (data.length - 1);
+
+  let pathD = '';
+  let areaD = `M ${padding} ${h - padding} `;
+  data.forEach((v, i) => {
+    const x = padding + i * stepX;
+    const y = h - padding - (v / maxVal) * (h - padding * 2);
+    if (i === 0) pathD += `M ${x} ${y}`;
+    else pathD += ` L ${x} ${y}`;
+    areaD += `L ${x} ${y} `;
+  });
+  areaD += `L ${padding + (data.length - 1) * stepX} ${h - padding} Z`;
+
+  let dotsHTML = '';
+  let labelsHTML = '';
+  data.forEach((v, i) => {
+    const x = padding + i * stepX;
+    const y = h - padding - (v / maxVal) * (h - padding * 2);
+    dotsHTML += `<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)" stroke="var(--bg-surface)" stroke-width="2"/>`;
+    labelsHTML += `<text x="${x}" y="${h - 10}" text-anchor="middle" fill="var(--text-muted)" font-size="11">${days[i]}</text>`;
+  });
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${areaD}" fill="url(#chartGrad)"/>
+    <path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dotsHTML}
+    ${labelsHTML}
+  `;
+
+  // Seats table
+  const seats = [
+    { name: 'Stephanie', type: 'human', role: '管理员', active: '刚刚', api: '-', on: true },
+    { name: 'Kevin', type: 'human', role: '开发者', active: '10分钟前', api: '-', on: true },
+    { name: 'Coder-1', type: 'agent', role: '执行者', active: '刚刚', api: '3,241', on: true },
+    { name: 'Reviewer-Bot', type: 'agent', role: '审核者', active: '5分钟前', api: '1,892', on: true },
+    { name: 'QA-Bot', type: 'agent', role: '执行者', active: '刚刚', api: '4,105', on: true },
+    { name: 'Doc-Writer', type: 'agent', role: '执行者', active: '1小时前', api: '856', on: false },
+    { name: 'DevOps-Agent', type: 'agent', role: '执行者', active: '刚刚', api: '2,340', on: true },
+  ];
+  document.getElementById('seatsTable').innerHTML = `
+    <thead><tr><th>名称</th><th>类型</th><th>角色</th><th>最近活跃</th><th>本周 API</th><th>状态</th></tr></thead>
+    <tbody>${seats.map(s => `<tr>
+      <td style="font-weight:600">${s.name}</td>
+      <td><span class="seat-type ${s.type}">${s.type === 'human' ? '&#128100; 人类' : '&#129302; Agent'}</span></td>
+      <td>${s.role}</td>
+      <td style="color:var(--text-dim)">${s.active}</td>
+      <td>${s.api}</td>
+      <td><button class="seat-toggle ${s.on ? 'on' : ''}" onclick="this.classList.toggle('on')"></button></td>
+    </tr>`).join('')}</tbody>
+  `;
+}
+
+// ============================================================
+// CMD+K
+// ============================================================
+function openCmdK() {
+  document.getElementById('cmdkOverlay').classList.add('visible');
+  setTimeout(() => document.getElementById('cmdkInput').focus(), 100);
+}
+function closeCmdK() {
+  document.getElementById('cmdkOverlay').classList.remove('visible');
+  document.getElementById('cmdkInput').value = '';
+}
+function filterCmdK(query) {
+  const items = document.querySelectorAll('.cmdk-item');
+  const q = query.toLowerCase();
+  items.forEach(item => {
+    const label = item.querySelector('.cmdk-item-label').textContent.toLowerCase();
+    item.style.display = label.includes(q) ? 'flex' : 'none';
+  });
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    const overlay = document.getElementById('cmdkOverlay');
+    if (overlay.classList.contains('visible')) closeCmdK();
+    else openCmdK();
+  }
+  if (e.key === 'Escape') closeCmdK();
+});
+</script>
+</body>
+</html>
