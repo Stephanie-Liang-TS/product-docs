@@ -22,23 +22,25 @@ CODE-YI v0.1 包含 9 个核心模块：
 
 ```
 product-docs/
-├── README.md                                    # 本文件
+├── README.md                                              # 本文件
 └── workspace/
-    ├── coco-workspace-executive-summary.md       # 产品概要（Executive Summary）
-    ├── coco-workspace-general-prd.md             # 总产品 PRD
-    ├── coco-workspace-general-research.md        # 通用产品调研
-    ├── coco-workspace-spec-modules-breakdown.md  # 模块拆分 Spec
-    ├── workbuddy-research.md                     # WorkBuddy 竞品调研
+    ├── coco-workspace-executive-summary.md                 # 产品概要（Executive Summary）
+    ├── coco-workspace-general-prd.md                       # 总产品 PRD（CODE-YI v0.1）
+    ├── coco-workspace-general-business-analysis-v1.md      # 商业分析报告（基于真实数据）(644 行)
+    ├── coco-workspace-scenario-driven-prd.md               # 场景驱动 PRD（新方向）(2326 行)
+    ├── coco-workspace-general-research.md                  # 通用产品调研
+    ├── coco-workspace-spec-modules-breakdown.md            # 模块拆分 Spec
+    ├── workbuddy-research.md                               # WorkBuddy 竞品调研
     └── modules/
-        ├── module1-chat-prd.md                   # Module 1: 对话 (2111 行)
-        ├── module2-tasks-prd.md                  # Module 2: 任务 (2540 行)
-        ├── module3-projects-prd.md               # Module 3: 项目 (2212 行)
-        ├── module4-team-prd.md                   # Module 4: 团队 (2403 行)
-        ├── module5-agent-prd.md                  # Module 5: Agent 管理 (3377 行)
-        ├── module6-toolbox-prd.md                # Module 6: 工具箱 (3013 行)
-        ├── module7-admin-prd.md                  # Module 7: 管理后台 (2849 行)
-        ├── module8-settings-prd.md               # Module 8: 设置 (2345 行)
-        └── module9-cmdk-prd.md                  # Module 9: 全局命令面板 (2484 行)
+        ├── module1-chat-prd.md                             # Module 1: 对话 (2111 行)
+        ├── module2-tasks-prd.md                             # Module 2: 任务 (2540 行)
+        ├── module3-projects-prd.md                          # Module 3: 项目 (2212 行)
+        ├── module4-team-prd.md                              # Module 4: 团队 (2403 行)
+        ├── module5-agent-prd.md                             # Module 5: Agent 管理 (3377 行)
+        ├── module6-toolbox-prd.md                           # Module 6: 工具箱 (3013 行)
+        ├── module7-admin-prd.md                             # Module 7: 管理后台 (2849 行)
+        ├── module8-settings-prd.md                          # Module 8: 设置 (2345 行)
+        └── module9-cmdk-prd.md                              # Module 9: 全局命令面板 (2484 行)
 ```
 
 ## SSOT 工作流
