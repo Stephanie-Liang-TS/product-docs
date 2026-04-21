@@ -1292,6 +1292,7 @@ body {
   padding: 8px 16px 10px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 .chat-input-top-actions {
   display: flex;
@@ -1370,7 +1371,7 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
   border-radius: 12px; box-shadow: var(--shadow-modal);
-  padding: 6px; min-width: 220px; z-index: 100;
+  padding: 6px; min-width: 220px; z-index: 200;
   animation: fadeInUp 0.2s ease;
 }
 .toolbar-dropdown-item {
@@ -3104,7 +3105,7 @@ body {
           <!-- Center: Chat Area -->
           <div class="chat-main">
             <div class="chat-header" id="chatHeader">
-              <span class="chat-header-name" id="chatHeaderName">产品开发群</span>
+              <span class="chat-header-name" id="chatHeaderName">COCO Agent</span>
               <span class="chat-header-status"></span>
               <span class="chat-header-model" id="chatHeaderModel" style="display:none;">Claude Sonnet</span>
               <span class="chat-header-spacer"></span>
@@ -3790,7 +3791,7 @@ body {
 // ================================================================
 let currentMode = 'code';
 let currentModule = 'chat';
-let currentChannel = 'product-dev';
+let currentChannel = 'coco-agent';
 let infoPanelVisible = true;
 let currentConvFilter = 'all';
 let sidebarCollapsed = false;
@@ -3813,6 +3814,7 @@ const moduleNames = {
 
 // Conversation list data
 const conversationsData = [
+  { id: 'coco-agent', name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', tag: 'Agent', type: 'dm', time: '刚刚', preview: '欢迎来到 COCO Workspace！', unread: 1, model: 'Auto' },
   { id: 'code-assistant', name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#d357fe,#96bbff)', tag: 'Agent', type: 'dm', time: '10:32', preview: '已完成 API 文档初稿，请查看附件', unread: 3, model: 'Claude Sonnet' },
   { id: 'product-dev', name: '产品开发群', avatar: '💻', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', tag: '群聊', type: 'group', time: '09:45', preview: '张伟: 前端组件库已更新到 v3.2', unread: 2, model: null },
   { id: 'li-siqi', name: '李思琪', avatar: '琪', color: 'linear-gradient(135deg,#fd79a8,#e84393)', tag: null, type: 'dm', time: '09:20', preview: '设计稿已经更新，看下新的交互方案', unread: 0, model: null },
@@ -3825,6 +3827,16 @@ const conversationsData = [
 
 // Info panel data per channel
 const channelInfoData = {
+  'coco-agent': {
+    title: 'Agent 信息',
+    groupName: 'COCO Agent',
+    description: 'COCO Workspace 私人 AI 助手，帮你完成初始设置、管理工作区。',
+    agentMode: '自动回复',
+    pinned: [],
+    members: [
+      { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', isAgent: true }
+    ]
+  },
   'product-dev': {
     title: '群聊信息',
     groupName: '产品开发群',
@@ -6696,6 +6708,7 @@ function restartOnboarding() {
   workspaceAgents = ['coco'];
   obInvitedMembers = [];
   document.getElementById('wtRestartBtn').style.display = 'none';
+  switchChannel('coco-agent');
   startOnboardingChat();
 }
 
@@ -7649,26 +7662,27 @@ function clearCategoryTag(e) {
 // Agent mode toolbar dropdowns
 let currentAgentMode = 'Ask';
 const agentModes = [
-  { id: 'craft', icon: '📦', name: 'Craft', desc: '可以执行文件操作、命令等', tools: '文件及系统操作 · 任务管理 · 网络搜索' },
-  { id: 'plan', icon: '📋', name: 'Plan', desc: '擅长制定多步骤计划', tools: '文件读取' },
-  { id: 'ask', icon: '💬', name: 'Ask', desc: '仅能读取文件', tools: '文件读取' },
+  { id: 'craft', icon: '📦', name: 'Craft', subtitle: '你说，我做', desc: '立即执行任务——读写文件、运行命令、生成内容、直接交付结果', tools: '文件及系统操作 · 任务管理 · 网络搜索' },
+  { id: 'plan', icon: '📋', name: 'Plan', subtitle: '先思考，再执行', desc: '先分析需求、拆解步骤、制定方案，你确认后再动手', tools: '文件读取' },
+  { id: 'ask', icon: '💬', name: 'Ask', subtitle: '只聊，不动手', desc: '只回答问题、读文件、分析信息，不修改任何文件，不执行命令', tools: '文件读取' },
 ];
 
 function toggleModeMenu(btn) {
-  const existing = btn.querySelector('.toolbar-dropdown');
+  const container = btn.closest('.chat-input-container');
+  const existing = container.querySelector('.toolbar-dropdown.mode-dd');
   if (existing) { existing.remove(); return; }
   closeAllToolbarDropdowns();
   const dd = document.createElement('div');
-  dd.className = 'toolbar-dropdown';
+  dd.className = 'toolbar-dropdown mode-dd';
   dd.innerHTML = agentModes.map(m =>
     `<div class="toolbar-dropdown-item${m.name===currentAgentMode?' active':''}" onclick="selectAgentMode('${m.name}',this)">
       <span class="tdi-icon">${m.icon}</span>
-      <div><div>${m.name}</div></div>
+      <div style="flex:1;"><div>${m.name}</div><div style="font-size:11px;color:var(--text-muted);margin-top:1px;">${m.subtitle}</div></div>
       ${m.name===currentAgentMode?'<span class="tdi-check">✓</span>':''}
-      <span class="tdi-info" title="${m.desc}\nTools: ${m.tools}">i</span>
+      <span class="tdi-info" onclick="event.stopPropagation();toggleModeInfo(this,'${m.name}')" data-mode="${m.name}">i</span>
     </div>`
   ).join('') + `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('召唤专家功能即将上线')"><span class="tdi-icon">✨</span><div>召唤专家</div></div>`;
-  btn.appendChild(dd);
+  container.appendChild(dd);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
 }
@@ -7678,7 +7692,8 @@ function selectAgentMode(mode, item) {
   const m = agentModes.find(a => a.name === mode);
   document.getElementById('toolbarModeName').textContent = mode;
   document.querySelector('#toolbarModeBtn .toolbar-icon').textContent = m.icon;
-  item.closest('.toolbar-dropdown').remove();
+  const dd = item.closest('.toolbar-dropdown');
+  if (dd) dd.remove();
 }
 
 const modelList = [
@@ -7691,17 +7706,18 @@ const modelList = [
 ];
 
 function toggleAutoMenu(btn) {
-  const existing = btn.querySelector('.toolbar-dropdown');
+  const container = btn.closest('.chat-input-container');
+  const existing = container.querySelector('.toolbar-dropdown.model-dd');
   if (existing) { existing.remove(); return; }
   closeAllToolbarDropdowns();
   const dd = document.createElement('div');
-  dd.className = 'toolbar-dropdown';
+  dd.className = 'toolbar-dropdown model-dd';
   dd.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;font-size:13px;font-weight:500;">自动模式 <div style="width:36px;height:20px;border-radius:10px;background:var(--accent);cursor:pointer;" onclick="showToast('自动模式已切换')"></div></div>
     <div class="toolbar-dropdown-divider"></div>
     <div class="toolbar-dropdown-label">内置模型</div>` +
     modelList.map(m => `<div class="toolbar-dropdown-item${m.checked?' active':''}" onclick="selectModel('${m.name}',this)"><span class="tdi-icon">${m.icon}</span><div>${m.name}</div>${m.checked?'<span class="tdi-check">✓</span>':''}</div>`).join('') +
     `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('自定义模型配置即将上线')"><span class="tdi-icon">+</span><div>配置自定义模型</div></div>`;
-  btn.appendChild(dd);
+  container.appendChild(dd);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
 }
@@ -7730,8 +7746,8 @@ function toggleSkillsPanel(btn) {
   dd.innerHTML = `<div style="padding:6px 10px;"><input type="text" placeholder="搜索技能" style="width:100%;padding:6px 10px;border:1px solid var(--border-glass);border-radius:6px;font-size:12px;outline:none;" oninput="filterSkills(this.value)"></div>` +
     skills.map(s => `<div class="toolbar-dropdown-item skill-item"><span class="tdi-icon">${s.icon}</span><div style="flex:1;overflow:hidden;"><div style="font-size:13px;font-weight:500;">${s.name}</div><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.desc}</div></div></div>`).join('') +
     `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('技能导入即将上线')"><span class="tdi-icon">📦</span><div>导入技能</div></div>`;
-  btn.style.position = 'relative';
-  btn.appendChild(dd);
+  const container = btn.closest('.chat-input-container');
+  container.appendChild(dd);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
 }
@@ -7741,8 +7757,22 @@ function filterSkills(q) {
     s.style.display = s.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
 }
+function toggleModeInfo(el, modeName) {
+  const existing = document.querySelector('.mode-info-tooltip');
+  if (existing) { existing.remove(); if (existing.dataset.mode === modeName) return; }
+  const m = agentModes.find(a => a.name === modeName);
+  const tip = document.createElement('div');
+  tip.className = 'mode-info-tooltip';
+  tip.dataset.mode = modeName;
+  tip.innerHTML = `<div style="font-weight:600;font-size:13px;margin-bottom:4px;">${m.icon} ${m.name} — ${m.subtitle}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5;">${m.desc}</div>`;
+  tip.style.cssText = 'position:absolute;right:0;top:100%;margin-top:4px;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;box-shadow:var(--shadow-modal);padding:10px 14px;min-width:240px;max-width:300px;z-index:200;animation:fadeInUp 0.15s ease;';
+  el.style.position = 'relative';
+  el.appendChild(tip);
+  setTimeout(() => document.addEventListener('click', function cl() { tip.remove(); document.removeEventListener('click', cl); }), 10);
+}
 function closeAllToolbarDropdowns() {
   document.querySelectorAll('.toolbar-dropdown').forEach(d => d.remove());
+  document.querySelectorAll('.mode-info-tooltip').forEach(d => d.remove());
 }
 
 // Initialize category chips when chat is shown

@@ -161,7 +161,7 @@
     .hero {
       flex-direction: column;
       justify-content: flex-end;
-      padding-bottom: 80px;
+      padding-bottom: 160px;
     }
 
     .hero-label {
@@ -520,6 +520,27 @@
 
     .footer-logo .bracket { color: var(--accent); }
 
+    .nav-logo-img {
+      height: 28px;
+      width: auto;
+    }
+
+    .loading-logo-img {
+      height: 60px;
+      width: auto;
+    }
+
+    .footer-logo-img {
+      height: 22px;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .footer-logo span {
+      vertical-align: middle;
+    }
+
     .footer-copy {
       font-family: var(--font-mono);
       font-size: 11px;
@@ -599,7 +620,7 @@
 
 <!-- Loading Screen -->
 <div id="loading">
-  <div class="loading-logo"><span class="bracket">[</span>COCO<span class="bracket">]</span></div>
+  <div class="loading-logo"><img src="coco-logo.png" alt="COCO" class="loading-logo-img"></div>
   <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
   <div class="loading-pct" id="loading-pct">0%</div>
 </div>
@@ -609,7 +630,7 @@
 
 <!-- Navigation -->
 <nav id="main-nav">
-  <a href="#" class="nav-logo"><span class="bracket">[</span>COCO<span class="bracket">]</span></a>
+  <a href="#" class="nav-logo"><img src="coco-logo.png" alt="COCO" class="nav-logo-img"></a>
   <ul class="nav-links">
     <li><a href="#hero">Home</a></li>
     <li><a href="#features">Features</a></li>
@@ -759,7 +780,7 @@
 
 <!-- Footer -->
 <footer>
-  <div class="footer-logo"><span class="bracket">[</span>COCO<span class="bracket">]</span> Workspace</div>
+  <div class="footer-logo"><img src="coco-logo.png" alt="COCO" class="footer-logo-img"><span>Workspace</span></div>
   <div class="footer-copy">© 2024 COCO AI. All rights reserved.</div>
 </footer>
 
@@ -1296,7 +1317,7 @@ function setupScrollTriggers() {
     },
   });
 
-  // Section 2 → 3: glass sphere fades, organic mesh appears
+  // Section 2 → 3: glass sphere returns to center
   ScrollTrigger.create({
     trigger: '#modes',
     start:   'top bottom',
@@ -1306,12 +1327,11 @@ function setupScrollTriggers() {
       const p = self.progress;
       sceneState.sphereX      = gsap.utils.interpolate(-2.2,  0,    p);
       sceneState.sphereY      = gsap.utils.interpolate(-0.3,  0,    p);
-      sceneState.sphereScale  = gsap.utils.interpolate(0.75,  0,    p);
-      sceneState.organicMorph = gsap.utils.interpolate(0,     1.0,  p);
+      sceneState.sphereScale  = gsap.utils.interpolate(0.75,  0.9,  p);
     },
   });
 
-  // Section 3 → 4: organic mesh morphs, dramatic light
+  // Section 3 → 4: sphere gently floats up, dramatic light
   ScrollTrigger.create({
     trigger: '#cta',
     start:   'top bottom',
@@ -1319,9 +1339,8 @@ function setupScrollTriggers() {
     scrub:   1.5,
     onUpdate: (self) => {
       const p = self.progress;
-      sceneState.organicMorph  = gsap.utils.interpolate(1.0,  0.5,  p);
       sceneState.lightIntensity = gsap.utils.interpolate(1.0,  2.5,  p);
-      sceneState.sphereScale   = gsap.utils.interpolate(0,     0.5,  p);
+      sceneState.sphereScale   = gsap.utils.interpolate(0.9,  0.85, p);
       sceneState.sphereX       = gsap.utils.interpolate(0,     0,    p);
       sceneState.sphereY       = gsap.utils.interpolate(0,     0.2,  p);
     },
@@ -1437,18 +1456,8 @@ function animate() {
   // Fragment visibility based on section
   fragmentGroup.visible = (sceneState.sphereScale > 0.01 || sceneState.fragmentSpread > 0.1);
 
-  // ---- Organic Mesh ----
-  const organicVisible = sceneState.organicMorph > 0.05;
-  organicMesh.visible  = organicVisible;
-  if (organicVisible) {
-    organicUniforms.uTime.value        = elapsed;
-    organicUniforms.uMorphTarget.value = sceneState.organicMorph;
-    organicMesh.rotation.y             = elapsed * 0.18;
-    organicMesh.rotation.x             = Math.sin(elapsed * 0.2) * 0.15;
-    // Scale in organically
-    const scale = Math.min(1.0, sceneState.organicMorph * 1.5);
-    organicMesh.scale.setScalar(scale);
-  }
+  // ---- Organic Mesh (disabled) ----
+  organicMesh.visible = false;
 
   // ---- Particles ----
   particles.rotation.y = elapsed * 0.012;
