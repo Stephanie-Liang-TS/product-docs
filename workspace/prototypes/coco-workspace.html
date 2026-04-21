@@ -3322,6 +3322,12 @@ function updateModeUI() {
 function switchMode(mode) {
   currentMode = mode;
   updateModeUI();
+  selectedCategory = null;
+  const templates = document.getElementById('chatPromptTemplates');
+  if (templates) templates.style.display = 'none';
+  const tags = document.getElementById('chatInputTags');
+  if (tags) tags.innerHTML = '';
+  renderCategoryChips();
   showToast(mode === 'code' ? '已切换到代码开发模式' : '已切换到日常办公模式');
 }
 
@@ -5699,9 +5705,7 @@ let selectedCategory = null;
 function renderCategoryChips() {
   const container = document.getElementById('chatCategoryChips');
   if (!container) return;
-  // Determine mode from the mode toggle
-  const modeToggle = document.querySelector('.mode-toggle .mode-btn.active');
-  currentInputMode = (modeToggle && modeToggle.textContent.includes('代码')) ? 'code' : 'office';
+  currentInputMode = currentMode || 'office';
   const cats = categoryData[currentInputMode] || categoryData.office;
   container.innerHTML = cats.map((c, i) => `<div class="chat-category-chip${selectedCategory === i ? ' active' : ''}" onclick="selectCategory(${i})"><span class="chip-icon">${c.icon}</span> ${c.name}</div>`).join('');
 }
