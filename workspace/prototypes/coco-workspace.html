@@ -1292,7 +1292,6 @@ body {
   padding: 8px 16px 10px;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 .chat-input-top-actions {
   display: flex;
@@ -1366,12 +1365,11 @@ body {
 .toolbar-arrow { font-size: 10px; opacity: 0.6; }
 /* Toolbar dropdown panels */
 .toolbar-dropdown {
-  position: absolute; bottom: 100%; left: 0;
-  margin-bottom: 6px;
+  position: fixed;
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
   border-radius: 12px; box-shadow: var(--shadow-modal);
-  padding: 6px; min-width: 220px; z-index: 200;
+  padding: 6px; min-width: 220px; z-index: 9999;
   animation: fadeInUp 0.2s ease;
 }
 .toolbar-dropdown-item {
@@ -7676,9 +7674,23 @@ const agentModes = [
   { id: 'ask', icon: '💬', name: 'Ask', subtitle: '只聊，不动手', desc: '只回答问题、读文件、分析信息，不修改任何文件，不执行命令', tools: '文件读取' },
 ];
 
+function positionDropdown(dd, btn) {
+  document.body.appendChild(dd);
+  const rect = btn.getBoundingClientRect();
+  dd.style.left = rect.left + 'px';
+  // Position above the button
+  requestAnimationFrame(() => {
+    const ddH = dd.offsetHeight;
+    dd.style.top = (rect.top - ddH - 6) + 'px';
+    // Clamp to viewport
+    if (parseFloat(dd.style.top) < 8) dd.style.top = '8px';
+    const ddRight = rect.left + dd.offsetWidth;
+    if (ddRight > window.innerWidth - 8) dd.style.left = (window.innerWidth - dd.offsetWidth - 8) + 'px';
+  });
+}
+
 function toggleModeMenu(btn) {
-  const container = btn.closest('.chat-input-container');
-  const existing = container.querySelector('.toolbar-dropdown.mode-dd');
+  const existing = document.querySelector('.toolbar-dropdown.mode-dd');
   if (existing) { existing.remove(); return; }
   closeAllToolbarDropdowns();
   const dd = document.createElement('div');
@@ -7691,7 +7703,7 @@ function toggleModeMenu(btn) {
       <span class="tdi-info" onclick="event.stopPropagation();toggleModeInfo(this,'${m.name}')" data-mode="${m.name}">i</span>
     </div>`
   ).join('') + `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('召唤专家功能即将上线')"><span class="tdi-icon">✨</span><div>召唤专家</div></div>`;
-  container.appendChild(dd);
+  positionDropdown(dd, btn);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
 }
@@ -7715,8 +7727,7 @@ const modelList = [
 ];
 
 function toggleAutoMenu(btn) {
-  const container = btn.closest('.chat-input-container');
-  const existing = container.querySelector('.toolbar-dropdown.model-dd');
+  const existing = document.querySelector('.toolbar-dropdown.model-dd');
   if (existing) { existing.remove(); return; }
   closeAllToolbarDropdowns();
   const dd = document.createElement('div');
@@ -7726,7 +7737,7 @@ function toggleAutoMenu(btn) {
     <div class="toolbar-dropdown-label">内置模型</div>` +
     modelList.map(m => `<div class="toolbar-dropdown-item${m.checked?' active':''}" onclick="selectModel('${m.name}',this)"><span class="tdi-icon">${m.icon}</span><div>${m.name}</div>${m.checked?'<span class="tdi-check">✓</span>':''}</div>`).join('') +
     `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('自定义模型配置即将上线')"><span class="tdi-icon">+</span><div>配置自定义模型</div></div>`;
-  container.appendChild(dd);
+  positionDropdown(dd, btn);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
 }
@@ -7755,8 +7766,7 @@ function toggleSkillsPanel(btn) {
   dd.innerHTML = `<div style="padding:6px 10px;"><input type="text" placeholder="搜索技能" style="width:100%;padding:6px 10px;border:1px solid var(--border-glass);border-radius:6px;font-size:12px;outline:none;" oninput="filterSkills(this.value)"></div>` +
     skills.map(s => `<div class="toolbar-dropdown-item skill-item"><span class="tdi-icon">${s.icon}</span><div style="flex:1;overflow:hidden;"><div style="font-size:13px;font-weight:500;">${s.name}</div><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.desc}</div></div></div>`).join('') +
     `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('技能导入即将上线')"><span class="tdi-icon">📦</span><div>导入技能</div></div>`;
-  const container = btn.closest('.chat-input-container');
-  container.appendChild(dd);
+  positionDropdown(dd, btn);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
 }
@@ -7783,6 +7793,7 @@ function closeAllToolbarDropdowns() {
   document.querySelectorAll('.toolbar-dropdown').forEach(d => d.remove());
   document.querySelectorAll('.mode-info-tooltip').forEach(d => d.remove());
 }
+window.addEventListener('scroll', closeAllToolbarDropdowns, true);
 
 // Initialize category chips when chat is shown
 const origRenderChat = typeof renderChat === 'function' ? renderChat : null;
