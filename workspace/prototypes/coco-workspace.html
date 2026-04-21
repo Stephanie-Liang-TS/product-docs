@@ -2323,10 +2323,16 @@ body {
               <input type="text" id="wtGroupName" value="产品开发群" placeholder="输入群聊名称...">
               <label>群聊描述</label>
               <textarea id="wtGroupDesc" placeholder="简单描述这个群聊的用途...">COCO Workspace 产品团队日常沟通频道</textarea>
-              <label>类型</label>
-              <div style="display:flex;gap:8px;">
-                <button class="wt-btn wt-btn-primary" style="padding:8px 20px;font-size:13px;" id="wtTypeGroup" onclick="wtSelectType('group')">群聊</button>
-                <button class="wt-btn wt-btn-secondary" style="padding:8px 20px;font-size:13px;" id="wtTypeChannel" onclick="wtSelectType('channel')">频道</button>
+              <label>可见性</label>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div class="wt-visibility-opt selected" id="wtVisPublic" onclick="wtSelectVisibility('public')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--accent);border-radius:10px;cursor:pointer;background:rgba(211,87,254,0.04);transition:all .2s;">
+                  <span style="font-size:16px;margin-top:1px;">🌐</span>
+                  <div><div style="font-size:13px;font-weight:600;color:var(--text-main);">公开群</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">工作区内所有人可搜索/加入</div></div>
+                </div>
+                <div class="wt-visibility-opt" id="wtVisPrivate" onclick="wtSelectVisibility('private')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;background:transparent;transition:all .2s;">
+                  <span style="font-size:16px;margin-top:1px;">🔒</span>
+                  <div><div style="font-size:13px;font-weight:600;color:var(--text-main);">私有群</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">仅邀请制</div></div>
+                </div>
               </div>
             </div>
             <div style="margin-top:8px;">
@@ -4291,6 +4297,17 @@ function wtSelectType(type) {
   document.getElementById('wtTypeChannel').classList.toggle('wt-btn-primary', type === 'channel');
   document.getElementById('wtTypeChannel').classList.toggle('wt-btn-secondary', type !== 'channel');
 }
+function wtSelectVisibility(vis) {
+  const pub = document.getElementById('wtVisPublic');
+  const priv = document.getElementById('wtVisPrivate');
+  if (vis === 'public') {
+    pub.classList.add('selected'); pub.style.borderColor = 'var(--accent)'; pub.style.background = 'rgba(211,87,254,0.04)';
+    priv.classList.remove('selected'); priv.style.borderColor = 'var(--border-glass)'; priv.style.background = 'transparent';
+  } else {
+    priv.classList.add('selected'); priv.style.borderColor = 'var(--accent)'; priv.style.background = 'rgba(211,87,254,0.04)';
+    pub.classList.remove('selected'); pub.style.borderColor = 'var(--border-glass)'; pub.style.background = 'transparent';
+  }
+}
 
 function wtToggleMember(el) {
   el.classList.toggle('selected');
@@ -4788,6 +4805,16 @@ function openNewGroupFlow() {
     <div class="chat-modal-title">新建群聊</div>
     <div class="chat-modal-desc">创建群聊并邀请成员和 AI Agent</div>
     <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">群聊名称</label><input type="text" placeholder="输入群聊名称..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;"></div>
+    <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">可见性</label>
+      <div style="display:flex;gap:8px;">
+        <div onclick="this.style.borderColor='var(--accent)';this.style.background='rgba(211,87,254,0.04)';this.nextElementSibling.style.borderColor='var(--border-glass)';this.nextElementSibling.style.background='transparent'" style="flex:1;display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1.5px solid var(--accent);border-radius:10px;cursor:pointer;background:rgba(211,87,254,0.04);transition:all .2s;">
+          <span style="font-size:14px;">🌐</span><div><div style="font-size:12px;font-weight:600;">公开群</div><div style="font-size:10px;color:var(--text-muted);margin-top:1px;">工作区内所有人可搜索/加入</div></div>
+        </div>
+        <div onclick="this.style.borderColor='var(--accent)';this.style.background='rgba(211,87,254,0.04)';this.previousElementSibling.style.borderColor='var(--border-glass)';this.previousElementSibling.style.background='transparent'" style="flex:1;display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;background:transparent;transition:all .2s;">
+          <span style="font-size:14px;">🔒</span><div><div style="font-size:12px;font-weight:600;">私有群</div><div style="font-size:10px;color:var(--text-muted);margin-top:1px;">仅邀请制</div></div>
+        </div>
+      </div>
+    </div>
     <div style="margin-bottom:16px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">添加 Agent</label>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">${workspaceAgents.map(id=>{const a=allAgents.find(x=>x.id===id);if(!a)return'';return '<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--accent-bg);border-radius:8px;font-size:12px;cursor:pointer;border:1.5px solid var(--accent);" onclick="this.style.borderColor=this.style.borderColor?\\"\\":\\"var(--accent)\\""><span style="font-size:14px;">'+a.emoji+'</span> '+a.name+'</div>';}).join('')}<div style="display:flex;align-items:center;gap:4px;padding:6px 10px;border:1.5px dashed var(--border-glass);border-radius:8px;font-size:12px;color:var(--accent);cursor:pointer;" onclick="this.closest('.chat-modal-overlay').remove();openAgentMarket()">+ 更多</div></div></div>
     <div style="margin-bottom:16px;"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">邀请成员</label><div style="display:flex;gap:8px;"><input type="email" placeholder="输入邮箱..." style="flex:1;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;"><button class="wt-btn wt-btn-secondary" style="padding:8px 14px;font-size:12px;">添加</button></div></div>
