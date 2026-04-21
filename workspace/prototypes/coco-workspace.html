@@ -204,8 +204,8 @@ body {
    SIDEBAR
    ============================================================ */
 .sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 190px;
+  min-width: 190px;
   height: 100vh;
   background: var(--bg-card);
   border-right: 1px solid var(--border-light);
@@ -220,12 +220,12 @@ body {
   min-width: 68px;
 }
 .sidebar-header {
-  padding: 20px;
+  padding: 16px 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border-bottom: 1px solid var(--border-light);
-  min-height: 68px;
+  min-height: 60px;
 }
 .sidebar-logo {
   width: 36px;
@@ -1915,19 +1915,6 @@ body {
 .import-source-badge.available { background: rgba(0,0,0,0.05); color: var(--text-muted); }
 
 /* Project active toggle */
-.project-active-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  user-select: none;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-light);
-}
 .project-active-dot {
   width: 8px;
   height: 8px;
@@ -1936,10 +1923,24 @@ body {
 }
 .project-active-dot.on { background: var(--success); }
 .project-active-dot.off { background: #ccc; }
-.project-card.inactive {
-  opacity: 0.45;
-  filter: grayscale(0.5);
+.project-card.archived {
+  opacity: 0.55;
+  filter: grayscale(0.4);
 }
+.btn-archive {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-archive:hover { border-color: var(--accent); color: var(--accent); }
+.btn-archive.restore { color: var(--success); border-color: rgba(0,184,148,0.3); }
+.btn-archive.restore:hover { border-color: var(--success); }
 .project-card.inactive:hover { opacity: 0.65; }
 
 /* ============================================================
@@ -2575,6 +2576,20 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 .admin-table tr:hover td { background: rgba(0,0,0,0.01); }
+.btn-seat-action {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 4px;
+}
+.btn-seat-action:hover { border-color: var(--accent); color: var(--accent); }
+.btn-seat-action.danger:hover { border-color: #e74c3c; color: #e74c3c; }
 
 /* ============================================================
    MODULE: SETTINGS
@@ -3236,6 +3251,15 @@ body {
           <div class="projects-grid" id="projectsGrid">
             <!-- populated by JS -->
           </div>
+          <div id="archivedSection" style="margin-top:32px;display:none;">
+            <div class="section-title" style="cursor:pointer;" onclick="toggleArchivedSection()">
+              已归档项目 · <span id="archivedCount">0</span>
+              <span id="archivedChevron" style="font-size:10px;margin-left:4px;transition:transform 0.2s;">▼</span>
+            </div>
+            <div class="projects-grid" id="archivedGrid" style="opacity:0.6;">
+              <!-- populated by JS -->
+            </div>
+          </div>
         </div>
         <div class="project-detail" id="projectDetail">
           <!-- populated by JS -->
@@ -3408,10 +3432,13 @@ body {
           </table>
         </div>
         <div class="glass-card" style="margin-bottom:28px;">
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;">席位管理</h3>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <h3 style="font-size:16px;font-weight:700;">席位管理</h3>
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 14px;" onclick="showToast('添加席位功能开发中')">+ 添加席位</button>
+          </div>
           <table class="admin-table" id="adminTable">
             <thead>
-              <tr><th>成员</th><th>角色</th><th>状态</th><th>最后活跃</th></tr>
+              <tr><th>成员</th><th>角色</th><th>状态</th><th>最后活跃</th><th style="text-align:right;">操作</th></tr>
             </thead>
             <tbody id="adminTableBody">
               <!-- populated by JS -->
@@ -3715,6 +3742,17 @@ body {
 </div>
 
 <!-- Agent Config Modal -->
+<div class="modal-overlay" id="agentShopModal">
+  <div class="modal" style="position:relative;max-width:680px;">
+    <button class="modal-close" onclick="closeModal('agentShopModal')">✕</button>
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">购买 Agent</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">浏览可用的 Agent，购买后立即开始使用</p>
+    <div class="agent-grid" id="agentShopGrid" style="max-height:420px;overflow-y:auto;">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="agentConfigModal">
   <div class="modal" style="position:relative;" id="agentConfigContent">
     <button class="modal-close" onclick="closeModal('agentConfigModal')">✕</button>
@@ -3938,7 +3976,7 @@ const projectsData = [
     ]
   },
   {
-    id: 2, name: '智能客服系统', status: 'planning', progress: 25, isActive: false,
+    id: 2, name: '智能客服系统', status: 'planning', progress: 25, isActive: true,
     description: '基于 AI Agent 的智能客服系统，支持多轮对话和自动工单创建。',
     team: [
       { name: 'Maya', avatar: 'M', color: '#fd79a8' },
@@ -4016,6 +4054,23 @@ const projectsData = [
     activity: [
       { icon: '🚀', text: 'Liam 部署了 v2.4.1 到 staging', time: '1小时前' },
       { icon: '🐛', text: 'Issue #28: 修复 WebSocket 重连逻辑', time: '昨天' }
+    ]
+  },
+  {
+    id: 6, name: '内部工具平台 V1', status: 'active', progress: 100, isActive: false, archived: true,
+    description: '内部运营工具集成平台，已迁移到 COCO Workspace V2。',
+    team: [
+      { name: 'Alex', avatar: 'A', color: '#00cec9' },
+      { name: 'Liam', avatar: 'L', color: '#636e72' }
+    ],
+    milestones: [
+      { text: '需求整理', done: true },
+      { text: '开发上线', done: true },
+      { text: '数据迁移', done: true },
+      { text: '归档', done: true }
+    ],
+    activity: [
+      { icon: '📦', text: '项目已归档，数据已迁移', time: '2周前' }
     ]
   }
 ];
@@ -4962,49 +5017,26 @@ function createTask() {
 function renderProjects() {
   const grid = document.getElementById('projectsGrid');
   grid.innerHTML = '';
-  projectsData.forEach(proj => {
-    const statusLabels = { active: '进行中', planning: '规划中', review: '审核中' };
-    const statusClass = 'status-' + proj.status;
-    const teamAvatars = proj.team.map(m => {
-      const content = m.avatar;
-      const fSize = m.avatar.length > 1 ? '14px' : '12px';
-      return `<div class="avatar" style="background:${m.color};font-size:${fSize}">${content}</div>`;
-    }).join('');
+  const activeProjects = projectsData.filter(p => !p.archived);
+  const archivedProjects = projectsData.filter(p => p.archived);
 
-    const isGH = proj.source === 'github';
-    const ghBadge = isGH ? `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-      <span style="font-size:16px;">🐱</span>
-      <span style="font-size:11px;color:var(--text-muted);font-weight:600;">${proj.repo}</span>
-      ${proj.stats ? `<span style="font-size:10px;color:var(--text-muted);margin-left:auto;">⭐ ${proj.stats.stars} &nbsp; 🐛 ${proj.stats.issues} open &nbsp; 🔀 ${proj.stats.prs} PR</span>` : ''}
-    </div>` : '';
-
-    const projIdArg = typeof proj.id === 'string' ? `'${proj.id}'` : proj.id;
-
-    const activeClass = proj.isActive === false ? ' inactive' : '';
-    const dotClass = proj.isActive === false ? 'off' : 'on';
-    const activeLabel = proj.isActive === false ? '未激活' : '已激活';
-
-    grid.innerHTML += `
-      <div class="glass-card project-card${activeClass}" onclick="showProjectDetail(${projIdArg})">
-        ${ghBadge}
-        <div class="project-card-header">
-          <div class="project-card-title">${isGH ? '🐱 ' : ''}${proj.name}</div>
-          <span class="project-card-status ${statusClass}">${statusLabels[proj.status]}</span>
-        </div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">${proj.description}</p>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" style="width:0%" data-width="${proj.progress}%"></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div class="project-card-team">${teamAvatars}</div>
-          <span style="font-size:13px;font-weight:700;color:var(--accent);">${proj.progress}%</span>
-        </div>
-        <div class="project-active-toggle" onclick="event.stopPropagation();toggleProjectActive(${projIdArg})">
-          <span class="project-active-dot ${dotClass}"></span> ${activeLabel}
-        </div>
-      </div>
-    `;
+  activeProjects.forEach(proj => {
+    grid.innerHTML += buildProjectCard(proj, false);
   });
+
+  // Archived section
+  const archivedSection = document.getElementById('archivedSection');
+  const archivedGrid = document.getElementById('archivedGrid');
+  document.getElementById('archivedCount').textContent = archivedProjects.length;
+  if (archivedProjects.length > 0) {
+    archivedSection.style.display = 'block';
+    archivedGrid.innerHTML = '';
+    archivedProjects.forEach(proj => {
+      archivedGrid.innerHTML += buildProjectCard(proj, true);
+    });
+  } else {
+    archivedSection.style.display = 'none';
+  }
 
   // Animate progress bars
   setTimeout(() => {
@@ -5012,6 +5044,54 @@ function renderProjects() {
       bar.style.width = bar.dataset.width;
     });
   }, 100);
+}
+
+function buildProjectCard(proj, isArchived) {
+  const statusLabels = { active: '进行中', planning: '规划中', review: '审核中' };
+  const statusClass = 'status-' + proj.status;
+  const teamAvatars = proj.team.map(m => {
+    const content = m.avatar;
+    const fSize = m.avatar.length > 1 ? '14px' : '12px';
+    return `<div class="avatar" style="background:${m.color};font-size:${fSize}">${content}</div>`;
+  }).join('');
+
+  const isGH = proj.source === 'github';
+  const ghBadge = isGH ? `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+    <span style="font-size:16px;">🐱</span>
+    <span style="font-size:11px;color:var(--text-muted);font-weight:600;">${proj.repo}</span>
+    ${proj.stats ? `<span style="font-size:10px;color:var(--text-muted);margin-left:auto;">⭐ ${proj.stats.stars} &nbsp; 🐛 ${proj.stats.issues} open &nbsp; 🔀 ${proj.stats.prs} PR</span>` : ''}
+  </div>` : '';
+
+  const projIdArg = typeof proj.id === 'string' ? `'${proj.id}'` : proj.id;
+
+  const archiveBtn = isArchived
+    ? `<button class="btn-archive restore" onclick="event.stopPropagation();restoreProject(${projIdArg})">恢复</button>`
+    : `<button class="btn-archive" onclick="event.stopPropagation();archiveProject(${projIdArg})">归档</button>`;
+
+  return `
+    <div class="glass-card project-card${isArchived ? ' archived' : ''}" onclick="showProjectDetail(${projIdArg})">
+      ${ghBadge}
+      <div class="project-card-header">
+        <div class="project-card-title">${isGH ? '🐱 ' : ''}${proj.name}</div>
+        <span class="project-card-status ${statusClass}">${statusLabels[proj.status]}</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">${proj.description}</p>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:0%" data-width="${proj.progress}%"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="project-card-team">${teamAvatars}</div>
+        <span style="font-size:13px;font-weight:700;color:var(--accent);">${proj.progress}%</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="project-active-dot ${isArchived ? 'off' : 'on'}"></span>
+          <span style="font-size:11px;font-weight:600;color:var(--text-muted);">${isArchived ? '已归档' : '已激活'}</span>
+        </div>
+        ${archiveBtn}
+      </div>
+    </div>
+  `;
 }
 
 function showProjectDetail(projId) {
@@ -5121,14 +5201,33 @@ function showProjectList() {
   renderProjects();
 }
 
-function toggleProjectActive(projId) {
+function archiveProject(projId) {
   const proj = projectsData.find(p => p.id === projId);
   if (!proj) return;
-  proj.isActive = proj.isActive === false ? true : false;
+  proj.archived = true;
+  proj.isActive = false;
   renderProjects();
   updateTaskProjectFilter();
   renderTasks();
-  showToast(proj.isActive ? `「${proj.name}」已激活` : `「${proj.name}」已停用`);
+  showToast(`「${proj.name}」已归档`);
+}
+
+function restoreProject(projId) {
+  const proj = projectsData.find(p => p.id === projId);
+  if (!proj) return;
+  proj.archived = false;
+  proj.isActive = true;
+  renderProjects();
+  updateTaskProjectFilter();
+  renderTasks();
+  showToast(`「${proj.name}」已恢复`);
+}
+
+let archivedSectionOpen = true;
+function toggleArchivedSection() {
+  archivedSectionOpen = !archivedSectionOpen;
+  document.getElementById('archivedGrid').style.display = archivedSectionOpen ? 'grid' : 'none';
+  document.getElementById('archivedChevron').style.transform = archivedSectionOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
 }
 
 function updateTaskProjectFilter() {
@@ -5435,7 +5534,34 @@ function unbindAgent(name) {
 
 function purchaseAgent(name) {
   showToast('正在购买「' + name + '」...');
-  setTimeout(() => showToast('✅ 已购买「' + name + '」，可在已购列表中查看'), 1200);
+  setTimeout(() => {
+    showToast('✅ 已购买「' + name + '」，可在已购列表中查看');
+    closeModal('agentShopModal');
+  }, 1200);
+}
+
+function renderAgentShop() {
+  const grid = document.getElementById('agentShopGrid');
+  grid.innerHTML = '';
+  marketplaceAgents.forEach(agent => {
+    grid.innerHTML += `
+      <div class="glass-card agent-card" style="opacity:0.9;">
+        <div class="agent-card-header">
+          <div class="avatar avatar-lg" style="background:${agent.color};">${agent.avatar}</div>
+          <div class="agent-card-info">
+            <h4>${agent.name}</h4>
+            <p>${agent.role}</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:12px;">
+          <span class="digital-badge worker">${agent.framework}</span>
+          <span style="font-size:12px;color:var(--text-muted);">${agent.price}</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">${agent.description}</p>
+        <button class="btn btn-primary" style="width:100%;" onclick="purchaseAgent('${agent.name}')">购买</button>
+      </div>
+    `;
+  });
 }
 
 function openAgentConfig(name) {
@@ -5716,12 +5842,17 @@ function renderAdmin() {
   seatData.forEach(row => {
     const statusColor = row.status === '在线' ? 'var(--success)' :
                         row.status === '忙碌' ? '#d4a017' : 'var(--text-muted)';
+    const isAdmin = row.role === '管理员';
     tbody.innerHTML += `
       <tr>
         <td style="font-weight:600;">${row.name}</td>
         <td>${row.role}</td>
         <td><span style="color:${statusColor};font-weight:600;">${row.status}</span></td>
         <td style="color:var(--text-muted);">${row.lastActive}</td>
+        <td style="text-align:right;">
+          <button class="btn-seat-action" onclick="showToast('管理 ${row.name} 的席位')">管理</button>
+          ${isAdmin ? '' : `<button class="btn-seat-action danger" onclick="showToast('确认删除 ${row.name}？')">删除</button>`}
+        </td>
       </tr>
     `;
   });
@@ -5873,6 +6004,7 @@ document.addEventListener('keydown', e => {
 function openModal(id) {
   document.getElementById(id).classList.add('active');
   if (id === 'importModal') renderImportSources();
+  if (id === 'agentShopModal') renderAgentShop();
 }
 
 function closeModal(id) {
