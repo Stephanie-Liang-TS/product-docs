@@ -1675,6 +1675,226 @@ body {
   font-size: 12px;
   color: var(--text-muted);
 }
+.kanban-card-project {
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 6px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.kanban-card-due {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.kanban-card-due.overdue { color: #e74c3c; font-weight: 600; }
+
+/* Tasks toolbar */
+.tasks-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tasks-view-toggle {
+  display: flex;
+  background: rgba(0,0,0,0.04);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+.tasks-view-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tasks-view-btn.active {
+  background: var(--bg-card);
+  color: var(--text-heading);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.tasks-filter-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.tasks-filter-chip {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tasks-filter-chip.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.tasks-filter-chip:hover:not(.active) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.tasks-project-select {
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-card);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-heading);
+  cursor: pointer;
+  outline: none;
+}
+.tasks-project-select:focus { border-color: var(--accent); }
+
+/* Import source button */
+.btn-import {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px dashed var(--border-light);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-import:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(211,87,254,0.04);
+}
+
+/* List view */
+.task-list-view {
+  display: none;
+}
+.task-list-view.active {
+  display: block;
+}
+.task-list-group {
+  margin-bottom: 24px;
+}
+.task-list-group-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.task-list-group-header .col-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.task-list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  margin-bottom: 6px;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.task-list-item:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+.task-list-item-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+.task-list-item-project {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(211,87,254,0.08);
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+.task-list-item-due {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 70px;
+  text-align: right;
+}
+.task-list-item-due.overdue { color: #e74c3c; font-weight: 600; }
+
+/* Import modal sources */
+.import-sources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.import-source-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-card);
+}
+.import-source-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(211,87,254,0.1);
+}
+.import-source-card.selected {
+  border-color: var(--accent);
+  background: rgba(211,87,254,0.04);
+}
+.import-source-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.import-source-info { flex: 1; }
+.import-source-name { font-size: 14px; font-weight: 700; color: var(--text-heading); }
+.import-source-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.import-source-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.import-source-badge.connected { background: rgba(0,206,201,0.12); color: #00b894; }
+.import-source-badge.available { background: rgba(0,0,0,0.05); color: var(--text-muted); }
 
 /* ============================================================
    MODULE: PROJECTS
@@ -2559,9 +2779,36 @@ body {
       <div class="module-view" id="module-tasks">
         <div class="tasks-header">
           <h2>任务看板</h2>
-          <button class="btn btn-primary" onclick="openNewTaskModal()">+ 新建任务</button>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn-import" onclick="openModal('importModal')">⬇ 导入外部项目</button>
+            <button class="btn btn-primary" onclick="openNewTaskModal()">+ 新建任务</button>
+          </div>
         </div>
-        <div class="kanban-board">
+
+        <!-- Toolbar: view toggle + filters -->
+        <div class="tasks-toolbar">
+          <div class="tasks-view-toggle">
+            <button class="tasks-view-btn active" data-view="kanban" onclick="switchTaskView('kanban')">⊞ 看板</button>
+            <button class="tasks-view-btn" data-view="list" onclick="switchTaskView('list')">☰ 列表</button>
+          </div>
+          <div class="tasks-filter-chips">
+            <button class="tasks-filter-chip active" data-filter="all" onclick="setTaskFilter('all')">全部</button>
+            <button class="tasks-filter-chip" data-filter="mine" onclick="setTaskFilter('mine')">我负责的</button>
+            <button class="tasks-filter-chip" data-filter="agent" onclick="setTaskFilter('agent')">Agent 执行</button>
+            <button class="tasks-filter-chip" data-filter="high" onclick="setTaskFilter('high')">高优先级</button>
+            <button class="tasks-filter-chip" data-filter="due" onclick="setTaskFilter('due')">本周到期</button>
+          </div>
+          <select class="tasks-project-select" id="taskProjectFilter" onchange="renderTasks()">
+            <option value="all">所有项目</option>
+            <option value="1">COCO Workspace V2</option>
+            <option value="2">智能客服系统</option>
+            <option value="3">数据分析看板</option>
+            <option value="gh">GitHub: coco-app</option>
+          </select>
+        </div>
+
+        <!-- Kanban View -->
+        <div class="kanban-board" id="kanbanView">
           <div class="kanban-column" data-status="todo">
             <div class="kanban-col-header">
               <div class="kanban-col-title">
@@ -2590,6 +2837,9 @@ body {
             <div class="kanban-cards" id="colDone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'done')"></div>
           </div>
         </div>
+
+        <!-- List View -->
+        <div class="task-list-view" id="listView"></div>
       </div>
 
       <!-- ======================== PROJECTS MODULE ======================== -->
@@ -2851,9 +3101,43 @@ body {
         <option value="high">高</option>
       </select>
     </div>
+    <div class="form-group">
+      <label>所属项目</label>
+      <select class="form-select" id="newTaskProject">
+        <option value="1">COCO Workspace V2</option>
+        <option value="2">智能客服系统</option>
+        <option value="3">数据分析看板</option>
+        <option value="gh">GitHub: coco-app</option>
+      </select>
+    </div>
     <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;">
       <button class="btn btn-secondary" onclick="closeModal('taskModal')">取消</button>
       <button class="btn btn-primary" onclick="createTask()">创建任务</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import External Project Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal" style="position:relative;max-width:560px;">
+    <button class="modal-close" onclick="closeModal('importModal')">✕</button>
+    <h3>导入外部项目</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">连接外部项目管理工具，自动同步任务和状态变化。</p>
+    <div class="import-sources-grid" id="importSourcesGrid">
+      <!-- populated by JS -->
+    </div>
+    <div id="importDetail" style="display:none;">
+      <div style="background:rgba(211,87,254,0.04);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;" id="importDetailTitle">选择项目</div>
+        <select class="form-select" id="importProjectSelect" style="margin-bottom:8px;">
+          <option value="">-- 选择要导入的项目 --</option>
+        </select>
+        <div style="font-size:11px;color:var(--text-muted);" id="importHint">选择后将自动同步该项目的任务到看板</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;">
+      <button class="btn btn-secondary" onclick="closeModal('importModal')">取消</button>
+      <button class="btn btn-primary" onclick="confirmImport()">导入项目</button>
     </div>
   </div>
 </div>
@@ -3061,15 +3345,35 @@ const channelMessages = {
 };
 
 const tasksData = [
-  { id: 1, title: '实现用户登录流程', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9' },
-  { id: 2, title: '设计首页 Banner 组件', assignee: 'Maya', priority: 'medium', status: 'progress', avatar: 'M', color: '#fd79a8' },
-  { id: 3, title: '编写 API 文档', assignee: 'COCO Agent', priority: 'low', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true },
-  { id: 4, title: '数据库性能优化', assignee: 'Code Bot', priority: 'high', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true },
-  { id: 5, title: '用户反馈收集分析', assignee: 'Stephanie', priority: 'medium', status: 'todo', avatar: 'S', color: '#f093fb' },
-  { id: 6, title: '移动端适配测试', assignee: 'Alex', priority: 'medium', status: 'done', avatar: 'A', color: '#00cec9' },
-  { id: 7, title: '自动化部署脚本', assignee: 'Code Bot', priority: 'high', status: 'done', avatar: '⚡', color: '#fdcb6e', isAgent: true },
-  { id: 8, title: '设计系统色彩规范', assignee: 'Design AI', priority: 'low', status: 'done', avatar: '🎨', color: '#e17055', isAgent: true }
+  { id: 1, title: '实现用户登录流程', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 1, dueDate: '2026-04-25' },
+  { id: 2, title: '设计首页 Banner 组件', assignee: 'Maya', priority: 'medium', status: 'progress', avatar: 'M', color: '#fd79a8', projectId: 1, dueDate: '2026-04-28' },
+  { id: 3, title: '编写 API 文档', assignee: 'COCO Agent', priority: 'low', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 1, dueDate: '2026-04-30' },
+  { id: 4, title: '数据库性能优化', assignee: 'Code Bot', priority: 'high', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 3, dueDate: '2026-04-22' },
+  { id: 5, title: '用户反馈收集分析', assignee: 'Stephanie', priority: 'medium', status: 'todo', avatar: 'S', color: '#f093fb', projectId: 2, dueDate: '2026-04-27' },
+  { id: 6, title: '移动端适配测试', assignee: 'Alex', priority: 'medium', status: 'done', avatar: 'A', color: '#00cec9', projectId: 1 },
+  { id: 7, title: '自动化部署脚本', assignee: 'Code Bot', priority: 'high', status: 'done', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 3 },
+  { id: 8, title: '设计系统色彩规范', assignee: 'Design AI', priority: 'low', status: 'done', avatar: '🎨', color: '#e17055', isAgent: true, projectId: 1 },
+  // GitHub imported tasks (代码开发模式)
+  { id: 9, title: '[Issue #42] 修复登录 token 过期处理', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 'gh', dueDate: '2026-04-23', source: 'github', repo: 'coco-app', issueNum: 42 },
+  { id: 10, title: '[Issue #38] 添加暗色模式支持', assignee: 'Code Bot', priority: 'medium', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 'gh', dueDate: '2026-04-26', source: 'github', repo: 'coco-app', issueNum: 38 },
+  { id: 11, title: '[PR #45] 重构用户权限模块', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 'gh', source: 'github', repo: 'coco-app', issueNum: 45 },
+  { id: 12, title: '[Issue #35] 优化首页加载速度', assignee: 'COCO Agent', priority: 'medium', status: 'done', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 'gh', source: 'github', repo: 'coco-app', issueNum: 35 }
 ];
+
+let currentTaskView = 'kanban';
+let currentTaskFilter = 'all';
+
+const importSources = [
+  { id: 'github', name: 'GitHub', icon: '🐱', desc: '仓库 / Issue / PR', bgColor: 'rgba(36,41,46,0.08)', status: 'connected', projects: ['coco-app', 'coco-server', 'coco-docs'] },
+  { id: 'jira', name: 'Jira', icon: '📋', desc: '项目 / 故事 / 任务', bgColor: 'rgba(0,82,204,0.08)', status: 'available', projects: ['COCO-Board', 'COCO-Sprint'] },
+  { id: 'linear', name: 'Linear', icon: '📐', desc: '项目 / Issue / 周期', bgColor: 'rgba(86,71,245,0.08)', status: 'available', projects: ['Workspace v2', 'Backend'] },
+  { id: 'asana', name: 'Asana', icon: '🎯', desc: '项目 / 任务 / 里程碑', bgColor: 'rgba(243,121,32,0.08)', status: 'available', projects: ['产品路线图', 'Q2 计划'] },
+  { id: 'notion', name: 'Notion', icon: '📝', desc: '数据库 / 看板', bgColor: 'rgba(0,0,0,0.04)', status: 'connected', projects: ['需求池', '迭代计划'] },
+  { id: 'clickup', name: 'ClickUp', icon: '✅', desc: '空间 / 列表 / 任务', bgColor: 'rgba(123,104,238,0.08)', status: 'available', projects: [] }
+];
+let selectedImportSource = null;
+
+const projectNameMap = { 1: 'COCO Workspace V2', 2: '智能客服系统', 3: '数据分析看板', gh: 'GitHub: coco-app' };
 
 const projectsData = [
   {
@@ -3642,9 +3946,30 @@ function sendChatMessage() {
 // ================================================================
 // TASKS MODULE
 // ================================================================
+function getFilteredTasks() {
+  const projectFilter = document.getElementById('taskProjectFilter').value;
+  return tasksData.filter(task => {
+    // Project filter
+    if (projectFilter !== 'all' && String(task.projectId) !== projectFilter) return false;
+    // Chip filter
+    if (currentTaskFilter === 'mine' && task.assignee !== 'Stephanie') return false;
+    if (currentTaskFilter === 'agent' && !task.isAgent) return false;
+    if (currentTaskFilter === 'high' && task.priority !== 'high') return false;
+    if (currentTaskFilter === 'due' && task.dueDate) {
+      const due = new Date(task.dueDate);
+      const now = new Date();
+      const weekEnd = new Date(now);
+      weekEnd.setDate(now.getDate() + (7 - now.getDay()));
+      if (due > weekEnd || due < now) return false;
+    } else if (currentTaskFilter === 'due' && !task.dueDate) return false;
+    return true;
+  });
+}
+
 function renderTasks() {
+  const filtered = getFilteredTasks();
   const cols = { todo: [], progress: [], done: [] };
-  tasksData.forEach(task => {
+  filtered.forEach(task => {
     if (cols[task.status]) cols[task.status].push(task);
   });
 
@@ -3659,6 +3984,9 @@ function renderTasks() {
       container.innerHTML += createTaskCardHTML(task);
     });
   });
+
+  // Also render list view
+  renderTaskListView(filtered);
 }
 
 function createTaskCardHTML(task) {
@@ -3667,9 +3995,18 @@ function createTaskCardHTML(task) {
   const agentBadge = task.isAgent ? ' <span class="badge badge-agent" style="font-size:9px;">AI</span>' : '';
   const avatarContent = task.avatar;
   const fontSize = task.avatar.length > 1 ? '14px' : '11px';
+  const projectLabel = projectNameMap[task.projectId] ? `<div class="kanban-card-project">${task.source === 'github' ? '🐱 ' : ''}${projectNameMap[task.projectId]}</div>` : '';
+  const dueHTML = task.dueDate ? (() => {
+    const d = new Date(task.dueDate);
+    const now = new Date(); now.setHours(0,0,0,0);
+    const isOverdue = d < now && task.status !== 'done';
+    const label = `${d.getMonth()+1}/${d.getDate()}`;
+    return `<div class="kanban-card-due${isOverdue ? ' overdue' : ''}">📅 ${label}</div>`;
+  })() : '';
   return `
     <div class="kanban-card" draggable="true" data-task-id="${task.id}"
          ondragstart="handleDragStart(event, ${task.id})" ondragend="handleDragEnd(event)">
+      ${projectLabel}
       <div class="kanban-card-title">${task.title}</div>
       <div class="kanban-card-meta">
         <div class="kanban-card-assignee">
@@ -3678,8 +4015,103 @@ function createTaskCardHTML(task) {
         </div>
         <span class="badge ${priorityClass}">${priorityLabels[task.priority]}</span>
       </div>
+      ${dueHTML}
     </div>
   `;
+}
+
+function renderTaskListView(filtered) {
+  const listView = document.getElementById('listView');
+  const groups = { todo: { label: '待办', dot: 'col-dot-todo' }, progress: { label: '进行中', dot: 'col-dot-progress' }, done: { label: '已完成', dot: 'col-dot-done' } };
+  let html = '';
+  ['todo', 'progress', 'done'].forEach(status => {
+    const tasks = filtered.filter(t => t.status === status);
+    if (tasks.length === 0) return;
+    html += `<div class="task-list-group">
+      <div class="task-list-group-header"><span class="col-dot ${groups[status].dot}"></span>${groups[status].label} (${tasks.length})</div>`;
+    tasks.forEach(task => {
+      const agentBadge = task.isAgent ? ' <span class="badge badge-agent" style="font-size:9px;">AI</span>' : '';
+      const fSize = task.avatar.length > 1 ? '14px' : '11px';
+      const projLabel = projectNameMap[task.projectId] || '';
+      const projHTML = projLabel ? `<span class="task-list-item-project">${task.source === 'github' ? '🐱 ' : ''}${projLabel}</span>` : '';
+      let dueHTML = '';
+      if (task.dueDate) {
+        const d = new Date(task.dueDate);
+        const now = new Date(); now.setHours(0,0,0,0);
+        const isOverdue = d < now && task.status !== 'done';
+        dueHTML = `<span class="task-list-item-due${isOverdue ? ' overdue' : ''}">${d.getMonth()+1}/${d.getDate()}</span>`;
+      }
+      const priorityLabels = { high: '高', medium: '中', low: '低' };
+      html += `<div class="task-list-item">
+        <div class="avatar avatar-sm" style="background:${task.color};font-size:${fSize}">${task.avatar}</div>
+        <span class="task-list-item-title">${task.title}${agentBadge}</span>
+        ${projHTML}
+        <span class="badge priority-${task.priority}">${priorityLabels[task.priority]}</span>
+        ${dueHTML}
+      </div>`;
+    });
+    html += '</div>';
+  });
+  listView.innerHTML = html;
+}
+
+function switchTaskView(view) {
+  currentTaskView = view;
+  document.querySelectorAll('.tasks-view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+  document.getElementById('kanbanView').style.display = view === 'kanban' ? 'flex' : 'none';
+  const listEl = document.getElementById('listView');
+  listEl.classList.toggle('active', view === 'list');
+  renderTasks();
+}
+
+function setTaskFilter(filter) {
+  currentTaskFilter = filter;
+  document.querySelectorAll('.tasks-filter-chip').forEach(chip => chip.classList.toggle('active', chip.dataset.filter === filter));
+  renderTasks();
+}
+
+function renderImportSources() {
+  const grid = document.getElementById('importSourcesGrid');
+  grid.innerHTML = importSources.map(s => `
+    <div class="import-source-card${selectedImportSource === s.id ? ' selected' : ''}" onclick="selectImportSource('${s.id}')">
+      <div class="import-source-icon" style="background:${s.bgColor}">${s.icon}</div>
+      <div class="import-source-info">
+        <div class="import-source-name">${s.name}</div>
+        <div class="import-source-desc">${s.desc}</div>
+      </div>
+      <span class="import-source-badge ${s.status === 'connected' ? 'connected' : 'available'}">${s.status === 'connected' ? '已连接' : '可用'}</span>
+    </div>
+  `).join('');
+}
+
+function selectImportSource(id) {
+  selectedImportSource = id;
+  renderImportSources();
+  const source = importSources.find(s => s.id === id);
+  const detail = document.getElementById('importDetail');
+  const select = document.getElementById('importProjectSelect');
+  if (source && source.projects.length > 0) {
+    detail.style.display = 'block';
+    const typeLabels = { github: '仓库', jira: '项目', linear: '项目', asana: '项目', notion: '数据库', clickup: '空间' };
+    document.getElementById('importDetailTitle').textContent = `选择${typeLabels[id] || '项目'}`;
+    document.getElementById('importHint').textContent = id === 'github' ? 'Issue 和 PR 将作为任务同步到看板，状态自动映射' : '任务将自动同步到看板，状态变化实时更新';
+    select.innerHTML = '<option value="">-- 选择要导入的项目 --</option>' + source.projects.map(p => `<option value="${p}">${p}</option>`).join('');
+  } else {
+    detail.style.display = 'none';
+  }
+}
+
+function confirmImport() {
+  if (!selectedImportSource) { showToast('请先选择导入来源'); return; }
+  const select = document.getElementById('importProjectSelect');
+  const projName = select.value;
+  const source = importSources.find(s => s.id === selectedImportSource);
+  if (source && source.projects.length > 0 && !projName) { showToast('请选择要导入的项目'); return; }
+  closeModal('importModal');
+  const displayName = projName || source.name;
+  showToast(`正在从 ${source.name} 导入「${displayName}」...`);
+  setTimeout(() => showToast(`✅ 已成功导入「${displayName}」的任务`), 1500);
+  selectedImportSource = null;
 }
 
 function handleDragStart(e, taskId) {
@@ -3739,6 +4171,9 @@ function createTask() {
   };
   const info = avatarMap[cleanName] || { avatar: cleanName[0], color: '#888' };
 
+  const projectVal = document.getElementById('newTaskProject').value;
+  const projectId = isNaN(projectVal) ? projectVal : parseInt(projectVal);
+
   tasksData.push({
     id: ++taskIdCounter,
     title: title,
@@ -3747,7 +4182,8 @@ function createTask() {
     status: 'todo',
     avatar: info.avatar,
     color: info.color,
-    isAgent: isAgent
+    isAgent: isAgent,
+    projectId: projectId
   });
 
   closeModal('taskModal');
@@ -4313,6 +4749,7 @@ document.addEventListener('keydown', e => {
 // ================================================================
 function openModal(id) {
   document.getElementById(id).classList.add('active');
+  if (id === 'importModal') renderImportSources();
 }
 
 function closeModal(id) {
