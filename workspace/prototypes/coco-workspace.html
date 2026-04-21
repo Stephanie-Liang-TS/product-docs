@@ -3505,7 +3505,22 @@ function renderInfoPanel() {
     </div>`;
   }).join('');
   const modes = ['自动回复', '仅 @', '静默'];
-  const modeBtnsHTML = modes.map(m => `<button class="agent-mode-btn${m === info.agentMode ? ' active' : ''}" onclick="setAgentMode(this, '${currentChannel}')">${m}</button>`).join('');
+  const agentMembers = info.members.filter(m => m.isAgent);
+  // Initialize per-agent modes if not set
+  if (!info.agentModes) {
+    info.agentModes = {};
+    agentMembers.forEach(m => { info.agentModes[m.name] = info.agentMode || '自动回复'; });
+  }
+  const perAgentHTML = agentMembers.map(m => {
+    const currentMode = info.agentModes[m.name] || '自动回复';
+    const avFS = m.avatar.length > 1 ? '13px' : '12px';
+    const btns = modes.map(mode => `<button class="agent-mode-btn${mode === currentMode ? ' active' : ''}" onclick="setAgentMode(this,'${currentChannel}','${m.name}')" style="padding:4px 10px;font-size:11px;">${mode}</button>`).join('');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;${agentMembers.indexOf(m) < agentMembers.length - 1 ? 'border-bottom:1px solid var(--border-light);' : ''}">
+      <div class="info-member-avatar" style="background:${m.color};font-size:${avFS};width:28px;height:28px;flex-shrink:0;">${m.avatar}</div>
+      <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.name}</div></div>
+      <div class="agent-mode-btns" style="gap:4px;flex-shrink:0;">${btns}</div>
+    </div>`;
+  }).join('');
 
   container.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -3519,8 +3534,8 @@ function renderInfoPanel() {
     </div>
     <div class="info-section">
       <div class="info-section-label">Agent 设置</div>
-      <div style="font-size:12px;color:var(--text-body);margin-bottom:8px;">群内 Agent 行为模式</div>
-      <div class="agent-mode-btns">${modeBtnsHTML}</div>
+      <div style="font-size:12px;color:var(--text-body);margin-bottom:8px;">各 Agent 行为模式</div>
+      <div>${perAgentHTML}</div>
     </div>
     <div class="info-section">
       <div class="info-section-label">置顶消息 (${info.pinned.length})</div>
@@ -3532,10 +3547,15 @@ function renderInfoPanel() {
     </div>`;
 }
 
-function setAgentMode(btn, channel) {
+function setAgentMode(btn, channel, agentName) {
   btn.parentElement.querySelectorAll('.agent-mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (channelInfoData[channel]) channelInfoData[channel].agentMode = btn.textContent;
+  const info = channelInfoData[channel];
+  if (info) {
+    if (!info.agentModes) info.agentModes = {};
+    if (agentName) info.agentModes[agentName] = btn.textContent;
+    else info.agentMode = btn.textContent;
+  }
 }
 
 function toggleInfoPanel() {
