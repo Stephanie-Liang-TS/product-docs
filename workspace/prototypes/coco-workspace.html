@@ -5328,6 +5328,18 @@ const allAgents = [
   { id:'zylos', name:'Zylos', emoji:'⚡', color:'linear-gradient(135deg,#6c5ce7,#a29bfe)', desc:'全能 AI 伙伴 — 编程、自动化、浏览器操作、定时任务、数据分析', tag:'热门', features:['全栈编程 & 代码审查','浏览器自动化 & 数据抓取','定时任务 & 工作流编排','文件处理 & 数据分析','多平台接入（Lark/TG/Web）'], pricing:[{plan:'Air',price:'$9.9',period:'/月',credits:100,features:['基础对话','每日 20 次工具调用','社区支持']},{plan:'Pro',price:'$29',period:'/月',credits:290,features:['无限工具调用','浏览器自动化','定时任务','含 $10 额度/月'],recommended:true},{plan:'Enterprise',price:'联系销售',period:'',credits:0,features:['私有部署','自定义模型','SLA 保障','专属技术支持'],isEnterprise:true}] },
   { id:'openclaw', name:'OpenClaw', emoji:'🦀', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'开源技能生态 Agent — MCP 协议、Skill 市场、社区共建', tag:'开源', features:['MCP 协议原生支持','开源 Skill 市场接入','社区驱动 Skill 共建','跨 Agent 技能编排','Webhook & API 集成'], pricing:[{plan:'Community',price:'$0',period:'/月',credits:0,features:['社区 Skill 访问','每日 50 次调用','GitHub 集成']},{plan:'Pro',price:'$19',period:'/月',credits:190,features:['无限 Skill 调用','私有 Skill 仓库','优先更新','技术支持'],recommended:true},{plan:'Team',price:'$49',period:'/月',credits:490,features:['团队 Skill 共享','管理后台','使用分析','API 配额 ×5']}] },
 ];
+
+// Agent instances — specific named agents under each framework
+const agentInstances = [
+  { id:'coco-main', framework:'coco', name:'COCO Agent', emoji:'🐙', color:'linear-gradient(135deg,#d357fe,#96bbff)', desc:'工作区协作助手', role:'任务协调、消息汇总、会议纪要' },
+  { id:'zylos-code', framework:'zylos', name:'代码助手', emoji:'🤖', color:'linear-gradient(135deg,#6c5ce7,#a29bfe)', desc:'Zylos 代码开发', role:'代码审查、Bug 修复、重构建议' },
+  { id:'zylos-test', framework:'zylos', name:'测试 Agent', emoji:'✏️', color:'linear-gradient(135deg,#a29bfe,#6c5ce7)', desc:'Zylos 自动化测试', role:'单元测试、集成测试、测试覆盖率' },
+  { id:'zylos-data', framework:'zylos', name:'Data Agent', emoji:'📊', color:'linear-gradient(135deg,#0984e3,#74b9ff)', desc:'Zylos 数据分析', role:'数据分析、报表生成、异常检测' },
+  { id:'zylos-ops', framework:'zylos', name:'运维助手', emoji:'🔧', color:'linear-gradient(135deg,#636e72,#b2bec3)', desc:'Zylos 运维自动化', role:'部署监控、日志分析、告警处理' },
+  { id:'openclaw-skill', framework:'openclaw', name:'Skill Builder', emoji:'🦀', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'OpenClaw Skill 开发', role:'Skill 构建、MCP 协议、API 集成' },
+  { id:'openclaw-hub', framework:'openclaw', name:'Skill Hub', emoji:'🔗', color:'linear-gradient(135deg,#55efc4,#00b894)', desc:'OpenClaw 技能市场', role:'技能搜索、安装、编排' },
+];
+
 let workspaceAgents = ['coco', 'zylos'];
 let groupAgents = { 'product-dev': ['coco', 'zylos'] };
 
@@ -5352,15 +5364,45 @@ function renderAgentCard(a, inGroup) {
   </div>`;
 }
 
+function renderInstanceCard(inst, inGroup) {
+  const inGrp = inGroup.includes(inst.id);
+  return `<div class="agent-market-card${inGrp?' added':''}" style="cursor:pointer;" onclick="showToast('${inst.name} 详情')">
+    <div class="amc-avatar" style="background:${inst.color};width:36px;height:36px;font-size:16px;">${inst.emoji}</div>
+    <div style="flex:1;min-width:0;"><div class="amc-name" style="font-size:13px;">${inst.name}</div><div class="amc-desc">${inst.role}</div></div>
+    ${inGrp
+      ? '<span class="amc-status" style="background:rgba(0,206,201,0.12);color:var(--success);">已在群中</span>'
+      : '<span class="amc-status" style="background:var(--accent-bg);color:var(--accent);cursor:pointer;" onclick="event.stopPropagation();addInstanceToGroup(\''+inst.id+'\',this)">加入群聊</span>'}
+  </div>`;
+}
+
+function addInstanceToGroup(instId, btnEl) {
+  const inst = agentInstances.find(x => x.id === instId);
+  if (!inst) return;
+  if (!groupAgents[currentChannel]) groupAgents[currentChannel] = [];
+  if (!groupAgents[currentChannel].includes(instId)) groupAgents[currentChannel].push(instId);
+  btnEl.style.background = 'rgba(0,206,201,0.12)';
+  btnEl.style.color = 'var(--success)';
+  btnEl.textContent = '已在群中';
+  btnEl.onclick = null;
+  showToast(inst.name + ' 已加入群聊');
+}
+
 function openAgentMarket() {
   const overlay = document.createElement('div');
   overlay.className = 'chat-modal-overlay';
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
   const inGroup = groupAgents[currentChannel] || [];
-  // Split agents into two groups: already subscribed/owned vs. available to subscribe
-  const ownedAgents = allAgents.filter(a => workspaceAgents.includes(a.id));
+  // Build "已有 Agent" — show instances grouped by subscribed framework
+  const ownedFrameworks = allAgents.filter(a => workspaceAgents.includes(a.id));
+  let ownedHTML = '';
+  ownedFrameworks.forEach(fw => {
+    const instances = agentInstances.filter(inst => inst.framework === fw.id);
+    const tagHTML = fw.tag ? '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--accent-bg);color:var(--accent);font-weight:600;">'+fw.tag+'</span>' : '';
+    ownedHTML += '<div style="margin-bottom:14px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:24px;height:24px;border-radius:6px;background:'+fw.color+';display:flex;align-items:center;justify-content:center;font-size:12px;">'+fw.emoji+'</div><span style="font-size:12px;font-weight:600;color:var(--text-heading);">'+fw.name+'</span>'+tagHTML+'</div>';
+    ownedHTML += '<div class="agent-market-grid">' + instances.map(inst => renderInstanceCard(inst, inGroup)).join('') + '</div></div>';
+  });
+  // Build "发现新 Agent" — unsubscribed frameworks
   const newAgents = allAgents.filter(a => !workspaceAgents.includes(a.id));
-  const ownedHTML = ownedAgents.map(a => renderAgentCard(a, inGroup)).join('');
   const newHTML = newAgents.map(a => renderAgentCard(a, inGroup)).join('');
   const sectionStyle = 'font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:8px;display:flex;align-items:center;gap:8px;';
   const sectionDescStyle = 'font-size:11px;font-weight:400;color:var(--text-muted);';
@@ -5374,10 +5416,9 @@ function openAgentMarket() {
         <span style="font-size:11px;color:var(--text-muted);">积分</span>
       </div>
     </div>
-    <div class="chat-modal-desc">接入已有 Agent 或订阅新的 AI Agent 产品</div>
+    <div class="chat-modal-desc">选择 Agent 加入当前群聊，或订阅新的 AI Agent</div>
     <div style="margin-bottom:14px;"><input type="text" placeholder="搜索 Agent..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;" oninput="filterAgentMarket(this.value)"></div>
-    ${ownedHTML.length ? `<div style="${sectionStyle}">🔗 已有 Agent <span style="${sectionDescStyle}">接入到当前群聊</span></div>
-    <div class="agent-market-grid" id="agentMarketGrid" style="margin-bottom:20px;">${ownedHTML}</div>` : ''}
+    ${ownedHTML ? `<div style="${sectionStyle}">🔗 已有 Agent <span style="${sectionDescStyle}">选择加入当前群聊</span></div>${ownedHTML}` : ''}
     ${newHTML.length ? `<div style="${sectionStyle}">🛒 发现新 Agent <span style="${sectionDescStyle}">订阅或购买</span></div>
     <div class="agent-market-grid" id="agentMarketGridNew">${newHTML}</div>` : ''}
   </div>`;
