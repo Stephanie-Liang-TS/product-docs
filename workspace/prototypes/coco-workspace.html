@@ -2343,7 +2343,12 @@ body {
           <!-- Step 3: Invite Members -->
           <div class="wt-step" id="wtStep3">
             <div class="wt-title">邀请团队成员</div>
-            <div class="wt-desc">选择要加入群聊的成员，AI 助手会自动加入。</div>
+            <div class="wt-desc">选择要加入群聊的成员和 AI Agent。</div>
+
+            <!-- Human Members Section -->
+            <div style="margin-bottom:6px;">
+              <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">👤 团队成员</div>
+            </div>
             <div class="wt-member-list" id="wtMemberList">
               <div class="wt-member-item selected" data-member="stephanie" onclick="wtToggleMember(this)">
                 <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
@@ -2382,6 +2387,39 @@ body {
                 <span class="wt-member-check">✓</span>
               </div>
             </div>
+
+            <!-- AI Agent Section -->
+            <div style="margin-top:16px;margin-bottom:6px;">
+              <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">🤖 AI Agent</div>
+            </div>
+            <div class="wt-member-list" id="wtAgentList">
+              <div class="wt-member-item selected" data-agent="code-assistant" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#d357fe,#96bbff);font-size:16px;">🤖</div>
+                <span class="member-name">代码助手</span>
+                <span class="member-role" style="color:var(--accent);">Claude Sonnet</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item selected" data-agent="design-ai" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#fd79a8,#fab1a0);font-size:16px;">🎨</div>
+                <span class="member-name">Design AI</span>
+                <span class="member-role" style="color:var(--accent);">Claude Sonnet</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <div class="wt-member-item" data-agent="test-bot" onclick="wtToggleMember(this)">
+                <div class="avatar" style="background:linear-gradient(135deg,#00cec9,#55efc4);font-size:16px;">🧪</div>
+                <span class="member-name">测试 Agent</span>
+                <span class="member-role" style="color:var(--accent);">Claude Sonnet</span>
+                <span class="wt-member-check">✓</span>
+              </div>
+              <!-- Add from market -->
+              <div class="wt-member-item" style="border-style:dashed;opacity:0.7;" onclick="openAgentMarket()">
+                <div class="avatar" style="background:var(--accent-bg);color:var(--accent);font-size:18px;font-weight:700;">+</div>
+                <span class="member-name" style="color:var(--accent);">从 Agent 市场添加</span>
+                <span class="member-role">浏览更多 AI Agent</span>
+                <span class="wt-member-check" style="display:none;"></span>
+              </div>
+            </div>
+
             <button class="wt-btn wt-btn-primary" onclick="wtFinish()">邀请并开始使用</button>
           </div>
 
