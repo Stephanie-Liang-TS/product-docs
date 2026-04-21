@@ -647,6 +647,7 @@ body {
   background: transparent;
 }
 .ob-chip:hover { border-color: rgba(211,87,254,0.3); }
+.ob-choice-btn:hover { border-color: var(--accent) !important; background: rgba(211,87,254,0.03); }
 .ob-chip.selected {
   border-color: var(--accent);
   background: rgba(211,87,254,0.06);
@@ -4414,23 +4415,155 @@ function obNextStep1() {
   document.querySelector('.sidebar-brand').textContent = name;
   document.querySelector('.sidebar-logo').textContent = name.charAt(0).toUpperCase();
 
-  // Step 1: Choose AI Agents
+  // Step 1: Ask how user wants to add agents — connect existing or subscribe new
   appendObMsg(cocoMsgHTML(
-    '好的！<strong>' + name + '</strong> 工作区已创建 ✅<br><br>接下来，选择你想在工作区中使用的 AI Agent。你可以随时在 Agent 市场中添加更多：',
+    '好的！<strong>' + name + '</strong> 工作区已创建 ✅<br><br>接下来，让我们为工作区添加 AI Agent。<br>你目前的情况是？',
     `<div class="ob-card-inner">
-      <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🤖 选择 AI Agent</div>
-      <div id="obAgentList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
-        ${allAgents.slice(0, 4).map(a => {
-          const isSub = workspaceAgents.includes(a.id);
-          return '<div class="ob-agent-item'+(isSub?' selected':'')+'" data-agent="'+a.id+'" onclick="obToggleAgent(this)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid '+(isSub?'var(--accent)':'var(--border-glass)')+';border-radius:10px;cursor:pointer;transition:all .15s;'+(isSub?'background:rgba(211,87,254,0.04)':'')+'"><div style="width:36px;height:36px;border-radius:10px;background:'+a.color+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+a.emoji+'</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-heading);">'+a.name+(a.tag?' <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--accent-bg);color:var(--accent);font-weight:600;">'+a.tag+'</span>':'')+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+a.desc+'</div></div><div style="font-size:11px;color:'+(isSub?'var(--accent)':'var(--text-muted)')+';font-weight:600;white-space:nowrap;">'+(isSub?'已订阅 ✓':'免费试用')+'</div></div>';
-        }).join('')}
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="ob-choice-btn" onclick="obAgentPath('connect')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--border-glass);border-radius:12px;cursor:pointer;transition:all .2s;">
+          <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔗</div>
+          <div><div style="font-size:14px;font-weight:600;color:var(--text-heading);">接入已有 Agent</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px;">我已经有 Zylos、OpenClaw 等服务，想接入到工作区</div></div>
+        </div>
+        <div class="ob-choice-btn" onclick="obAgentPath('subscribe')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--border-glass);border-radius:12px;cursor:pointer;transition:all .2s;">
+          <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#d357fe,#96bbff);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🛒</div>
+          <div><div style="font-size:14px;font-weight:600;color:var(--text-heading);">订阅新服务</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px;">我还没有 Agent，想看看有什么可以用的</div></div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px dashed var(--border-glass);border-radius:10px;cursor:pointer;color:var(--accent);font-size:12px;font-weight:500;margin-bottom:14px;" onclick="openAgentMarket()">
-        <span style="font-size:16px;">+</span> 浏览 Agent 市场 — 更多 AI Agent 等你发现
-      </div>
-      <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obNextStep2()">继续</button>
     </div>`
   ), 200);
+}
+
+function obAgentPath(path) {
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  const container = document.getElementById('chatMessages');
+  if (path === 'connect') {
+    // User reply
+    container.insertAdjacentHTML('beforeend', `<div class="chat-msg ob-msg" style="animation:obMsgIn .3s ease both;">
+      <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+      <div style="min-width:0;flex:1;">
+        <div class="chat-msg-name">Stephanie</div>
+        <div class="chat-msg-content">我已经有服务了，想接入进来</div>
+        <div class="chat-msg-time">刚刚</div>
+      </div>
+    </div>`);
+    container.scrollTop = container.scrollHeight;
+    // COCO asks which agent to connect
+    appendObMsg(cocoMsgHTML(
+      '选择你要接入的 Agent 类型：',
+      `<div class="ob-card-inner">
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+          ${allAgents.filter(a => a.id !== 'coco').map(a => {
+            const tagHTML = a.tag ? '<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--accent-bg);color:var(--accent);font-weight:600;margin-left:6px;">'+a.tag+'</span>' : '';
+            return '<div class="ob-agent-item" data-agent="'+a.id+'" onclick="obSelectConnectAgent(this)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;transition:all .15s;"><div style="width:36px;height:36px;border-radius:10px;background:'+a.color+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+a.emoji+'</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-heading);">'+a.name+tagHTML+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">'+a.desc+'</div></div></div>';
+          }).join('')}
+        </div>
+      </div>`
+    ), 200);
+  } else {
+    // User reply
+    container.insertAdjacentHTML('beforeend', `<div class="chat-msg ob-msg" style="animation:obMsgIn .3s ease both;">
+      <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+      <div style="min-width:0;flex:1;">
+        <div class="chat-msg-name">Stephanie</div>
+        <div class="chat-msg-content">我想订阅新的 Agent 服务</div>
+        <div class="chat-msg-time">刚刚</div>
+      </div>
+    </div>`);
+    container.scrollTop = container.scrollHeight;
+    // Show subscription options
+    appendObMsg(cocoMsgHTML(
+      '以下是目前可用的 AI Agent，选择你感兴趣的：',
+      `<div class="ob-card-inner">
+        <div id="obAgentList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+          ${allAgents.map(a => {
+            const isSub = workspaceAgents.includes(a.id);
+            const tagHTML = a.tag ? '<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--accent-bg);color:var(--accent);font-weight:600;margin-left:6px;">'+a.tag+'</span>' : '';
+            const priceInfo = a.pricing && a.pricing[1] ? a.pricing[1].price + a.pricing[1].period : '免费';
+            return '<div class="ob-agent-item'+(isSub?' selected':'')+'" data-agent="'+a.id+'" onclick="obToggleAgent(this)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid '+(isSub?'var(--accent)':'var(--border-glass)')+';border-radius:10px;cursor:pointer;transition:all .15s;'+(isSub?'background:rgba(211,87,254,0.04)':'')+'"><div style="width:36px;height:36px;border-radius:10px;background:'+a.color+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+a.emoji+'</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-heading);">'+a.name+tagHTML+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">'+a.desc+'</div></div><div style="text-align:right;flex-shrink:0;"><div style="font-size:11px;color:'+(isSub?'var(--accent)':'var(--text-muted)')+';font-weight:600;">'+(isSub?'已订阅 ✓':priceInfo)+'</div></div></div>';
+          }).join('')}
+        </div>
+        <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obNextStep2()">继续</button>
+      </div>`
+    ), 200);
+  }
+}
+
+function obSelectConnectAgent(el) {
+  // Highlight selected
+  el.parentElement.querySelectorAll('.ob-agent-item').forEach(i => {
+    i.style.borderColor = 'var(--border-glass)';
+    i.style.background = 'transparent';
+  });
+  el.style.borderColor = 'var(--accent)';
+  el.style.background = 'rgba(211,87,254,0.04)';
+  const agentId = el.dataset.agent;
+  const agent = allAgents.find(a => a.id === agentId);
+  if (!agent) return;
+  // Disable card and show user reply
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  const container = document.getElementById('chatMessages');
+  container.insertAdjacentHTML('beforeend', `<div class="chat-msg ob-msg" style="animation:obMsgIn .3s ease both;">
+    <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+    <div style="min-width:0;flex:1;">
+      <div class="chat-msg-name">Stephanie</div>
+      <div class="chat-msg-content">接入 ${agent.name}</div>
+      <div class="chat-msg-time">刚刚</div>
+    </div>
+  </div>`);
+  container.scrollTop = container.scrollHeight;
+  // Show connection form
+  appendObMsg(cocoMsgHTML(
+    '请提供你的 <strong>' + agent.name + '</strong> 服务信息，我来帮你完成接入：',
+    `<div class="ob-card-inner">
+      <div style="margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">服务地址 (Endpoint URL)</div>
+        <input type="text" placeholder="https://your-server.com/api" style="width:100%;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:13px;" id="obConnectUrl">
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">API Key / Token</div>
+        <input type="password" placeholder="sk-..." style="width:100%;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:13px;" id="obConnectKey">
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">协议类型</div>
+        <div style="display:flex;gap:8px;">
+          <div id="obProtoMCP" onclick="obSelectProto('mcp')" style="flex:1;padding:8px;text-align:center;border:1.5px solid var(--accent);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;background:rgba(211,87,254,0.04);transition:all .2s;">MCP</div>
+          <div id="obProtoREST" onclick="obSelectProto('rest')" style="flex:1;padding:8px;text-align:center;border:1.5px solid var(--border-glass);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;">REST API</div>
+          <div id="obProtoWS" onclick="obSelectProto('ws')" style="flex:1;padding:8px;text-align:center;border:1.5px solid var(--border-glass);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;">WebSocket</div>
+        </div>
+      </div>
+      <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obConnectFinish('${agentId}')">验证并接入</button>
+    </div>`
+  ), 200);
+}
+
+function obSelectProto(proto) {
+  ['mcp','rest','ws'].forEach(p => {
+    const el = document.getElementById('obProto' + p.toUpperCase().replace('REST','REST').replace('WS','WS').replace('MCP','MCP'));
+    if (!el) return;
+    if (p === proto) { el.style.borderColor = 'var(--accent)'; el.style.background = 'rgba(211,87,254,0.04)'; }
+    else { el.style.borderColor = 'var(--border-glass)'; el.style.background = 'transparent'; }
+  });
+  document.getElementById('obProtoMCP').style.borderColor = proto === 'mcp' ? 'var(--accent)' : 'var(--border-glass)';
+  document.getElementById('obProtoMCP').style.background = proto === 'mcp' ? 'rgba(211,87,254,0.04)' : 'transparent';
+  document.getElementById('obProtoREST').style.borderColor = proto === 'rest' ? 'var(--accent)' : 'var(--border-glass)';
+  document.getElementById('obProtoREST').style.background = proto === 'rest' ? 'rgba(211,87,254,0.04)' : 'transparent';
+  document.getElementById('obProtoWS').style.borderColor = proto === 'ws' ? 'var(--accent)' : 'var(--border-glass)';
+  document.getElementById('obProtoWS').style.background = proto === 'ws' ? 'rgba(211,87,254,0.04)' : 'transparent';
+}
+
+function obConnectFinish(agentId) {
+  const agent = allAgents.find(a => a.id === agentId);
+  if (!agent) return;
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  const container = document.getElementById('chatMessages');
+  // Simulate connection
+  if (!workspaceAgents.includes(agentId)) workspaceAgents.push(agentId);
+  // Show success and continue to next step
+  appendObMsg(cocoMsgHTML(
+    '✅ <strong>' + agent.name + '</strong> 接入成功！连接已验证。<br><br>现在来创建你的第一个群聊，邀请团队成员和 AI Agent 一起协作：',
+    buildGroupCreationCard()
+  ), 200);
+  obStep = 2;
 }
 
 function obToggleAgent(el) {
@@ -4442,11 +4575,54 @@ function obToggleAgent(el) {
   if (statusEl) { statusEl.style.color = isSel ? 'var(--accent)' : 'var(--text-muted)'; statusEl.textContent = isSel ? '已选 ✓' : '免费试用'; }
 }
 
+function buildGroupCreationCard() {
+  const agentChips = allAgents.filter(a => workspaceAgents.includes(a.id)).map(a =>
+    '<div class="ob-chip selected" data-a="'+a.id+'" onclick="this.classList.toggle(\'selected\')"><span style="font-size:14px;">'+a.emoji+'</span> '+a.name+'</div>'
+  ).join('');
+  return `<div class="ob-card-inner">
+    <div style="margin-bottom:12px;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">群聊名称</div>
+      <input type="text" id="obGroupName" value="产品开发群" placeholder="群聊名称..." style="width:100%;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:14px;">
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">可见性</div>
+      <div style="display:flex;gap:8px;">
+        <div id="obVisPublic" onclick="obSelectVis('public')" style="flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1.5px solid var(--accent);border-radius:8px;cursor:pointer;background:rgba(211,87,254,0.04);transition:all .2s;">
+          <span style="font-size:14px;">🌐</span><div><div style="font-size:11px;font-weight:600;">公开群</div></div>
+        </div>
+        <div id="obVisPrivate" onclick="obSelectVis('private')" style="flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1.5px solid var(--border-glass);border-radius:8px;cursor:pointer;transition:all .2s;">
+          <span style="font-size:14px;">🔒</span><div><div style="font-size:11px;font-weight:600;">私有群</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">👤 邀请成员</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obMemberChips">
+        <div class="ob-chip selected" data-m="stephanie" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">S</span> Stephanie</div>
+        <div class="ob-chip" data-m="alex" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">A</span> Alex</div>
+        <div class="ob-chip" data-m="maya" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">M</span> Maya</div>
+        <div class="ob-chip" data-m="zhangwei" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">张</span> 张伟</div>
+        <div class="ob-chip" data-m="chenmh" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">陈</span> 陈明辉</div>
+        <div class="ob-chip" data-m="lisiqi" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">李</span> 李思琪</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">🤖 添加 Agent</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obAgentChips">
+        ${agentChips}
+        <div class="ob-chip" style="border-style:dashed;color:var(--accent);" onclick="openAgentMarket()">+ 更多</div>
+      </div>
+    </div>
+    <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obFinish()">创建群聊并完成设置</button>
+  </div>`;
+}
+
 function obNextStep2() {
   obStep = 2;
-  // Collect selected agents
+  // Collect selected agents from subscribe flow
   const selected = [];
   document.querySelectorAll('#obAgentList .ob-agent-item.selected').forEach(el => selected.push(el.dataset.agent));
+  selected.forEach(id => { if (!workspaceAgents.includes(id)) workspaceAgents.push(id); });
   document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
   const container = document.getElementById('chatMessages');
   const names = selected.map(id => { const a = allAgents.find(x => x.id === id); return a ? a.name : id; });
@@ -4454,7 +4630,7 @@ function obNextStep2() {
     <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
     <div style="min-width:0;flex:1;">
       <div class="chat-msg-name">Stephanie</div>
-      <div class="chat-msg-content">选择了：${names.join('、')}</div>
+      <div class="chat-msg-content">订阅了：${names.join('、')}</div>
       <div class="chat-msg-time">刚刚</div>
     </div>
   </div>`);
@@ -4463,44 +4639,7 @@ function obNextStep2() {
   // Step 2: Create group + invite members
   appendObMsg(cocoMsgHTML(
     'Agent 已添加 ✅<br><br>现在来创建你的第一个群聊，邀请团队成员和 AI Agent 一起协作：',
-    `<div class="ob-card-inner">
-      <div style="margin-bottom:12px;">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">群聊名称</div>
-        <input type="text" id="obGroupName" value="产品开发群" placeholder="群聊名称..." style="width:100%;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:14px;">
-      </div>
-      <div style="margin-bottom:12px;">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">可见性</div>
-        <div style="display:flex;gap:8px;">
-          <div id="obVisPublic" onclick="obSelectVis('public')" style="flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1.5px solid var(--accent);border-radius:8px;cursor:pointer;background:rgba(211,87,254,0.04);transition:all .2s;">
-            <span style="font-size:14px;">🌐</span><div><div style="font-size:11px;font-weight:600;">公开群</div></div>
-          </div>
-          <div id="obVisPrivate" onclick="obSelectVis('private')" style="flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1.5px solid var(--border-glass);border-radius:8px;cursor:pointer;transition:all .2s;">
-            <span style="font-size:14px;">🔒</span><div><div style="font-size:11px;font-weight:600;">私有群</div></div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-bottom:10px;">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">👤 邀请成员</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obMemberChips">
-          <div class="ob-chip selected" data-m="stephanie" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">S</span> Stephanie</div>
-          <div class="ob-chip" data-m="alex" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">A</span> Alex</div>
-          <div class="ob-chip" data-m="maya" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">M</span> Maya</div>
-          <div class="ob-chip" data-m="zhangwei" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">张</span> 张伟</div>
-          <div class="ob-chip" data-m="chenmh" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">陈</span> 陈明辉</div>
-          <div class="ob-chip" data-m="lisiqi" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">李</span> 李思琪</div>
-        </div>
-      </div>
-      <div style="margin-bottom:14px;">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">🤖 添加 Agent</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obAgentChips">
-          ${allAgents.filter(a => workspaceAgents.includes(a.id) || selected.includes(a.id)).map(a =>
-            '<div class="ob-chip selected" data-a="'+a.id+'" onclick="this.classList.toggle(\'selected\')"><span style="font-size:14px;">'+a.emoji+'</span> '+a.name+'</div>'
-          ).join('')}
-          <div class="ob-chip" style="border-style:dashed;color:var(--accent);" onclick="openAgentMarket()">+ 更多</div>
-        </div>
-      </div>
-      <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obFinish()">创建群聊并完成设置</button>
-    </div>`
+    buildGroupCreationCard()
   ), 200);
 }
 
