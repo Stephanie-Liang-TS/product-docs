@@ -4363,6 +4363,7 @@ function appendObMsg(html, delay) {
 function startOnboardingChat() {
   obStep = 0;
   obComplete = false;
+  workspaceAgents = ['coco'];
   // Clear existing messages for onboarding channel
   const container = document.getElementById('chatMessages');
   container.innerHTML = '';
@@ -4858,6 +4859,7 @@ function obDismiss() {
 function restartOnboarding() {
   obStep = 0;
   obComplete = false;
+  workspaceAgents = ['coco'];
   document.getElementById('wtRestartBtn').style.display = 'none';
   startOnboardingChat();
 }
