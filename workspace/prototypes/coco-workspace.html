@@ -2451,6 +2451,11 @@ body {
         <button class="mode-opt" id="modeCode" onclick="switchMode('code')">代码开发</button>
         <button class="mode-opt" id="modeOffice" onclick="switchMode('office')">日常办公</button>
       </div>
+      <div id="topbarCredits" onclick="switchModule('chat');setTimeout(()=>openAgentMarket(),200);showCreditsPanel();" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:10px;background:linear-gradient(135deg,rgba(211,87,254,0.06),rgba(150,187,255,0.06));cursor:pointer;transition:all .15s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(211,87,254,0.12),rgba(150,187,255,0.12))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(211,87,254,0.06),rgba(150,187,255,0.06))'">
+        <span style="font-size:13px;">💎</span>
+        <span id="topbarCreditsNum" style="font-size:13px;font-weight:700;color:var(--accent);"></span>
+        <span style="font-size:10px;color:var(--text-muted);line-height:1;">积分<br><span style="color:var(--success);font-weight:600;">+100/天</span></span>
+      </div>
       <button class="topbar-cmdk" onclick="openCmdK()">
         搜索命令 <kbd>⌘K</kbd>
       </button>
@@ -4329,7 +4334,13 @@ function initAllModules() {
   renderAgents();
   renderToolbox();
   renderAdmin();
+  updateTopbarCredits();
   startOnboardingChat();
+}
+
+function updateTopbarCredits() {
+  const el = document.getElementById('topbarCreditsNum');
+  if (el) el.textContent = formatCredits(userCredits);
 }
 
 // ================================================================
@@ -4847,7 +4858,7 @@ function obFinish() {
     `<div class="ob-card-inner" style="text-align:center;padding:8px 0;">
       <div style="display:flex;gap:8px;justify-content:center;">
         <button class="wt-btn wt-btn-primary" style="padding:8px 20px;font-size:13px;" onclick="obDismiss()">开始对话</button>
-        <button class="wt-btn wt-btn-secondary" style="padding:8px 20px;font-size:13px;" onclick="switchModule('agents')">探索 Agent</button>
+        <button class="wt-btn wt-btn-secondary" style="padding:8px 20px;font-size:13px;" onclick="obGoToMarket()">探索 Agent</button>
       </div>
     </div>`
   ), 200);
@@ -4856,9 +4867,17 @@ function obFinish() {
 }
 
 function obDismiss() {
-  // Fade out the final card
   document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
-  showToast('工作区设置完成！欢迎使用 COCO Workspace');
+  // Navigate to the created group chat
+  const groupName = document.getElementById('obGroupName')?.value || '产品开发群';
+  switchChannel('product-dev');
+  showToast('已进入「' + groupName + '」群聊');
+}
+
+function obGoToMarket() {
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  switchModule('toolbox');
+  showToast('探索 Agent 市场和工具箱');
 }
 
 function restartOnboarding() {
