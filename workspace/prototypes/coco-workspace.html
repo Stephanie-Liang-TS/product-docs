@@ -2038,17 +2038,19 @@ body {
 }
 
 /* ============================================================
-   MODULE: TEAM
+   MODULE: TEAM / CONTACTS
    ============================================================ */
+.contacts-tab { }
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
 }
 .team-card {
   text-align: center;
   padding: 28px 20px;
   cursor: pointer;
+  position: relative;
 }
 .team-card .avatar {
   margin: 0 auto 12px;
@@ -2062,6 +2064,191 @@ body {
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 10px;
+}
+/* Digital employee card */
+.digital-card {
+  text-align: left;
+  padding: 20px;
+  position: relative;
+}
+.digital-card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 14px;
+}
+.digital-card-status {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.digital-card-status.online { background: var(--success); }
+.digital-card-status.idle { background: #fdcb6e; }
+.digital-card-status.offline { background: #ccc; }
+.digital-card-name {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.digital-card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.digital-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.digital-card-chip {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  background: rgba(0,0,0,0.02);
+}
+.digital-card-model {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6c5ce7;
+  margin-bottom: 8px;
+}
+.digital-card-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.digital-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.digital-badge.worker { background: rgba(108,92,231,0.1); color: #6c5ce7; }
+.digital-badge.cloud { background: rgba(108,92,231,0.1); color: #6c5ce7; }
+.digital-badge.local { background: rgba(0,184,148,0.1); color: #00b894; }
+.digital-badge.connector { background: rgba(253,203,110,0.1); color: #f39c12; }
+.digital-badge.buy { background: rgba(0,0,0,0.05); color: var(--text-muted); }
+.digital-badge.openclaw { background: rgba(0,184,148,0.1); color: #00b894; }
+.digital-card-footer {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+/* Human employee card */
+.human-card {
+  text-align: center;
+  padding: 28px 20px;
+}
+.human-card-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(108,92,231,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 28px;
+  color: #8395a7;
+}
+.human-card-name {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.human-card-email {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.human-card-role-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.human-card-role-badge.admin { background: rgba(211,87,254,0.1); color: var(--accent); }
+.human-card-role-badge.designer { background: rgba(253,121,168,0.1); color: #e84393; }
+.human-card-role-badge.backend { background: rgba(108,92,231,0.1); color: #6c5ce7; }
+.human-card-role-badge.frontend { background: rgba(108,92,231,0.1); color: #6c5ce7; }
+.human-card-responsibility {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+/* Org chart */
+.org-tree { padding-left: 0; }
+.org-tree-header {
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.org-tree-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.org-dept {
+  margin-bottom: 16px;
+  padding-left: 24px;
+  border-left: 2px solid var(--border-light);
+}
+.org-dept-name {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding-left: 8px;
+}
+.org-member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 6px 24px;
+  border-left: 2px solid var(--border-light);
+  margin-left: 0;
+}
+.org-member-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.org-member-icon.human { background: rgba(108,92,231,0.1); color: #8395a7; }
+.org-member-icon.agent { background: rgba(108,92,231,0.15); color: #6c5ce7; }
+.org-member-icon.connector { background: rgba(253,203,110,0.15); color: #f39c12; }
+.org-member-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+.org-member-role {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
 /* ============================================================
@@ -2666,7 +2853,7 @@ body {
       </div>
       <div class="nav-item" data-module="team" onclick="switchModule('team')">
         <span class="nav-icon">👥</span>
-        <span class="nav-label">团队</span>
+        <span class="nav-label">通讯录</span>
       </div>
       <div class="nav-item" data-module="agents" onclick="switchModule('agents')">
         <span class="nav-icon">🤖</span>
@@ -2890,14 +3077,45 @@ body {
         </div>
       </div>
 
-      <!-- ======================== TEAM MODULE ======================== -->
+      <!-- ======================== TEAM / CONTACTS MODULE ======================== -->
       <div class="module-view" id="module-team">
         <div class="tasks-header">
-          <h2>团队</h2>
-          <button class="btn btn-primary" onclick="openInviteModal()">+ 邀请成员</button>
+          <h2>👥 通讯录</h2>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-secondary" onclick="openModal('newProjectModal')">🤖 创建数字员工</button>
+            <button class="btn btn-primary" onclick="openInviteModal()">+ 邀请成员</button>
+          </div>
         </div>
-        <div class="team-grid" id="teamGrid">
-          <!-- populated by JS -->
+
+        <!-- Top-level tabs -->
+        <div class="tasks-toolbar" style="margin-bottom:0;">
+          <div class="tasks-view-toggle" style="margin-bottom:16px;">
+            <button class="tasks-view-btn active" data-ctab="digital" onclick="switchContactsTab('digital')">数字员工</button>
+            <button class="tasks-view-btn" data-ctab="human" onclick="switchContactsTab('human')">人类员工</button>
+            <button class="tasks-view-btn" data-ctab="org" onclick="switchContactsTab('org')">组织结构</button>
+          </div>
+        </div>
+
+        <!-- Digital Employees Tab -->
+        <div class="contacts-tab" id="ctab-digital">
+          <div class="tasks-filter-chips" style="margin-bottom:16px;">
+            <button class="tasks-filter-chip active" data-df="all" onclick="setDigitalFilter('all')">全部</button>
+            <button class="tasks-filter-chip" data-df="worker" onclick="setDigitalFilter('worker')">Worker</button>
+            <button class="tasks-filter-chip" data-df="connector" onclick="setDigitalFilter('connector')">Connector</button>
+            <button class="tasks-filter-chip" data-df="cloud" onclick="setDigitalFilter('cloud')">云端</button>
+            <button class="tasks-filter-chip" data-df="local" onclick="setDigitalFilter('local')">本地</button>
+          </div>
+          <div class="team-grid" id="digitalGrid"></div>
+        </div>
+
+        <!-- Human Employees Tab -->
+        <div class="contacts-tab" id="ctab-human" style="display:none;">
+          <div class="team-grid" id="humanGrid"></div>
+        </div>
+
+        <!-- Org Chart Tab -->
+        <div class="contacts-tab" id="ctab-org" style="display:none;">
+          <div class="glass-card" id="orgChart" style="padding:28px;"></div>
         </div>
       </div>
 
@@ -3307,7 +3525,7 @@ const moduleNames = {
   chat: '对话',
   tasks: '任务看板',
   projects: '项目',
-  team: '团队',
+  team: '通讯录',
   agents: 'Agent 管理',
   toolbox: '工具箱',
   admin: '管理后台',
@@ -3568,6 +3786,53 @@ const githubRepos = [
   { name: 'coco-sdk', fullName: 'coco-team/coco-sdk', desc: 'SDK 工具包', stars: 52, issues: 8, connected: false }
 ];
 
+// Digital employees (agents)
+const digitalEmployees = [
+  { name: '代码助手', desc: '全栈代码生成、代码审查、API 文档编写、自动化重构', avatar: '🤖', bgColor: 'rgba(108,92,231,0.12)', status: 'online', type: 'worker', deploy: 'cloud', model: 'Claude Sonnet', chips: ['代码生成', '代码审查', 'API'], sla: '响应 < 5s', owner: '陈明辉', purchasable: true },
+  { name: '测试 Agent', desc: '自动化测试、回归测试、性能测试报告生成', avatar: '🧪', bgColor: 'rgba(0,206,201,0.12)', status: 'online', type: 'worker', deploy: 'cloud', model: 'GPT-4 Turbo', chips: ['自动化测试', '回归', '性能'], sla: '响应 < 10s', owner: '张伟', purchasable: true },
+  { name: '数据分析师', desc: '数据分析、报表生成、效能统计、趋势预测', avatar: '📊', bgColor: 'rgba(9,132,227,0.12)', status: 'online', type: 'worker', deploy: 'cloud', model: 'Gemini 1.5 Pro', chips: ['数据分析', '报表', '可视化'], sla: '响应 < 8s', owner: '陈明辉', platform: 'OpenClaw' },
+  { name: '本地推理 Agent', desc: '本地部署的轻量推理模型，用于敏感数据处理', avatar: '🏠', bgColor: 'rgba(0,184,148,0.12)', status: 'online', type: 'worker', deploy: 'local', model: 'Llama 3.1 70B', chips: ['本地推理', '隐私', '快速'], sla: '响应 < 2s', owner: '张伟' },
+  { name: 'Lark 连接器', desc: '飞书/Lark 消息同步、群组管理、机器人集成', avatar: '🔗', bgColor: 'rgba(253,203,110,0.12)', status: 'online', type: 'connector', deploy: 'cloud', model: null, chips: ['消息同步', '群组', '机器人'], sla: '响应 < 3s', owner: '陈明辉' },
+  { name: 'Slack 连接器', desc: 'Slack 消息同步、频道管理、Webhook 集成', avatar: '🔗', bgColor: 'rgba(253,203,110,0.12)', status: 'idle', type: 'connector', deploy: 'cloud', model: null, chips: ['消息同步', '频道', 'Webhook'], sla: '响应 < 3s', owner: '陈明辉' }
+];
+
+let currentDigitalFilter = 'all';
+
+// Human employees
+const humanEmployees = [
+  { name: '陈明辉', email: 'chen@coco.xyz', role: '管理员', roleClass: 'admin', responsibility: '系统配置、权限管理', dept: '产品部' },
+  { name: '李思琪', email: 'lisa@coco.xyz', role: '设计师', roleClass: 'designer', responsibility: 'UI/UX 设计', dept: '产品部' },
+  { name: '张伟', email: 'zhangwei@coco.xyz', role: '后端开发', roleClass: 'backend', responsibility: 'API、数据库、基础设施', dept: '工程部' },
+  { name: '王小红', email: 'wang@coco.xyz', role: '前端开发', roleClass: 'frontend', responsibility: 'React 组件、前端架构', dept: '工程部' }
+];
+
+// Org chart data
+const orgData = {
+  name: 'COCO 团队',
+  total: 10,
+  humans: 4,
+  digital: 6,
+  departments: [
+    { name: '产品部', icon: '📁', members: [
+      { name: '陈明辉', role: '管理员', type: 'human', roleColor: '#00b894' },
+      { name: '李思琪', role: '设计师', type: 'human', roleColor: '#e84393' }
+    ]},
+    { name: '工程部', icon: '📁', members: [
+      { name: '张伟', role: '后端', type: 'human', roleColor: '#6c5ce7' },
+      { name: '王小红', role: '前端', type: 'human', roleColor: '#6c5ce7' }
+    ]},
+    { name: '数字员工', icon: '📁', members: [
+      { name: '代码助手', role: 'Worker', type: 'agent', roleColor: '#6c5ce7' },
+      { name: '测试 Agent', role: 'Worker', type: 'agent', roleColor: '#6c5ce7' },
+      { name: '数据分析师', role: 'Worker', type: 'agent', roleColor: '#6c5ce7' },
+      { name: '本地推理 Agent', role: 'Local', type: 'agent', roleColor: '#00b894' },
+      { name: 'Lark 连接器', role: 'Connector', type: 'connector', roleColor: '#f39c12' },
+      { name: 'Slack 连接器', role: 'Connector', type: 'connector', roleColor: '#f39c12' }
+    ]}
+  ]
+};
+
+// Keep old teamData for backward compat (chat info panels, etc.)
 const teamData = [
   { name: 'Stephanie', role: '产品负责人', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', status: 'online', isAgent: false, activity: '刚刚更新了项目需求文档' },
   { name: 'Alex', role: '全栈工程师', avatar: 'A', color: 'linear-gradient(135deg,#00cec9,#55efc4)', status: 'online', isAgent: false, activity: '正在处理 PR #128' },
@@ -3650,7 +3915,7 @@ const cmdkCommands = [
   { icon: '💬', label: '打开对话', module: 'chat', shortcut: '' },
   { icon: '✅', label: '打开任务', module: 'tasks', shortcut: '' },
   { icon: '📁', label: '打开项目', module: 'projects', shortcut: '' },
-  { icon: '👥', label: '打开团队', module: 'team', shortcut: '' },
+  { icon: '👥', label: '打开通讯录', module: 'team', shortcut: '' },
   { icon: '🤖', label: 'Agent 管理', module: 'agents', shortcut: '' },
   { icon: '🧰', label: '打开工具箱', module: 'toolbox', shortcut: '' },
   { icon: '📊', label: '管理后台', module: 'admin', shortcut: '' },
@@ -4587,27 +4852,91 @@ function createNewProject() {
 // TEAM MODULE
 // ================================================================
 function renderTeam() {
-  const grid = document.getElementById('teamGrid');
-  grid.innerHTML = '';
-  teamData.forEach(member => {
-    const statusBadge = member.status === 'online' ? 'badge-online' :
-                        member.status === 'busy' ? 'badge-busy' :
-                        member.status === 'idle' ? 'badge-idle' : 'badge-offline';
-    const statusLabel = member.status === 'online' ? '在线' :
-                        member.status === 'busy' ? '忙碌' :
-                        member.status === 'idle' ? '空闲' : '离线';
-    const agentBadge = member.isAgent ? '<span class="badge badge-agent" style="margin-left:4px;font-size:10px;">AI</span>' : '';
-    const avatarContent = member.avatar;
-    const fontSize = member.avatar.length > 1 ? '28px' : '22px';
-    grid.innerHTML += `
-      <div class="glass-card team-card" onclick="showProfile('${member.name}')">
-        <div class="avatar avatar-xl" style="background:${member.color};font-size:${fontSize}">${avatarContent}</div>
-        <div class="team-card-name">${member.name}${agentBadge}</div>
-        <div class="team-card-role">${member.role}</div>
-        <span class="badge ${statusBadge}">${statusLabel}</span>
+  renderDigitalEmployees();
+  renderHumanEmployees();
+  renderOrgChart();
+}
+
+function switchContactsTab(tab) {
+  document.querySelectorAll('.contacts-tab').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('[data-ctab]').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('ctab-' + tab).style.display = 'block';
+  document.querySelector(`[data-ctab="${tab}"]`).classList.add('active');
+}
+
+function setDigitalFilter(f) {
+  currentDigitalFilter = f;
+  document.querySelectorAll('[data-df]').forEach(c => c.classList.toggle('active', c.dataset.df === f));
+  renderDigitalEmployees();
+}
+
+function renderDigitalEmployees() {
+  const grid = document.getElementById('digitalGrid');
+  const filtered = digitalEmployees.filter(d => {
+    if (currentDigitalFilter === 'all') return true;
+    if (currentDigitalFilter === 'worker') return d.type === 'worker';
+    if (currentDigitalFilter === 'connector') return d.type === 'connector';
+    if (currentDigitalFilter === 'cloud') return d.deploy === 'cloud';
+    if (currentDigitalFilter === 'local') return d.deploy === 'local';
+    return true;
+  });
+  grid.innerHTML = filtered.map(d => {
+    const modelHTML = d.model ? `<div class="digital-card-model">★ ${d.model}</div>` : '';
+    const chipsHTML = d.chips.map(c => `<span class="digital-card-chip">${c}</span>`).join('');
+    const typeBadge = `<span class="digital-badge ${d.type}">${d.type === 'worker' ? 'Worker' : 'Connector'}</span>`;
+    const deployBadge = `<span class="digital-badge ${d.deploy}">${d.deploy === 'cloud' ? '云端' : '本地'}</span>`;
+    const extraBadge = d.purchasable ? '<span class="digital-badge buy">购买</span>' : (d.platform === 'OpenClaw' ? '<span class="digital-badge openclaw">OpenClaw</span>' : '');
+    return `
+      <div class="glass-card digital-card">
+        <div class="digital-card-status ${d.status}"></div>
+        <div class="digital-card-avatar" style="background:${d.bgColor}">${d.avatar}</div>
+        <div class="digital-card-name">${d.name}</div>
+        <div class="digital-card-desc">${d.desc}</div>
+        <div class="digital-card-chips">${chipsHTML}</div>
+        ${modelHTML}
+        <div class="digital-card-badges">${typeBadge}${deployBadge}${extraBadge}</div>
+        <div class="digital-card-footer">SLA: ${d.sla} · Owner: ${d.owner}</div>
       </div>
     `;
-  });
+  }).join('');
+}
+
+function renderHumanEmployees() {
+  const grid = document.getElementById('humanGrid');
+  grid.innerHTML = humanEmployees.map(h => `
+    <div class="glass-card human-card">
+      <div class="human-card-avatar">👤</div>
+      <div class="human-card-name">${h.name}</div>
+      <div class="human-card-email">${h.email}</div>
+      <span class="human-card-role-badge ${h.roleClass}">${h.role}</span>
+      <div class="human-card-responsibility">负责: ${h.responsibility}</div>
+    </div>
+  `).join('');
+}
+
+function renderOrgChart() {
+  const chart = document.getElementById('orgChart');
+  const deptsHTML = orgData.departments.map(dept => {
+    const membersHTML = dept.members.map(m => {
+      const iconClass = m.type === 'connector' ? 'connector' : (m.type === 'agent' ? 'agent' : 'human');
+      const icon = m.type === 'human' ? '👤' : (m.type === 'connector' ? '🔗' : '🤖');
+      return `<div class="org-member">
+        <div class="org-member-icon ${iconClass}">${icon}</div>
+        <span class="org-member-name">${m.name}</span>
+        <span class="org-member-role" style="background:${m.roleColor}18;color:${m.roleColor};">${m.role}</span>
+      </div>`;
+    }).join('');
+    return `<div class="org-dept">
+      <div class="org-dept-name">${dept.icon} ${dept.name}</div>
+      ${membersHTML}
+    </div>`;
+  }).join('');
+
+  chart.innerHTML = `
+    <div class="org-tree-header">🏢 ${orgData.name}</div>
+    <div class="org-tree-sub">${orgData.total} 人 (${orgData.humans} 人类 + ${orgData.digital} 数字员工)</div>
+    ${deptsHTML}
+  `;
 }
 
 function showProfile(name) {
