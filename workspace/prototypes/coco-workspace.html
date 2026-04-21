@@ -3924,19 +3924,29 @@ const channelMessages = {
 };
 
 const tasksData = [
-  { id: 1, title: '实现用户登录流程', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 1, dueDate: '2026-04-25' },
-  { id: 2, title: '设计首页 Banner 组件', assignee: 'Maya', priority: 'medium', status: 'progress', avatar: 'M', color: '#fd79a8', projectId: 1, dueDate: '2026-04-28' },
-  { id: 3, title: '编写 API 文档', assignee: 'COCO Agent', priority: 'low', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 1, dueDate: '2026-04-30' },
-  { id: 4, title: '数据库性能优化', assignee: 'Code Bot', priority: 'high', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 3, dueDate: '2026-04-22' },
-  { id: 5, title: '用户反馈收集分析', assignee: 'Stephanie', priority: 'medium', status: 'todo', avatar: 'S', color: '#f093fb', projectId: 2, dueDate: '2026-04-27' },
-  { id: 6, title: '移动端适配测试', assignee: 'Alex', priority: 'medium', status: 'done', avatar: 'A', color: '#00cec9', projectId: 1 },
-  { id: 7, title: '自动化部署脚本', assignee: 'Code Bot', priority: 'high', status: 'done', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 3 },
-  { id: 8, title: '设计系统色彩规范', assignee: 'Design AI', priority: 'low', status: 'done', avatar: '🎨', color: '#e17055', isAgent: true, projectId: 1 },
+  // 代码开发模式
+  { id: 1, title: '实现用户登录流程', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 1, dueDate: '2026-04-25', mode: 'code' },
+  { id: 2, title: '设计首页 Banner 组件', assignee: 'Maya', priority: 'medium', status: 'progress', avatar: 'M', color: '#fd79a8', projectId: 1, dueDate: '2026-04-28', mode: 'code' },
+  { id: 3, title: '编写 API 文档', assignee: 'COCO Agent', priority: 'low', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 1, dueDate: '2026-04-30', mode: 'code' },
+  { id: 4, title: '数据库性能优化', assignee: 'Code Bot', priority: 'high', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 3, dueDate: '2026-04-22', mode: 'code' },
+  { id: 5, title: '用户反馈收集分析', assignee: 'Stephanie', priority: 'medium', status: 'todo', avatar: 'S', color: '#f093fb', projectId: 2, dueDate: '2026-04-27', mode: 'code' },
+  { id: 6, title: '移动端适配测试', assignee: 'Alex', priority: 'medium', status: 'done', avatar: 'A', color: '#00cec9', projectId: 1, mode: 'code' },
+  { id: 7, title: '自动化部署脚本', assignee: 'Code Bot', priority: 'high', status: 'done', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 3, mode: 'code' },
+  { id: 8, title: '设计系统色彩规范', assignee: 'Design AI', priority: 'low', status: 'done', avatar: '🎨', color: '#e17055', isAgent: true, projectId: 1, mode: 'code' },
   // GitHub imported tasks (代码开发模式)
-  { id: 9, title: '[Issue #42] 修复登录 token 过期处理', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 'gh', dueDate: '2026-04-23', source: 'github', repo: 'coco-app', issueNum: 42 },
-  { id: 10, title: '[Issue #38] 添加暗色模式支持', assignee: 'Code Bot', priority: 'medium', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 'gh', dueDate: '2026-04-26', source: 'github', repo: 'coco-app', issueNum: 38 },
-  { id: 11, title: '[PR #45] 重构用户权限模块', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 'gh', source: 'github', repo: 'coco-app', issueNum: 45 },
-  { id: 12, title: '[Issue #35] 优化首页加载速度', assignee: 'COCO Agent', priority: 'medium', status: 'done', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 'gh', source: 'github', repo: 'coco-app', issueNum: 35 }
+  { id: 9, title: '[Issue #42] 修复登录 token 过期处理', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 'gh', dueDate: '2026-04-23', source: 'github', repo: 'coco-app', issueNum: 42, mode: 'code' },
+  { id: 10, title: '[Issue #38] 添加暗色模式支持', assignee: 'Code Bot', priority: 'medium', status: 'todo', avatar: '⚡', color: '#fdcb6e', isAgent: true, projectId: 'gh', dueDate: '2026-04-26', source: 'github', repo: 'coco-app', issueNum: 38, mode: 'code' },
+  { id: 11, title: '[PR #45] 重构用户权限模块', assignee: 'Alex', priority: 'high', status: 'progress', avatar: 'A', color: '#00cec9', projectId: 'gh', source: 'github', repo: 'coco-app', issueNum: 45, mode: 'code' },
+  { id: 12, title: '[Issue #35] 优化首页加载速度', assignee: 'COCO Agent', priority: 'medium', status: 'done', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 'gh', source: 'github', repo: 'coco-app', issueNum: 35, mode: 'code' },
+  // 日常办公模式
+  { id: 101, title: '撰写小红书种草文案', assignee: 'COCO Agent', priority: 'high', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 'social', dueDate: '2026-04-22', mode: 'office' },
+  { id: 102, title: '剪辑抖音产品短视频', assignee: 'Maya', priority: 'high', status: 'progress', avatar: 'M', color: '#fd79a8', projectId: 'social', dueDate: '2026-04-23', mode: 'office' },
+  { id: 103, title: '回复客户邮件和工单', assignee: 'COCO Agent', priority: 'medium', status: 'todo', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 'crm', dueDate: '2026-04-22', mode: 'office' },
+  { id: 104, title: '更新微信公众号推文', assignee: 'Stephanie', priority: 'medium', status: 'progress', avatar: 'S', color: '#f093fb', projectId: 'content', dueDate: '2026-04-25', mode: 'office' },
+  { id: 105, title: '整理本周客户跟进记录', assignee: 'Stephanie', priority: 'medium', status: 'todo', avatar: 'S', color: '#f093fb', projectId: 'crm', dueDate: '2026-04-27', mode: 'office' },
+  { id: 106, title: '制作周报 PPT', assignee: 'Design AI', priority: 'low', status: 'done', avatar: '🎨', color: '#e17055', isAgent: true, projectId: 'content', mode: 'office' },
+  { id: 107, title: '分析社媒数据周报', assignee: 'COCO Agent', priority: 'high', status: 'done', avatar: '🐙', color: '#d357fe', isAgent: true, projectId: 'social', mode: 'office' },
+  { id: 108, title: '策划五一促销活动方案', assignee: 'Alex', priority: 'high', status: 'done', avatar: 'A', color: '#00cec9', projectId: 'campaign', dueDate: '2026-04-28', mode: 'office' },
 ];
 
 let currentTaskView = 'kanban';
@@ -3952,7 +3962,7 @@ const importSources = [
 ];
 let selectedImportSource = null;
 
-const projectNameMap = { 1: 'COCO Workspace V2', 2: '智能客服系统', 3: '数据分析看板', gh: 'GitHub: coco-app' };
+const projectNameMap = { 1: 'COCO Workspace V2', 2: '智能客服系统', 3: '数据分析看板', gh: 'GitHub: coco-app', social: '社媒运营', crm: '客户管理', content: '内容营销', campaign: '市场活动' };
 
 const projectsData = [
   {
@@ -4457,6 +4467,7 @@ function switchMode(mode) {
   renderCategoryChips();
   renderSkills();
   switchToolboxCategory(mode === 'code' ? 'dev' : 'office');
+  renderTasks();
   showToast(mode === 'code' ? '已切换到代码开发模式' : '已切换到日常办公模式');
 }
 
@@ -4770,9 +4781,12 @@ function getFilteredTasks() {
   const projectFilter = document.getElementById('taskProjectFilter').value;
   // Build set of active project IDs
   const activeProjectIds = new Set(projectsData.filter(p => p.isActive !== false).map(p => String(p.id)));
+  const modeKey = currentMode === 'office' ? 'office' : 'code';
   return tasksData.filter(task => {
-    // Hide tasks from inactive projects (unless "all" and the task has no project)
-    if (task.projectId && !activeProjectIds.has(String(task.projectId))) return false;
+    // Mode filter
+    if (task.mode && task.mode !== modeKey) return false;
+    // Hide tasks from inactive projects (skip check for string IDs like 'social', 'crm' etc.)
+    if (task.projectId && typeof task.projectId === 'number' && !activeProjectIds.has(String(task.projectId))) return false;
     // Project filter
     if (projectFilter !== 'all' && String(task.projectId) !== projectFilter) return false;
     // Chip filter
