@@ -1896,6 +1896,34 @@ body {
 .import-source-badge.connected { background: rgba(0,206,201,0.12); color: #00b894; }
 .import-source-badge.available { background: rgba(0,0,0,0.05); color: var(--text-muted); }
 
+/* Project active toggle */
+.project-active-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+.project-active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.project-active-dot.on { background: var(--success); }
+.project-active-dot.off { background: #ccc; }
+.project-card.inactive {
+  opacity: 0.45;
+  filter: grayscale(0.5);
+}
+.project-card.inactive:hover { opacity: 0.65; }
+
 /* ============================================================
    MODULE: PROJECTS
    ============================================================ */
@@ -2846,7 +2874,11 @@ body {
       <div class="module-view" id="module-projects">
         <div class="tasks-header">
           <h2>项目</h2>
-          <button class="btn btn-secondary" id="projectBackBtn" onclick="showProjectList()" style="display:none;">← 返回列表</button>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn btn-secondary" id="projectBackBtn" onclick="showProjectList()" style="display:none;">← 返回列表</button>
+            <button class="btn-import" onclick="openModal('newProjectModal')">⬇ 接入 GitHub 仓库</button>
+            <button class="btn btn-primary" onclick="openModal('newProjectModal'); switchNewProjectTab('manual')">+ 新建项目</button>
+          </div>
         </div>
         <div id="projectList">
           <div class="projects-grid" id="projectsGrid">
@@ -3117,6 +3149,56 @@ body {
   </div>
 </div>
 
+<!-- New Project Modal -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal" style="position:relative;max-width:580px;">
+    <button class="modal-close" onclick="closeModal('newProjectModal')">✕</button>
+    <h3>创建项目</h3>
+    <!-- Tabs -->
+    <div style="display:flex;gap:4px;margin-bottom:20px;background:rgba(0,0,0,0.04);border-radius:10px;padding:3px;">
+      <button class="tasks-view-btn active" id="npTabGithub" onclick="switchNewProjectTab('github')" style="flex:1;text-align:center;">🐱 接入 GitHub 仓库</button>
+      <button class="tasks-view-btn" id="npTabManual" onclick="switchNewProjectTab('manual')" style="flex:1;text-align:center;">✏️ 手动创建</button>
+    </div>
+
+    <!-- GitHub tab -->
+    <div id="npGithubPane">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">选择 GitHub 仓库，Issue 和 PR 将自动同步为项目任务。</p>
+      <div id="npGithubRepoList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+        <!-- populated by JS -->
+      </div>
+      <div style="margin-top:8px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">或输入仓库地址</div>
+        <input class="form-input" id="npGithubUrl" placeholder="https://github.com/org/repo 或 org/repo">
+      </div>
+    </div>
+
+    <!-- Manual tab -->
+    <div id="npManualPane" style="display:none;">
+      <div class="form-group">
+        <label>项目名称</label>
+        <input class="form-input" id="npName" placeholder="输入项目名称...">
+      </div>
+      <div class="form-group">
+        <label>项目描述</label>
+        <input class="form-input" id="npDesc" placeholder="简要描述项目目标...">
+      </div>
+      <div class="form-group">
+        <label>状态</label>
+        <select class="form-select" id="npStatus">
+          <option value="planning">规划中</option>
+          <option value="active">进行中</option>
+          <option value="review">审核中</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;">
+      <button class="btn btn-secondary" onclick="closeModal('newProjectModal')">取消</button>
+      <button class="btn btn-primary" id="npSubmitBtn" onclick="createNewProject()">接入仓库</button>
+    </div>
+  </div>
+</div>
+
 <!-- Import External Project Modal -->
 <div class="modal-overlay" id="importModal">
   <div class="modal" style="position:relative;max-width:560px;">
@@ -3377,7 +3459,7 @@ const projectNameMap = { 1: 'COCO Workspace V2', 2: '智能客服系统', 3: '�
 
 const projectsData = [
   {
-    id: 1, name: 'COCO Workspace V2', status: 'active', progress: 68,
+    id: 1, name: 'COCO Workspace V2', status: 'active', progress: 68, isActive: true,
     description: '下一代 HxA 协作平台的核心升级，包括全新 UI 和 Agent 协作引擎。',
     team: [
       { name: 'Stephanie', avatar: 'S', color: '#f093fb' },
@@ -3397,7 +3479,7 @@ const projectsData = [
     ]
   },
   {
-    id: 2, name: '智能客服系统', status: 'planning', progress: 25,
+    id: 2, name: '智能客服系统', status: 'planning', progress: 25, isActive: false,
     description: '基于 AI Agent 的智能客服系统，支持多轮对话和自动工单创建。',
     team: [
       { name: 'Maya', avatar: 'M', color: '#fd79a8' },
@@ -3415,7 +3497,7 @@ const projectsData = [
     ]
   },
   {
-    id: 3, name: '数据分析看板', status: 'review', progress: 90,
+    id: 3, name: '数据分析看板', status: 'review', progress: 90, isActive: true,
     description: '实时数据分析仪表盘，集成多数据源，支持自定义图表和自动报告。',
     team: [
       { name: 'Alex', avatar: 'A', color: '#00cec9' },
@@ -3433,7 +3515,57 @@ const projectsData = [
       { icon: '📊', text: '数据源全部对接完成', time: '昨天' },
       { icon: '🐙', text: 'COCO Agent 生成了测试报告', time: '2天前' }
     ]
+  },
+  {
+    id: 'gh-coco-app', name: 'coco-app', status: 'active', progress: 45, isActive: true,
+    description: 'COCO 主应用前端仓库，React + TypeScript',
+    source: 'github', repo: 'coco-team/coco-app',
+    stats: { stars: 128, issues: 12, prs: 3 },
+    team: [
+      { name: 'Alex', avatar: 'A', color: '#00cec9' },
+      { name: 'Code Bot', avatar: '⚡', color: '#fdcb6e', isAgent: true },
+      { name: 'Stephanie', avatar: 'S', color: '#f093fb' }
+    ],
+    milestones: [
+      { text: 'v3.0 基础框架', done: true },
+      { text: 'Agent 协作模块', done: true },
+      { text: '任务看板集成', done: false },
+      { text: 'v3.1 发布', done: false }
+    ],
+    activity: [
+      { icon: '🔀', text: 'Alex 合并了 PR #45: 重构用户权限模块', time: '30分钟前' },
+      { icon: '🐛', text: 'Issue #42: 修复登录 token 过期处理', time: '2小时前' },
+      { icon: '⚡', text: 'Code Bot 自动修复了 3 个 lint 警告', time: '3小时前' }
+    ]
+  },
+  {
+    id: 'gh-coco-server', name: 'coco-server', status: 'active', progress: 62, isActive: true,
+    description: 'COCO 后端服务，Node.js + PostgreSQL',
+    source: 'github', repo: 'coco-team/coco-server',
+    stats: { stars: 86, issues: 5, prs: 1 },
+    team: [
+      { name: 'Alex', avatar: 'A', color: '#00cec9' },
+      { name: 'Liam', avatar: 'L', color: '#636e72' },
+      { name: 'Code Bot', avatar: '⚡', color: '#fdcb6e', isAgent: true }
+    ],
+    milestones: [
+      { text: 'API v2 迁移', done: true },
+      { text: 'WebSocket 实时推送', done: true },
+      { text: 'Agent 调度引擎', done: false },
+      { text: '压力测试', done: false }
+    ],
+    activity: [
+      { icon: '🚀', text: 'Liam 部署了 v2.4.1 到 staging', time: '1小时前' },
+      { icon: '🐛', text: 'Issue #28: 修复 WebSocket 重连逻辑', time: '昨天' }
+    ]
   }
+];
+
+const githubRepos = [
+  { name: 'coco-app', fullName: 'coco-team/coco-app', desc: 'COCO 主应用前端', stars: 128, issues: 12, connected: true },
+  { name: 'coco-server', fullName: 'coco-team/coco-server', desc: 'COCO 后端服务', stars: 86, issues: 5, connected: true },
+  { name: 'coco-docs', fullName: 'coco-team/coco-docs', desc: '文档站点', stars: 34, issues: 2, connected: false },
+  { name: 'coco-sdk', fullName: 'coco-team/coco-sdk', desc: 'SDK 工具包', stars: 52, issues: 8, connected: false }
 ];
 
 const teamData = [
@@ -3948,7 +4080,11 @@ function sendChatMessage() {
 // ================================================================
 function getFilteredTasks() {
   const projectFilter = document.getElementById('taskProjectFilter').value;
+  // Build set of active project IDs
+  const activeProjectIds = new Set(projectsData.filter(p => p.isActive !== false).map(p => String(p.id)));
   return tasksData.filter(task => {
+    // Hide tasks from inactive projects (unless "all" and the task has no project)
+    if (task.projectId && !activeProjectIds.has(String(task.projectId))) return false;
     // Project filter
     if (projectFilter !== 'all' && String(task.projectId) !== projectFilter) return false;
     // Chip filter
@@ -4206,10 +4342,24 @@ function renderProjects() {
       return `<div class="avatar" style="background:${m.color};font-size:${fSize}">${content}</div>`;
     }).join('');
 
+    const isGH = proj.source === 'github';
+    const ghBadge = isGH ? `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+      <span style="font-size:16px;">🐱</span>
+      <span style="font-size:11px;color:var(--text-muted);font-weight:600;">${proj.repo}</span>
+      ${proj.stats ? `<span style="font-size:10px;color:var(--text-muted);margin-left:auto;">⭐ ${proj.stats.stars} &nbsp; 🐛 ${proj.stats.issues} open &nbsp; 🔀 ${proj.stats.prs} PR</span>` : ''}
+    </div>` : '';
+
+    const projIdArg = typeof proj.id === 'string' ? `'${proj.id}'` : proj.id;
+
+    const activeClass = proj.isActive === false ? ' inactive' : '';
+    const dotClass = proj.isActive === false ? 'off' : 'on';
+    const activeLabel = proj.isActive === false ? '未激活' : '已激活';
+
     grid.innerHTML += `
-      <div class="glass-card project-card" onclick="showProjectDetail(${proj.id})">
+      <div class="glass-card project-card${activeClass}" onclick="showProjectDetail(${projIdArg})">
+        ${ghBadge}
         <div class="project-card-header">
-          <div class="project-card-title">${proj.name}</div>
+          <div class="project-card-title">${isGH ? '🐱 ' : ''}${proj.name}</div>
           <span class="project-card-status ${statusClass}">${statusLabels[proj.status]}</span>
         </div>
         <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">${proj.description}</p>
@@ -4219,6 +4369,9 @@ function renderProjects() {
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <div class="project-card-team">${teamAvatars}</div>
           <span style="font-size:13px;font-weight:700;color:var(--accent);">${proj.progress}%</span>
+        </div>
+        <div class="project-active-toggle" onclick="event.stopPropagation();toggleProjectActive(${projIdArg})">
+          <span class="project-active-dot ${dotClass}"></span> ${activeLabel}
         </div>
       </div>
     `;
@@ -4241,9 +4394,12 @@ function showProjectDetail(projId) {
   const detail = document.getElementById('projectDetail');
   detail.classList.add('active');
 
+  const projIdArg = typeof projId === 'string' ? `'${projId}'` : projId;
+  const isGH = proj.source === 'github';
+
   const milestonesHTML = proj.milestones.map((m, idx) => `
     <div class="milestone-item">
-      <div class="milestone-check ${m.done ? 'done' : ''}" onclick="toggleMilestone(${projId}, ${idx}, this)">${m.done ? '✓' : ''}</div>
+      <div class="milestone-check ${m.done ? 'done' : ''}" onclick="toggleMilestone(${projIdArg}, ${idx}, this)">${m.done ? '✓' : ''}</div>
       <div>
         <div style="font-size:14px;font-weight:600;${m.done ? 'text-decoration:line-through;color:var(--text-muted);' : ''}">${m.text}</div>
       </div>
@@ -4265,9 +4421,37 @@ function showProjectDetail(projId) {
     return `<div class="avatar avatar-lg" style="background:${m.color};font-size:${fSize};margin-right:8px;">${m.avatar}</div>`;
   }).join('');
 
+  const ghHeader = isGH ? `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:20px;">🐱</span>
+      <span style="font-size:13px;color:var(--text-muted);font-weight:600;">${proj.repo}</span>
+      ${proj.stats ? `<span style="font-size:12px;color:var(--text-muted);margin-left:12px;">⭐ ${proj.stats.stars} &nbsp; 🐛 ${proj.stats.issues} open issues &nbsp; 🔀 ${proj.stats.prs} pull requests</span>` : ''}
+    </div>` : '';
+
+  // For GitHub projects, show linked issues as task list
+  const ghTasksHTML = isGH ? (() => {
+    const linked = tasksData.filter(t => t.source === 'github' && t.repo === proj.name);
+    if (linked.length === 0) return '';
+    const statusIcons = { todo: '⚪', progress: '🟡', done: '🟢' };
+    const rows = linked.map(t => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);">
+        <span>${statusIcons[t.status]}</span>
+        <span style="font-size:13px;font-weight:600;flex:1;">${t.title}</span>
+        <div class="avatar avatar-sm" style="background:${t.color};font-size:${t.avatar.length > 1 ? '12px' : '10px'}">${t.avatar}</div>
+        <span style="font-size:11px;color:var(--text-muted);">${t.assignee}</span>
+      </div>
+    `).join('');
+    return `
+      <div class="glass-card" style="margin-top:20px;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;">🐱 关联的 Issues / PRs</h3>
+        ${rows}
+      </div>`;
+  })() : '';
+
   detail.innerHTML = `
     <div class="glass-card" style="margin-bottom:20px;">
-      <h2 style="font-size:24px;font-weight:800;margin-bottom:8px;">${proj.name}</h2>
+      ${ghHeader}
+      <h2 style="font-size:24px;font-weight:800;margin-bottom:8px;">${isGH ? '🐱 ' : ''}${proj.name}</h2>
       <p style="color:var(--text-muted);margin-bottom:16px;">${proj.description}</p>
       <div class="progress-bar-bg" style="height:8px;">
         <div class="progress-bar-fill" style="width:${proj.progress}%;"></div>
@@ -4287,6 +4471,7 @@ function showProjectDetail(projId) {
         ${activityHTML}
       </div>
     </div>
+    ${ghTasksHTML}
   `;
 }
 
@@ -4305,6 +4490,97 @@ function showProjectList() {
   detail.classList.remove('active');
   detail.innerHTML = '';
   renderProjects();
+}
+
+function toggleProjectActive(projId) {
+  const proj = projectsData.find(p => p.id === projId);
+  if (!proj) return;
+  proj.isActive = proj.isActive === false ? true : false;
+  renderProjects();
+  updateTaskProjectFilter();
+  renderTasks();
+  showToast(proj.isActive ? `「${proj.name}」已激活` : `「${proj.name}」已停用`);
+}
+
+function updateTaskProjectFilter() {
+  const select = document.getElementById('taskProjectFilter');
+  const currentVal = select.value;
+  select.innerHTML = '<option value="all">所有项目</option>';
+  projectsData.forEach(p => {
+    if (p.isActive === false) return;
+    const label = p.source === 'github' ? '🐱 ' + p.name : p.name;
+    const val = String(p.id);
+    select.innerHTML += `<option value="${val}">${label}</option>`;
+  });
+  // Restore selection if still valid
+  if (select.querySelector(`option[value="${currentVal}"]`)) select.value = currentVal;
+  else select.value = 'all';
+}
+
+// New Project Modal
+function switchNewProjectTab(tab) {
+  const ghTab = document.getElementById('npTabGithub');
+  const manualTab = document.getElementById('npTabManual');
+  const ghPane = document.getElementById('npGithubPane');
+  const manualPane = document.getElementById('npManualPane');
+  const submitBtn = document.getElementById('npSubmitBtn');
+  if (tab === 'github') {
+    ghTab.classList.add('active'); manualTab.classList.remove('active');
+    ghPane.style.display = 'block'; manualPane.style.display = 'none';
+    submitBtn.textContent = '接入仓库';
+    renderGithubRepoList();
+  } else {
+    manualTab.classList.add('active'); ghTab.classList.remove('active');
+    manualPane.style.display = 'block'; ghPane.style.display = 'none';
+    submitBtn.textContent = '创建项目';
+  }
+}
+
+let selectedGHRepo = null;
+function renderGithubRepoList() {
+  const container = document.getElementById('npGithubRepoList');
+  container.innerHTML = githubRepos.map(r => `
+    <div class="import-source-card${selectedGHRepo === r.name ? ' selected' : ''}" onclick="selectedGHRepo='${r.name}';renderGithubRepoList();" style="padding:12px;">
+      <span style="font-size:18px;">🐱</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;">${r.fullName}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${r.desc} &nbsp;⭐ ${r.stars} &nbsp;🐛 ${r.issues} issues</div>
+      </div>
+      <span class="import-source-badge ${r.connected ? 'connected' : 'available'}">${r.connected ? '已接入' : '可接入'}</span>
+    </div>
+  `).join('');
+}
+
+function createNewProject() {
+  const ghPane = document.getElementById('npGithubPane');
+  if (ghPane.style.display !== 'none') {
+    // GitHub mode
+    const urlInput = document.getElementById('npGithubUrl').value.trim();
+    const repoName = selectedGHRepo || (urlInput ? urlInput.split('/').pop() : '');
+    if (!repoName) { showToast('请选择或输入 GitHub 仓库'); return; }
+    const existing = projectsData.find(p => p.source === 'github' && p.name === repoName);
+    if (existing) { showToast('该仓库已接入'); closeModal('newProjectModal'); return; }
+    closeModal('newProjectModal');
+    showToast(`正在接入 GitHub 仓库「${repoName}」...`);
+    setTimeout(() => showToast(`✅ 已成功接入「${repoName}」`), 1200);
+    selectedGHRepo = null;
+  } else {
+    // Manual mode
+    const name = document.getElementById('npName').value.trim();
+    if (!name) { document.getElementById('npName').focus(); return; }
+    const desc = document.getElementById('npDesc').value.trim() || '新项目';
+    const status = document.getElementById('npStatus').value;
+    projectsData.push({
+      id: Date.now(), name: name, status: status, progress: 0,
+      description: desc,
+      team: [{ name: 'Stephanie', avatar: 'S', color: '#f093fb' }],
+      milestones: [{ text: '项目启动', done: false }],
+      activity: [{ icon: '🎉', text: '项目已创建', time: '刚刚' }]
+    });
+    closeModal('newProjectModal');
+    renderProjects();
+    showToast('项目已创建：' + name);
+  }
 }
 
 // ================================================================
@@ -4785,6 +5061,7 @@ function initAllModules() {
   updateChatHeader();
   renderChat();
   renderInfoPanel();
+  updateTaskProjectFilter();
   renderTasks();
   renderProjects();
   renderTeam();
