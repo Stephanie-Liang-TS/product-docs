@@ -1442,26 +1442,26 @@ const simplex3 = buildSimplexNoise();
 const sphereGeo = new THREE.SphereGeometry(1.15, 128, 128);
 
 const glassMat = new THREE.MeshPhysicalMaterial({
-  color:              0xffffff,
-  metalness:          0.0,
-  roughness:          0.04,
-  transmission:       1.0,
+  color:              0xc8a0f0,                     // Purple tint visible on white
+  metalness:          0.05,
+  roughness:          0.06,
+  transmission:       0.7,                          // Less transparent = more visible
   ior:                1.52,
-  thickness:          0.6,
+  thickness:          1.2,                          // Thicker = more color absorption
   clearcoat:          1.0,
   clearcoatRoughness: 0.02,
-  envMapIntensity:    1.4,
+  envMapIntensity:    2.0,
   side:               THREE.FrontSide,
   transparent:        true,
   opacity:            1.0,
-  attenuationColor:   new THREE.Color(0xd0c0ff),   // Light purple/blue
-  attenuationDistance: 2.5,
-  iridescence:        0.8,                          // More prominent
-  iridescenceIOR:     1.4,
-  iridescenceThicknessRange: [100, 500],
-  specularIntensity:  1.0,
+  attenuationColor:   new THREE.Color(0xa070e0),    // Deeper purple attenuation
+  attenuationDistance: 1.2,                          // Shorter = more color
+  iridescence:        1.0,                          // Max iridescence
+  iridescenceIOR:     1.5,
+  iridescenceThicknessRange: [100, 600],
+  specularIntensity:  1.2,
   specularColor:      new THREE.Color(0xffffff),
-  dispersion:         0.03,
+  dispersion:         0.05,
 });
 
 const glassSphere = new THREE.Mesh(sphereGeo, glassMat);
@@ -1473,15 +1473,15 @@ scene.add(glassSphere);
 // Inner orb (adds depth to glass)
 const innerGeo = new THREE.SphereGeometry(0.9, 64, 64);
 const innerMat = new THREE.MeshPhysicalMaterial({
-  color:          0xd0c0f0,         // Light lavender inner
-  metalness:      0.0,
-  roughness:      0.7,
-  transmission:   0.6,
+  color:          0xb898e8,         // Deeper lavender inner
+  metalness:      0.05,
+  roughness:      0.5,
+  transmission:   0.4,
   ior:            1.3,
-  thickness:      0.4,
+  thickness:      0.6,
   transparent:    true,
-  opacity:        0.6,
-  envMapIntensity: 0.8,
+  opacity:        0.75,
+  envMapIntensity: 1.2,
   side:           THREE.BackSide,
 });
 const innerOrb = new THREE.Mesh(innerGeo, innerMat);
@@ -1494,12 +1494,12 @@ const fragmentGroup = new THREE.Group();
 scene.add(fragmentGroup);
 
 const metalMat = new THREE.MeshPhysicalMaterial({
-  color:           0xe8d4f8,
-  metalness:       0.6,
-  roughness:       0.15,
-  envMapIntensity: 2.0,
-  clearcoat:       0.5,
-  clearcoatRoughness: 0.1,
+  color:           0xc8a0e8,
+  metalness:       0.7,
+  roughness:       0.12,
+  envMapIntensity: 2.5,
+  clearcoat:       0.7,
+  clearcoatRoughness: 0.08,
 });
 
 const NUM_FRAGMENTS = 18;
@@ -1514,7 +1514,7 @@ for (let i = 0; i < NUM_FRAGMENTS; i++) {
   else geo = new THREE.TetrahedronGeometry(0.12 + Math.random() * 0.08, 0);
 
   const mat = metalMat.clone();
-  mat.color.setHSL(0.78, 0.25 + Math.random() * 0.15, 0.82 + Math.random() * 0.12);
+  mat.color.setHSL(0.78, 0.4 + Math.random() * 0.2, 0.65 + Math.random() * 0.1);
 
   const mesh = new THREE.Mesh(geo, mat);
 
@@ -1683,13 +1683,13 @@ particleGeo.setAttribute('position', new THREE.BufferAttribute(partPositions, 3)
 particleGeo.setAttribute('size',     new THREE.BufferAttribute(partSizes,     1));
 
 const particleMat = new THREE.PointsMaterial({
-  size:         0.022,
-  color:        0xc9a8e8,           // Very light purple
+  size:         0.035,
+  color:        0xb080e0,           // Richer purple
   transparent:  true,
-  opacity:      0.55,
+  opacity:      0.6,
   sizeAttenuation: true,
   depthWrite:   false,
-  blending:     THREE.AdditiveBlending,
+  blending:     THREE.NormalBlending,
 });
 
 const particles = new THREE.Points(particleGeo, particleMat);
@@ -1938,7 +1938,7 @@ function animate() {
   // ---- Particles ----
   particles.rotation.y = elapsed * 0.012;
   particles.rotation.x = elapsed * 0.006;
-  particleMat.opacity  = 0.3 + Math.sin(elapsed * 0.3) * 0.06;
+  particleMat.opacity  = 0.5 + Math.sin(elapsed * 0.3) * 0.1;
 
   // ---- Mouse-reactive lights ----
   accentLight1.position.x = 2   + mouseEase.x * 2.5;
@@ -1946,8 +1946,8 @@ function animate() {
   accentLight2.position.x = -3  - mouseEase.x * 1.5;
   accentLight2.position.y = -1  + mouseEase.y * 1.5;
 
-  accentLight1.intensity = 5 * sceneState.lightIntensity;
-  accentLight2.intensity = 3.5 * sceneState.lightIntensity;
+  accentLight1.intensity = 8 * sceneState.lightIntensity;
+  accentLight2.intensity = 6 * sceneState.lightIntensity;
 
   const pulse = 1.0 + Math.sin(elapsed * 1.8) * 0.12;
   keyLight.intensity  = 2.5 * pulse;
