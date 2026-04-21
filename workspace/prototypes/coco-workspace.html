@@ -3823,6 +3823,18 @@ const conversationsData = [
   { id: 'bot-arena', name: 'Bot-Arena', avatar: '#', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', tag: '群聊', type: 'group', time: '昨天', preview: 'Design AI: 安全第一，已更新 Design Token', unread: 0, model: null },
 ];
 
+const conversationsCodeData = [...conversationsData];
+const conversationsOfficeData = [
+  { id: 'coco-agent', name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', tag: 'Agent', type: 'dm', time: '刚刚', preview: '欢迎来到 COCO Workspace！', unread: 1, model: 'Auto' },
+  { id: 'content-agent', name: '内容助手', avatar: '✍️', color: 'linear-gradient(135deg,#d357fe,#96bbff)', tag: 'Agent', type: 'dm', time: '10:15', preview: '小红书种草文案已生成，请查看', unread: 2, model: 'Claude Sonnet' },
+  { id: 'social-ops', name: '社媒运营群', avatar: '📱', color: 'linear-gradient(135deg,#e17055,#fab1a0)', tag: '群聊', type: 'group', time: '09:50', preview: 'Maya: 抖音视频剪辑完成，准备发布', unread: 3, model: null },
+  { id: 'stephanie', name: 'Stephanie', avatar: 'S', color: 'linear-gradient(135deg,#f093fb,#f5576c)', tag: null, type: 'dm', time: '09:30', preview: '五一促销方案确认一下，改了几个细节', unread: 1, model: null },
+  { id: 'customer-service', name: '客户管理群', avatar: '🎧', color: 'linear-gradient(135deg,#00cec9,#55efc4)', tag: '群聊', type: 'group', time: '09:10', preview: 'Alex: 客户工单已回复，满意度 4.8', unread: 0, model: null },
+  { id: 'marketing', name: '市场活动群', avatar: '🎯', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', tag: '群聊', type: 'group', time: '08:45', preview: 'COCO Agent: 五一促销海报初版已生成', unread: 0, model: null },
+  { id: 'wechat-ops', name: '公众号运营', avatar: '#', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', tag: '群聊', type: 'group', time: '08:20', preview: 'Stephanie: 本周推文主题定了，周三发布', unread: 0, model: null },
+  { id: 'data-agent', name: '数据分析 Agent', avatar: '📊', color: 'linear-gradient(135deg,#00b894,#55efc4)', tag: 'Agent', type: 'dm', time: '昨天', preview: '上周社媒数据周报已生成，ROI 提升 12%', unread: 0, model: 'GPT-4o' },
+];
+
 // Info panel data per channel
 const channelInfoData = {
   'coco-agent': {
@@ -4523,6 +4535,12 @@ function enterWorkspace(mode) {
   const splash = document.getElementById('splash');
   const workspace = document.getElementById('workspace');
 
+  // Swap conversation list based on mode
+  const src = mode === 'code' ? conversationsCodeData : conversationsOfficeData;
+  conversationsData.length = 0;
+  src.forEach(c => conversationsData.push({...c}));
+  currentChannel = 'coco-agent';
+
   // Set mode toggles
   updateModeUI();
 
@@ -4547,6 +4565,15 @@ function switchMode(mode) {
   if (templates) templates.style.display = 'none';
   const tags = document.getElementById('chatInputTags');
   if (tags) tags.innerHTML = '';
+  // Swap conversation list based on mode
+  const src = mode === 'code' ? conversationsCodeData : conversationsOfficeData;
+  conversationsData.length = 0;
+  src.forEach(c => conversationsData.push({...c}));
+  currentChannel = 'coco-agent';
+  renderConversationList();
+  updateChatHeader();
+  renderChat();
+  renderInfoPanel();
   renderCategoryChips();
   renderSkills();
   switchToolboxCategory(mode === 'code' ? 'dev' : 'office');
