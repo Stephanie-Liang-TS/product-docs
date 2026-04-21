@@ -587,6 +587,99 @@ body {
 }
 .modal-close:hover { background: rgba(0,0,0,0.1); }
 
+/* Chat Modal (Agent Market, Invite, etc.) */
+.chat-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: chatModalFadeIn 0.2s ease;
+}
+@keyframes chatModalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.chat-modal {
+  background: var(--bg-card);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  padding: 28px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: chatModalScaleIn 0.25s ease;
+}
+@keyframes chatModalScaleIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+.chat-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.05);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  color: var(--text-muted);
+}
+.chat-modal-close:hover { background: rgba(0,0,0,0.1); }
+.chat-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 4px;
+}
+.chat-modal-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+.agent-market-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.agent-market-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.agent-market-card:hover { background: rgba(211,87,254,0.04); border-color: rgba(211,87,254,0.2); }
+.agent-market-card.added { opacity: 0.6; }
+.amc-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.amc-name { font-size: 14px; font-weight: 600; color: var(--text-heading); }
+.amc-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.amc-status {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ============================================================
    FORM ELEMENTS
    ============================================================ */
