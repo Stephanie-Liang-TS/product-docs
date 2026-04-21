@@ -4378,9 +4378,11 @@ function obNextStep1() {
     </div>
   </div>`);
   container.scrollTop = container.scrollHeight;
-  // Update workspace name in settings
+  // Update workspace name in settings and sidebar brand
   const settingInput = document.getElementById('settingWorkspaceName');
   if (settingInput) settingInput.value = name;
+  document.querySelector('.sidebar-brand').textContent = name;
+  document.querySelector('.sidebar-logo').textContent = name.charAt(0).toUpperCase();
 
   // Step 1: Choose AI Agents
   appendObMsg(cocoMsgHTML(
