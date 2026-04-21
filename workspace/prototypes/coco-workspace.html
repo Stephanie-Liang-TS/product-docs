@@ -2347,6 +2347,142 @@ body {
 .tool-status-dot.disconnected { background: var(--text-muted); }
 
 /* ============================================================
+   MODULE: SKILLS
+   ============================================================ */
+.skills-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.skills-header h2 { font-size: 24px; font-weight: 800; flex-shrink: 0; }
+.skills-search {
+  flex: 1;
+  max-width: 280px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-light);
+  background: var(--glass-bg);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.skills-search:focus { border-color: var(--accent); }
+.skills-search::placeholder { color: var(--text-muted); }
+.skills-installed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.skills-installed-header .section-title { margin-bottom: 0; }
+.skills-show-more {
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.2s;
+}
+.skills-show-more:hover { color: var(--accent); }
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+.skill-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+}
+.skill-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.skill-info { flex: 1; min-width: 0; }
+.skill-info h4 {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.skill-info p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.skill-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.skill-badge.suite { background: rgba(108,92,231,0.12); color: #6c5ce7; }
+.skill-badge.mcp { background: rgba(0,184,148,0.12); color: #00b894; }
+.skills-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.skills-tabs-left {
+  display: flex;
+  gap: 0;
+}
+.skills-tab-btn {
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.skills-tab-btn.active {
+  color: var(--text-heading);
+  border-bottom-color: var(--accent);
+}
+.skills-tab-btn:hover:not(.active) { color: var(--text-body); }
+.skills-mcp-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-body);
+  transition: all 0.2s;
+}
+.skills-mcp-btn:hover { border-color: var(--accent); color: var(--accent); }
+.skill-market-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+}
+.skill-market-card:hover { transform: translateY(-1px); }
+
+/* ============================================================
    MODULE: ADMIN
    ============================================================ */
 .admin-stats {
@@ -2859,6 +2995,10 @@ body {
         <span class="nav-icon">🤖</span>
         <span class="nav-label">Agent管理</span>
       </div>
+      <div class="nav-item" data-module="skills" onclick="switchModule('skills')">
+        <span class="nav-icon">🧩</span>
+        <span class="nav-label">技能</span>
+      </div>
       <div class="nav-item" data-module="toolbox" onclick="switchModule('toolbox')">
         <span class="nav-icon">🧰</span>
         <span class="nav-label">工具箱</span>
@@ -3150,10 +3290,60 @@ body {
         </div>
       </div>
 
+      <!-- ======================== SKILLS MODULE ======================== -->
+      <div class="module-view" id="module-skills">
+        <div class="skills-header">
+          <h2>技能</h2>
+          <div style="flex:1;"></div>
+          <input type="text" class="skills-search" placeholder="搜索技能..." oninput="filterSkills(this.value)">
+          <button class="btn btn-primary" onclick="showToast('添加技能功能开发中')">+ 添加技能</button>
+        </div>
+
+        <!-- Installed skills -->
+        <div class="skills-installed-header">
+          <div class="section-title">已安装 · <span id="installedSkillCount">0</span></div>
+          <button class="skills-show-more" id="skillsShowMore" onclick="toggleShowAllSkills()">显示更多</button>
+        </div>
+        <div class="skill-grid" id="installedSkillGrid">
+          <!-- populated by JS -->
+        </div>
+
+        <!-- Skill marketplace -->
+        <div style="margin-top:32px;">
+          <div class="skills-tabs">
+            <div class="skills-tabs-left">
+              <button class="skills-tab-btn active" data-stab="recommend" onclick="switchSkillsTab('recommend')">推荐</button>
+              <button class="skills-tab-btn" data-stab="skillhub" onclick="switchSkillsTab('skillhub')">SkillHub</button>
+              <button class="skills-tab-btn" data-stab="suites" onclick="switchSkillsTab('suites')">套件</button>
+            </div>
+            <button class="skills-mcp-btn" onclick="showToast('MCP 服务器管理')">🖥️ MCP 服务器</button>
+          </div>
+          <div class="tasks-filter-chips" style="margin-bottom:20px;">
+            <button class="tasks-filter-chip active" data-sc="all" onclick="setSkillCategory('all')">全部</button>
+            <button class="tasks-filter-chip" data-sc="dev" onclick="setSkillCategory('dev')">开发工具</button>
+            <button class="tasks-filter-chip" data-sc="finance" onclick="setSkillCategory('finance')">投资理财</button>
+            <button class="tasks-filter-chip" data-sc="content" onclick="setSkillCategory('content')">内容创作</button>
+            <button class="tasks-filter-chip" data-sc="data" onclick="setSkillCategory('data')">数据分析</button>
+            <button class="tasks-filter-chip" data-sc="productivity" onclick="setSkillCategory('productivity')">效率工具</button>
+            <button class="tasks-filter-chip" data-sc="collab" onclick="setSkillCategory('collab')">办公协同</button>
+            <button class="tasks-filter-chip" data-sc="business" onclick="setSkillCategory('business')">商业运营</button>
+            <button class="tasks-filter-chip" data-sc="learning" onclick="setSkillCategory('learning')">知识与学习</button>
+          </div>
+          <div class="skill-grid" id="skillMarketGrid">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </div>
+
       <!-- ======================== TOOLBOX MODULE ======================== -->
       <div class="module-view" id="module-toolbox">
         <div class="tasks-header">
           <h2>工具箱</h2>
+          <div style="flex:1;"></div>
+          <div class="tasks-view-toggle">
+            <button class="tasks-view-btn active" data-tcat="dev" onclick="switchToolboxCategory('dev')">代码开发</button>
+            <button class="tasks-view-btn" data-tcat="office" onclick="switchToolboxCategory('office')">日常办公</button>
+          </div>
         </div>
         <div class="section-title">已安装工具</div>
         <div class="toolbox-grid" id="toolboxInstalled">
@@ -3541,6 +3731,7 @@ const moduleNames = {
   projects: '项目',
   team: '通讯录',
   agents: 'Agent 管理',
+  skills: '技能',
   toolbox: '工具箱',
   admin: '管理后台',
   settings: '设置'
@@ -3891,6 +4082,88 @@ const toolsMarketplace = [
 const toolToggleState = {};
 toolsInstalled.forEach(t => toolToggleState[t.name] = t.status === 'connected');
 toolsMarketplace.forEach(t => toolToggleState[t.name] = false);
+
+let currentToolboxCategory = 'dev';
+
+// Toolbox categories
+const toolsCategoryMap = {
+  dev: {
+    installed: [
+      { name: 'GitHub', desc: '代码仓库', icon: '🐱', status: 'connected', bgColor: 'rgba(36,41,46,0.08)' },
+      { name: 'Figma', desc: '设计协作', icon: '🎨', status: 'connected', bgColor: 'rgba(162,89,255,0.08)' },
+      { name: 'Vercel', desc: '部署服务', icon: '▲', status: 'connected', bgColor: 'rgba(0,0,0,0.04)' },
+      { name: 'Jira', desc: '项目管理', icon: '📋', status: 'disconnected', bgColor: 'rgba(0,82,204,0.08)' },
+      { name: 'Notion', desc: '文档管理', icon: '📝', status: 'connected', bgColor: 'rgba(0,0,0,0.04)' },
+      { name: 'Sentry', desc: '错误监控', icon: '🐛', status: 'connected', bgColor: 'rgba(54,45,89,0.08)' }
+    ],
+    marketplace: [
+      { name: 'Linear', desc: '项目管理', icon: '📐', status: 'disconnected', bgColor: 'rgba(86,71,245,0.08)' },
+      { name: 'Datadog', desc: '应用监控', icon: '🐕', status: 'disconnected', bgColor: 'rgba(99,44,166,0.08)' },
+      { name: 'AWS', desc: '云服务', icon: '☁️', status: 'disconnected', bgColor: 'rgba(255,153,0,0.08)' },
+      { name: 'GitLab', desc: '代码托管', icon: '🦊', status: 'disconnected', bgColor: 'rgba(252,109,38,0.08)' }
+    ]
+  },
+  office: {
+    installed: [
+      { name: 'Slack', desc: '消息同步', icon: '💬', status: 'connected', bgColor: 'rgba(74,21,75,0.08)' },
+      { name: 'Email', desc: '邮件管理', icon: '📧', status: 'connected', bgColor: 'rgba(66,133,244,0.08)' },
+      { name: 'Lark', desc: '飞书通讯', icon: '🐦', status: 'connected', bgColor: 'rgba(51,112,255,0.08)' },
+      { name: 'Google Calendar', desc: '日历管理', icon: '📅', status: 'connected', bgColor: 'rgba(66,133,244,0.08)' }
+    ],
+    marketplace: [
+      { name: 'Telegram', desc: '即时通讯', icon: '✈️', status: 'disconnected', bgColor: 'rgba(0,136,204,0.08)' },
+      { name: 'Discord', desc: '社区沟通', icon: '🎮', status: 'disconnected', bgColor: 'rgba(88,101,242,0.08)' },
+      { name: 'Zoom', desc: '视频会议', icon: '📹', status: 'disconnected', bgColor: 'rgba(45,140,255,0.08)' },
+      { name: 'WeChat Work', desc: '企业微信', icon: '💚', status: 'disconnected', bgColor: 'rgba(7,193,96,0.08)' },
+      { name: 'Outlook', desc: '邮件日历', icon: '📮', status: 'disconnected', bgColor: 'rgba(0,120,212,0.08)' },
+      { name: 'Google Drive', desc: '云端存储', icon: '📁', status: 'disconnected', bgColor: 'rgba(66,133,244,0.08)' }
+    ]
+  }
+};
+
+// Skills data
+const installedSkills = [
+  { name: '腾讯ima', desc: 'ima笔记与知识库管理（读取、写入、检索、上传文件）', icon: '🐧', bgColor: 'rgba(0,0,0,0.06)', enabled: false, badge: null },
+  { name: 'agent-browser', desc: '基于 Vercel agent-browser CLI 的浏览器自动化插件，首次使用时自动安装', icon: 'A', bgColor: 'rgba(162,89,255,0.08)', enabled: true, badge: '套件' },
+  { name: 'playwright-cli', desc: 'Automates browser interactions for web testing, form filling, screenshots, and data extraction', icon: 'P', bgColor: 'rgba(46,204,113,0.08)', enabled: true, badge: '套件' },
+  { name: 'find-skills', desc: '帮助发现和安装 AI Agent 技能，支持从 Vercel Skills 和 ClawHub 两个技能仓库搜索和安装', icon: 'F', bgColor: 'rgba(52,152,219,0.08)', enabled: true, badge: null },
+  { name: 'code-review', desc: '代码审查助手，自动分析 PR 并提供改进建议', icon: '🔍', bgColor: 'rgba(241,196,15,0.08)', enabled: true, badge: null },
+  { name: 'doc-writer', desc: '自动生成 API 文档、README 和技术文档', icon: '📄', bgColor: 'rgba(231,76,60,0.08)', enabled: true, badge: null }
+];
+
+let showAllSkills = false;
+let currentSkillsTab = 'recommend';
+let currentSkillCategory = 'all';
+let skillSearchQuery = '';
+
+const marketplaceSkills = {
+  recommend: [
+    { name: '腾讯文档', desc: '腾讯文档操作（创建、查询、编辑多种在线文档）', icon: '📄', bgColor: 'rgba(0,168,84,0.08)', category: 'collab' },
+    { name: '腾讯会议', desc: '腾讯会议管理（预约、录制、转写、纪要）', icon: '🎥', bgColor: 'rgba(0,168,84,0.08)', category: 'collab' },
+    { name: 'NeoData金融搜索', desc: '全球多市场金融搜索服务，自然语言查询股票、基金、宏观、外汇等数据', icon: '📈', bgColor: 'rgba(52,152,219,0.08)', category: 'finance' },
+    { name: 'cnb.cool', desc: 'CNB 平台全功能操作（仓库、Issue、PR、流水线、制品库）', icon: '🔗', bgColor: 'rgba(108,92,231,0.08)', category: 'dev' },
+    { name: '品牌设计风格专家', desc: '54 个知名网站设计系统模板，一键复用品牌级 UI 风格', icon: '🎨', bgColor: 'rgba(231,76,60,0.08)', category: 'content' },
+    { name: 'TAPD', desc: 'TAPD 项目管理操作（需求、缺陷、任务、迭代、Wiki、评论）', icon: '📋', bgColor: 'rgba(52,152,219,0.08)', category: 'dev' },
+    { name: '数据分析大师', desc: '智能数据分析、图表生成和报告撰写', icon: '📊', bgColor: 'rgba(155,89,182,0.08)', category: 'data' },
+    { name: 'SEO 优化器', desc: '网站 SEO 分析、关键词研究、内容优化建议', icon: '🔎', bgColor: 'rgba(46,204,113,0.08)', category: 'business' },
+    { name: '学习路径规划', desc: '个性化学习路径生成、进度追踪、资源推荐', icon: '📚', bgColor: 'rgba(241,196,15,0.08)', category: 'learning' },
+    { name: '翻译助手', desc: '多语言互译，支持专业术语和语境理解', icon: '🌐', bgColor: 'rgba(52,73,94,0.08)', category: 'productivity' }
+  ],
+  skillhub: [
+    { name: 'API Tester', desc: 'REST / GraphQL API 测试、Mock 数据生成', icon: '🧪', bgColor: 'rgba(231,76,60,0.08)', category: 'dev' },
+    { name: 'DB Explorer', desc: '数据库查询可视化、Schema 分析', icon: '🗄️', bgColor: 'rgba(52,152,219,0.08)', category: 'dev' },
+    { name: 'CI/CD Pipeline', desc: '构建部署流水线配置与监控', icon: '🚀', bgColor: 'rgba(46,204,113,0.08)', category: 'dev' },
+    { name: '合同审查', desc: '合同条款分析、风险识别和修改建议', icon: '📑', bgColor: 'rgba(241,196,15,0.08)', category: 'business' },
+    { name: '投资组合分析', desc: '投资组合风险评估、收益分析、调仓建议', icon: '💰', bgColor: 'rgba(241,196,15,0.08)', category: 'finance' },
+    { name: '内容日历', desc: '社交媒体内容规划、排期和分析', icon: '📅', bgColor: 'rgba(155,89,182,0.08)', category: 'content' }
+  ],
+  suites: [
+    { name: 'Zylos 全栈开发套件', desc: '代码生成 + 测试 + 部署 + 监控一站式开发工具链', icon: '⚡', bgColor: 'rgba(108,92,231,0.08)', category: 'dev' },
+    { name: 'OpenClaw 数据套件', desc: '数据采集 + 清洗 + 分析 + 可视化完整数据工具链', icon: '🦀', bgColor: 'rgba(0,184,148,0.08)', category: 'data' },
+    { name: '企业协作套件', desc: '文档 + 任务 + 会议 + 审批，企业协作全覆盖', icon: '🏢', bgColor: 'rgba(52,152,219,0.08)', category: 'collab' },
+    { name: '营销自动化套件', desc: '内容创作 + 分发 + 数据分析 + A/B 测试', icon: '📣', bgColor: 'rgba(231,76,60,0.08)', category: 'business' }
+  ]
+};
 
 const adminStats = [
   { label: '活跃用户', value: 24, suffix: '' },
@@ -5171,15 +5444,26 @@ function addAgent(name) {
 // TOOLBOX MODULE
 // ================================================================
 function renderToolbox() {
-  renderToolGrid('toolboxInstalled', toolsInstalled);
-  renderToolGrid('toolboxMarketplace', toolsMarketplace);
+  const cat = toolsCategoryMap[currentToolboxCategory] || toolsCategoryMap.dev;
+  renderToolGrid('toolboxInstalled', cat.installed);
+  renderToolGrid('toolboxMarketplace', cat.marketplace);
+}
+
+function switchToolboxCategory(cat) {
+  currentToolboxCategory = cat;
+  document.querySelectorAll('[data-tcat]').forEach(btn => btn.classList.toggle('active', btn.dataset.tcat === cat));
+  renderToolbox();
 }
 
 function renderToolGrid(containerId, tools) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   tools.forEach(tool => {
-    const isOn = toolToggleState[tool.name];
+    const key = tool.name + '_' + currentToolboxCategory;
+    if (toolToggleState[key] === undefined) {
+      toolToggleState[key] = tool.status === 'connected';
+    }
+    const isOn = toolToggleState[key];
     const statusDotClass = isOn ? 'connected' : 'disconnected';
     const statusText = isOn ? '已连接' : '未连接';
     container.innerHTML += `
@@ -5194,7 +5478,7 @@ function renderToolGrid(containerId, tools) {
           </div>
         </div>
         <label class="toggle-switch">
-          <input type="checkbox" ${isOn ? 'checked' : ''} onchange="toggleTool('${tool.name}', this.checked)">
+          <input type="checkbox" ${isOn ? 'checked' : ''} onchange="toggleTool('${tool.name}_${currentToolboxCategory}', this.checked)">
           <span class="toggle-slider"></span>
         </label>
       </div>
@@ -5202,10 +5486,106 @@ function renderToolGrid(containerId, tools) {
   });
 }
 
-function toggleTool(name, on) {
-  toolToggleState[name] = on;
+function toggleTool(key, on) {
+  toolToggleState[key] = on;
+  const name = key.split('_')[0];
   showToast(name + (on ? ' 已连接' : ' 已断开'));
   renderToolbox();
+}
+
+// ================================================================
+// SKILLS MODULE
+// ================================================================
+function renderSkills() {
+  renderInstalledSkills();
+  renderMarketplaceSkills();
+}
+
+function renderInstalledSkills() {
+  const grid = document.getElementById('installedSkillGrid');
+  grid.innerHTML = '';
+  let skills = installedSkills;
+  if (skillSearchQuery) {
+    skills = skills.filter(s => s.name.toLowerCase().includes(skillSearchQuery) || s.desc.toLowerCase().includes(skillSearchQuery));
+  }
+  const display = showAllSkills ? skills : skills.slice(0, 4);
+  document.getElementById('installedSkillCount').textContent = installedSkills.length;
+  const showMoreBtn = document.getElementById('skillsShowMore');
+  showMoreBtn.textContent = showAllSkills ? '收起' : '显示更多';
+  showMoreBtn.style.display = skills.length > 4 ? 'block' : 'none';
+
+  display.forEach(skill => {
+    const badgeHtml = skill.badge ? `<span class="skill-badge suite">${skill.badge}</span>` : '';
+    grid.innerHTML += `
+      <div class="glass-card skill-card">
+        <div class="skill-icon" style="background:${skill.bgColor};">${skill.icon}</div>
+        <div class="skill-info">
+          <h4>${skill.name} ${badgeHtml}</h4>
+          <p>${skill.desc}</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" ${skill.enabled ? 'checked' : ''} onchange="toggleSkill('${skill.name}', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    `;
+  });
+}
+
+function renderMarketplaceSkills() {
+  const grid = document.getElementById('skillMarketGrid');
+  grid.innerHTML = '';
+  const skills = marketplaceSkills[currentSkillsTab] || [];
+  let filtered = skills;
+  if (currentSkillCategory !== 'all') {
+    filtered = skills.filter(s => s.category === currentSkillCategory);
+  }
+  if (skillSearchQuery) {
+    filtered = filtered.filter(s => s.name.toLowerCase().includes(skillSearchQuery) || s.desc.toLowerCase().includes(skillSearchQuery));
+  }
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);font-size:13px;">暂无匹配的技能</div>';
+    return;
+  }
+  filtered.forEach(skill => {
+    grid.innerHTML += `
+      <div class="glass-card skill-market-card" onclick="showToast('安装 ${skill.name} 中...')">
+        <div class="skill-icon" style="background:${skill.bgColor};">${skill.icon}</div>
+        <div class="skill-info">
+          <h4>${skill.name}</h4>
+          <p>${skill.desc}</p>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function toggleShowAllSkills() {
+  showAllSkills = !showAllSkills;
+  renderInstalledSkills();
+}
+
+function switchSkillsTab(tab) {
+  currentSkillsTab = tab;
+  document.querySelectorAll('[data-stab]').forEach(btn => btn.classList.toggle('active', btn.dataset.stab === tab));
+  renderMarketplaceSkills();
+}
+
+function setSkillCategory(cat) {
+  currentSkillCategory = cat;
+  document.querySelectorAll('[data-sc]').forEach(chip => chip.classList.toggle('active', chip.dataset.sc === cat));
+  renderMarketplaceSkills();
+}
+
+function filterSkills(query) {
+  skillSearchQuery = query.toLowerCase();
+  renderSkills();
+}
+
+function toggleSkill(name, on) {
+  const skill = installedSkills.find(s => s.name === name);
+  if (skill) skill.enabled = on;
+  showToast(name + (on ? ' 已启用' : ' 已禁用'));
 }
 
 // ================================================================
@@ -5440,6 +5820,7 @@ function initAllModules() {
   renderProjects();
   renderTeam();
   renderAgents();
+  renderSkills();
   renderToolbox();
   renderAdmin();
   updateTopbarCredits();
