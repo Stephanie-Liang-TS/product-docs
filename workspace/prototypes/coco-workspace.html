@@ -4993,9 +4993,6 @@ const allAgents = [
   { id:'coco', name:'COCO Agent', emoji:'🐙', color:'linear-gradient(135deg,#d357fe,#96bbff)', desc:'工作区内置协作 Agent，任务协调、消息汇总、会议纪要', tag:'内置', features:['智能任务分配与跟踪','多群消息自动汇总','会议纪要生成','跨团队工作流协调'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['基础任务协调','每日 50 条消息','单群支持']},{plan:'Pro',price:'$29',period:'/月',credits:290,features:['无限消息','多群汇总','优先响应','自定义指令'],recommended:true},{plan:'Enterprise',price:'$99',period:'/月',credits:990,features:['自定义训练','API 接入','SSO 集成','专属客户经理']}] },
   { id:'zylos', name:'Zylos', emoji:'⚡', color:'linear-gradient(135deg,#6c5ce7,#a29bfe)', desc:'全能 AI 伙伴 — 编程、自动化、浏览器操作、定时任务、数据分析', tag:'热门', features:['全栈编程 & 代码审查','浏览器自动化 & 数据抓取','定时任务 & 工作流编排','文件处理 & 数据分析','多平台接入（Lark/TG/Web）'], pricing:[{plan:'Air',price:'$9.9',period:'/月',credits:100,features:['基础对话','每日 20 次工具调用','社区支持']},{plan:'Pro',price:'$29',period:'/月',credits:290,features:['无限工具调用','浏览器自动化','定时任务','含 $10 额度/月'],recommended:true},{plan:'Enterprise',price:'联系销售',period:'',credits:0,features:['私有部署','自定义模型','SLA 保障','专属技术支持'],isEnterprise:true}] },
   { id:'openclaw', name:'OpenClaw', emoji:'🦀', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'开源技能生态 Agent — MCP 协议、Skill 市场、社区共建', tag:'开源', features:['MCP 协议原生支持','开源 Skill 市场接入','社区驱动 Skill 共建','跨 Agent 技能编排','Webhook & API 集成'], pricing:[{plan:'Community',price:'$0',period:'/月',credits:0,features:['社区 Skill 访问','每日 50 次调用','GitHub 集成']},{plan:'Pro',price:'$19',period:'/月',credits:190,features:['无限 Skill 调用','私有 Skill 仓库','优先更新','技术支持'],recommended:true},{plan:'Team',price:'$49',period:'/月',credits:490,features:['团队 Skill 共享','管理后台','使用分析','API 配额 ×5']}] },
-  { id:'mindflow', name:'MindFlow', emoji:'🧠', color:'linear-gradient(135deg,#fdcb6e,#f39c12)', desc:'AI 会议助手 — 实时纪要、行动项提取、智能头脑风暴', tag:'效率', features:['实时会议纪要生成','行动项自动提取与跟踪','结构化头脑风暴引导','会议洞察报告'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['每月 5 场会议','基础纪要','文字版']},{plan:'Pro',price:'$15',period:'/月',credits:150,features:['无限会议','智能摘要','行动项追踪','日历集成'],recommended:true},{plan:'Business',price:'$39',period:'/月',credits:390,features:['团队分析','CRM 集成','自定义模板','API 接入']}] },
-  { id:'datapilot', name:'DataPilot', emoji:'📊', color:'linear-gradient(135deg,#0984e3,#74b9ff)', desc:'数据分析 Agent — 自然语言查询、可视化报表、异常检测', tag:'分析', features:['自然语言数据查询','自动可视化报表','实时异常检测 & 告警','多数据源集成'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['基础图表','每日 5 次查询','CSV 导入']},{plan:'Pro',price:'$25',period:'/月',credits:250,features:['无限查询','高级图表','实时监控','数据源集成'],recommended:true},{plan:'Enterprise',price:'$79',period:'/月',credits:790,features:['数据湖对接','自定义模型','SLA 保障','权限管理']}] },
-  { id:'guardbot', name:'GuardBot', emoji:'🛡️', color:'linear-gradient(135deg,#e84393,#fd79a8)', desc:'安全合规 Agent — 漏洞扫描、代码审计、合规检查', tag:'安全', features:['自动漏洞扫描','依赖安全检查','合规性审计报告','安全告警实时推送'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['基础扫描','每周 1 次','社区规则']},{plan:'Pro',price:'$35',period:'/月',credits:350,features:['实时扫描','合规检查','告警推送','自定义规则'],recommended:true},{plan:'Enterprise',price:'$99',period:'/月',credits:990,features:['渗透测试','SOC2 审计','7×24 专属顾问','私有部署']}] },
 ];
 let workspaceAgents = ['coco', 'zylos'];
 let groupAgents = { 'product-dev': ['coco', 'zylos'] };
@@ -5006,25 +5003,33 @@ let useCredits = true;
 
 function formatCredits(n) { return n.toLocaleString(); }
 
+function renderAgentCard(a, inGroup) {
+  const inGrp = inGroup.includes(a.id);
+  const inWS = workspaceAgents.includes(a.id);
+  let statusHTML = '';
+  if (inGrp) statusHTML = '<span class="amc-status" style="background:rgba(0,206,201,0.12);color:var(--success);">已在群中</span>';
+  else if (inWS) statusHTML = '<span class="amc-status" style="background:var(--accent-bg);color:var(--accent);cursor:pointer;" onclick="event.stopPropagation();addAgentToGroup(\''+a.id+'\',this)">加入群聊</span>';
+  else statusHTML = '<span class="amc-status" style="background:rgba(0,0,0,0.04);color:var(--text-body);cursor:pointer;" onclick="event.stopPropagation();openAgentDetail(\''+a.id+'\')">订阅</span>';
+  const tagHTML = a.tag ? '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--accent-bg);color:var(--accent);font-weight:600;margin-left:6px;">'+a.tag+'</span>' : '';
+  return `<div class="agent-market-card${inGrp?' added':''}" data-agent="${a.id}" onclick="openAgentDetail('${a.id}')" style="cursor:pointer;">
+    <div class="amc-avatar" style="background:${a.color}">${a.emoji}</div>
+    <div style="flex:1;min-width:0;"><div class="amc-name">${a.name}${tagHTML}</div><div class="amc-desc">${a.desc}</div></div>
+    ${statusHTML}
+  </div>`;
+}
+
 function openAgentMarket() {
   const overlay = document.createElement('div');
   overlay.className = 'chat-modal-overlay';
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
   const inGroup = groupAgents[currentChannel] || [];
-  const cardsHTML = allAgents.map(a => {
-    const inGrp = inGroup.includes(a.id);
-    const inWS = workspaceAgents.includes(a.id);
-    let statusHTML = '';
-    if (inGrp) statusHTML = '<span class="amc-status" style="background:rgba(0,206,201,0.12);color:var(--success);">已在群中</span>';
-    else if (inWS) statusHTML = '<span class="amc-status" style="background:var(--accent-bg);color:var(--accent);cursor:pointer;" onclick="event.stopPropagation();addAgentToGroup(\''+a.id+'\',this)">加入群聊</span>';
-    else statusHTML = '<span class="amc-status" style="background:rgba(0,0,0,0.04);color:var(--text-body);cursor:pointer;" onclick="event.stopPropagation();openAgentDetail(\''+a.id+'\')">订阅</span>';
-    const tagHTML = a.tag ? '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--accent-bg);color:var(--accent);font-weight:600;margin-left:6px;">'+a.tag+'</span>' : '';
-    return `<div class="agent-market-card${inGrp?' added':''}" data-agent="${a.id}" onclick="openAgentDetail('${a.id}')" style="cursor:pointer;">
-      <div class="amc-avatar" style="background:${a.color}">${a.emoji}</div>
-      <div style="flex:1;min-width:0;"><div class="amc-name">${a.name}${tagHTML}</div><div class="amc-desc">${a.desc}</div></div>
-      ${statusHTML}
-    </div>`;
-  }).join('');
+  // Split agents into two groups: already subscribed/owned vs. available to subscribe
+  const ownedAgents = allAgents.filter(a => workspaceAgents.includes(a.id));
+  const newAgents = allAgents.filter(a => !workspaceAgents.includes(a.id));
+  const ownedHTML = ownedAgents.map(a => renderAgentCard(a, inGroup)).join('');
+  const newHTML = newAgents.map(a => renderAgentCard(a, inGroup)).join('');
+  const sectionStyle = 'font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:8px;display:flex;align-items:center;gap:8px;';
+  const sectionDescStyle = 'font-size:11px;font-weight:400;color:var(--text-muted);';
   overlay.innerHTML = `<div class="chat-modal" style="position:relative;" id="agentMarketModal">
     <button class="chat-modal-close" onclick="this.closest('.chat-modal-overlay').remove()">&times;</button>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
@@ -5035,9 +5040,12 @@ function openAgentMarket() {
         <span style="font-size:11px;color:var(--text-muted);">积分</span>
       </div>
     </div>
-    <div class="chat-modal-desc">订阅 AI Agent 产品，用积分抵扣或直接支付</div>
+    <div class="chat-modal-desc">接入已有 Agent 或订阅新的 AI Agent 产品</div>
     <div style="margin-bottom:14px;"><input type="text" placeholder="搜索 Agent..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;" oninput="filterAgentMarket(this.value)"></div>
-    <div class="agent-market-grid" id="agentMarketGrid">${cardsHTML}</div>
+    ${ownedHTML.length ? `<div style="${sectionStyle}">🔗 已有 Agent <span style="${sectionDescStyle}">接入到当前群聊</span></div>
+    <div class="agent-market-grid" id="agentMarketGrid" style="margin-bottom:20px;">${ownedHTML}</div>` : ''}
+    ${newHTML.length ? `<div style="${sectionStyle}">🛒 发现新 Agent <span style="${sectionDescStyle}">订阅或购买</span></div>
+    <div class="agent-market-grid" id="agentMarketGridNew">${newHTML}</div>` : ''}
   </div>`;
   document.body.appendChild(overlay);
 }
