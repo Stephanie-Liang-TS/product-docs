@@ -3471,7 +3471,11 @@ function renderInfoPanel() {
   if (!info) {
     // Default info for channels without detailed data
     const conv = conversationsData.find(c => c.id === currentChannel);
-    container.innerHTML = `<div class="info-panel-title">${conv?.type === 'group' ? '群聊信息' : '对话信息'}</div>
+    const pTitle = conv?.type === 'group' ? '群聊信息' : '对话信息';
+    container.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="info-panel-title" style="margin-bottom:0;">${pTitle}</div>
+      <button onclick="toggleInfoPanel()" title="收起面板" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:16px;transition:all .15s;flex-shrink:0;" onmouseover="this.style.background='var(--bg-glass)';this.style.color='var(--text-heading)'" onmouseout="this.style.background='transparent';this.style.color='var(--text-muted)'">✕</button>
+    </div><div style="margin-bottom:16px;"></div>
       <div class="info-section"><div class="info-group-name">${conv?.name || ''}</div></div>`;
     return;
   }
@@ -3492,7 +3496,11 @@ function renderInfoPanel() {
   const modeBtnsHTML = modes.map(m => `<button class="agent-mode-btn${m === info.agentMode ? ' active' : ''}" onclick="setAgentMode(this, '${currentChannel}')">${m}</button>`).join('');
 
   container.innerHTML = `
-    <div class="info-panel-title">${info.title}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="info-panel-title" style="margin-bottom:0;">${info.title}</div>
+      <button onclick="toggleInfoPanel()" title="收起面板" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:16px;transition:all .15s;flex-shrink:0;" onmouseover="this.style.background='var(--bg-glass)';this.style.color='var(--text-heading)'" onmouseout="this.style.background='transparent';this.style.color='var(--text-muted)'">✕</button>
+    </div>
+    <div style="margin-bottom:16px;"></div>
     <div class="info-section">
       <div class="info-group-name">${info.groupName}</div>
       <div class="info-group-desc">${info.description}</div>
