@@ -4148,10 +4148,14 @@ const agentsData = [
 ];
 
 const marketplaceAgents = [
+  { name: 'Zylos 空白实例', role: '自定义 Agent', avatar: '⬡', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', framework: 'Zylos', price: '$29/月', description: '空白 Zylos 实例，自由配置技能、工具和工作流' },
+  { name: 'OpenClaw 空白实例', role: '自定义 Agent', avatar: '⬡', color: 'linear-gradient(135deg,#00b894,#55efc4)', framework: 'OpenClaw', price: '$19/月', description: '空白 OpenClaw 实例，自由搭建 MCP 技能和 API 集成' },
+  { name: 'Hermes 空白实例', role: '自定义 Agent', avatar: '⬡', color: 'linear-gradient(135deg,#e17055,#fab1a0)', framework: 'Hermes', price: '$24/月', description: '空白 Hermes 实例，自由配置通信、调度和自动化' },
   { name: 'Zylos 运维助手', role: '运维自动化', avatar: '🔧', color: 'linear-gradient(135deg,#636e72,#b2bec3)', framework: 'Zylos', price: '$29/月', description: '部署监控、日志分析、告警处理' },
   { name: 'Skill Builder', role: 'OpenClaw Skill 开发', avatar: '🦀', color: 'linear-gradient(135deg,#00b894,#55efc4)', framework: 'OpenClaw', price: '$19/月', description: 'Skill 构建、MCP 协议、API 集成' },
   { name: 'Skill Hub', role: 'OpenClaw 技能市场', avatar: '🔗', color: 'linear-gradient(135deg,#55efc4,#00b894)', framework: 'OpenClaw', price: '$19/月', description: '技能搜索、安装、编排' },
-  { name: 'Security Bot', role: '安全监控', avatar: '🛡️', color: 'linear-gradient(135deg,#636e72,#2d3436)', framework: 'Zylos', price: '$29/月', description: '实时安全监控和漏洞扫描' }
+  { name: 'Security Bot', role: '安全监控', avatar: '🛡️', color: 'linear-gradient(135deg,#636e72,#2d3436)', framework: 'Zylos', price: '$29/月', description: '实时安全监控和漏洞扫描' },
+  { name: 'Hermes 通知中心', role: '消息调度', avatar: '📡', color: 'linear-gradient(135deg,#e17055,#fab1a0)', framework: 'Hermes', price: '$24/月', description: '多渠道消息分发、通知编排、告警路由' }
 ];
 
 const toolsInstalled = [
@@ -7071,6 +7075,10 @@ const agentInstances = [
   { id:'zylos-ops', framework:'zylos', name:'运维助手', emoji:'🔧', color:'linear-gradient(135deg,#636e72,#b2bec3)', desc:'Zylos 运维自动化', role:'部署监控、日志分析、告警处理' },
   { id:'openclaw-skill', framework:'openclaw', name:'Skill Builder', emoji:'🦀', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'OpenClaw Skill 开发', role:'Skill 构建、MCP 协议、API 集成' },
   { id:'openclaw-hub', framework:'openclaw', name:'Skill Hub', emoji:'🔗', color:'linear-gradient(135deg,#55efc4,#00b894)', desc:'OpenClaw 技能市场', role:'技能搜索、安装、编排' },
+  { id:'zylos-blank', framework:'zylos', name:'空白实例', emoji:'⬡', color:'linear-gradient(135deg,#6c5ce7,#a29bfe)', desc:'Zylos 自定义', role:'自由配置技能、工具和工作流' },
+  { id:'openclaw-blank', framework:'openclaw', name:'空白实例', emoji:'⬡', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'OpenClaw 自定义', role:'自由搭建 MCP 技能和 API 集成' },
+  { id:'hermes-blank', framework:'hermes', name:'空白实例', emoji:'⬡', color:'linear-gradient(135deg,#e17055,#fab1a0)', desc:'Hermes 自定义', role:'自由配置通信、调度和自动化' },
+  { id:'hermes-notify', framework:'hermes', name:'通知中心', emoji:'📡', color:'linear-gradient(135deg,#e17055,#fab1a0)', desc:'Hermes 消息调度', role:'多渠道消息分发、通知编排、告警路由' },
 ];
 
 let workspaceAgents = ['coco', 'zylos'];
