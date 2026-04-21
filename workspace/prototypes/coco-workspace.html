@@ -4619,14 +4619,12 @@ function buildGroupCreationCard() {
     </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">👤 邀请成员</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obMemberChips">
-        <div class="ob-chip selected" data-m="stephanie" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">S</span> Stephanie</div>
-        <div class="ob-chip" data-m="alex" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">A</span> Alex</div>
-        <div class="ob-chip" data-m="maya" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">M</span> Maya</div>
-        <div class="ob-chip" data-m="zhangwei" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">张</span> 张伟</div>
-        <div class="ob-chip" data-m="chenmh" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">陈</span> 陈明辉</div>
-        <div class="ob-chip" data-m="lisiqi" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">李</span> 李思琪</div>
+      <div id="obInvitedMembers" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;"></div>
+      <div style="display:flex;gap:8px;">
+        <input type="email" id="obInviteEmail" placeholder="输入邮箱地址邀请成员..." style="flex:1;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:13px;" onkeydown="if(event.key===\'Enter\'){event.preventDefault();obAddMember();}">
+        <button onclick="obAddMember()" style="padding:8px 16px;border:1.5px solid var(--accent);border-radius:10px;background:rgba(211,87,254,0.04);color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;">+ 邀请</button>
       </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">可以稍后在群聊设置中继续邀请</div>
     </div>
     <div style="margin-bottom:14px;">
       <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">🤖 添加 Agent</div>
@@ -4867,8 +4865,34 @@ function restartOnboarding() {
   obStep = 0;
   obComplete = false;
   workspaceAgents = ['coco'];
+  obInvitedMembers = [];
   document.getElementById('wtRestartBtn').style.display = 'none';
   startOnboardingChat();
+}
+
+let obInvitedMembers = [];
+
+function obAddMember() {
+  const input = document.getElementById('obInviteEmail');
+  if (!input) return;
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) { input.style.borderColor = '#e74c3c'; setTimeout(() => input.style.borderColor = 'var(--border-glass)', 1000); return; }
+  if (obInvitedMembers.includes(email)) { showToast('该成员已添加'); return; }
+  obInvitedMembers.push(email);
+  input.value = '';
+  const container = document.getElementById('obInvitedMembers');
+  if (!container) return;
+  const name = email.split('@')[0];
+  const initial = name.charAt(0).toUpperCase();
+  container.insertAdjacentHTML('beforeend',
+    '<div class="ob-chip selected" style="animation:obMsgIn .2s ease both;" data-email="'+email+'"><span style="font-size:12px;">'+initial+'</span> '+name+' <span onclick="obRemoveMember(this.parentElement)" style="margin-left:4px;cursor:pointer;opacity:0.6;font-size:14px;">&times;</span></div>'
+  );
+}
+
+function obRemoveMember(el) {
+  const email = el.dataset.email;
+  obInvitedMembers = obInvitedMembers.filter(e => e !== email);
+  el.remove();
 }
 
 // Keep these for compatibility with other features
