@@ -4697,6 +4697,15 @@ function updateChatHeader() {
   } else {
     modelEl.style.display = 'none';
   }
+  // Hide info panel toggle for DM conversations
+  const toggleBtn = document.querySelector('.chat-header-toggle-info');
+  const infoPanel = document.getElementById('chatInfoPanel');
+  if (conv.type === 'dm') {
+    if (toggleBtn) toggleBtn.style.display = 'none';
+    if (infoPanel) infoPanel.classList.add('collapsed');
+  } else {
+    if (toggleBtn) toggleBtn.style.display = '';
+  }
 }
 
 function renderInfoPanel() {
