@@ -1412,59 +1412,75 @@ body {
   padding: 20px 16px;
   transition: padding var(--transition-smooth), opacity var(--transition-smooth);
 }
-/* Draggable panel dividers */
+/* Draggable panel dividers — vertical (col-resize) */
 .panel-divider {
-  width: 5px;
+  width: 6px;
   cursor: col-resize;
   background: transparent;
   position: relative;
   flex-shrink: 0;
   z-index: 10;
-  transition: background 0.15s;
+}
+.panel-divider::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 2.5px;
+  width: 1px;
+  background: var(--border-light);
+  transition: background 0.2s, opacity 0.2s;
 }
 .panel-divider::after {
   content: '';
   position: absolute;
-  top: 0; bottom: 0;
-  left: 2px;
-  width: 1px;
-  background: var(--border-light);
-  transition: background 0.15s, width 0.15s, left 0.15s;
-}
-.panel-divider:hover::after, .panel-divider.dragging::after {
-  width: 3px;
-  left: 1px;
-  background: var(--accent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 24px;
   border-radius: 2px;
+  background: transparent;
+  transition: background 0.2s;
 }
-.panel-divider:hover, .panel-divider.dragging { background: rgba(211,87,254,0.04); }
+.panel-divider:hover::before { background: rgba(211,87,254,0.3); }
+.panel-divider:hover::after { background: rgba(211,87,254,0.25); }
+.panel-divider.dragging::before { background: var(--accent); }
+.panel-divider.dragging::after { background: rgba(211,87,254,0.4); }
 
-/* Horizontal draggable divider */
+/* Draggable panel dividers — horizontal (row-resize) */
 .panel-divider-h {
-  height: 5px;
+  height: 6px;
   cursor: row-resize;
   background: transparent;
   position: relative;
   flex-shrink: 0;
   z-index: 10;
-  transition: background 0.15s;
+}
+.panel-divider-h::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 2.5px;
+  height: 1px;
+  background: var(--border-light);
+  transition: background 0.2s, opacity 0.2s;
 }
 .panel-divider-h::after {
   content: '';
   position: absolute;
-  left: 0; right: 0;
-  top: 2px;
-  height: 1px;
-  background: var(--border-light);
-  transition: background 0.15s, height 0.15s, top 0.15s;
-}
-.panel-divider-h:hover::after, .panel-divider-h.dragging::after {
-  height: 3px;
-  top: 1px;
-  background: var(--accent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 4px;
   border-radius: 2px;
+  background: transparent;
+  transition: background 0.2s;
 }
-.panel-divider-h:hover, .panel-divider-h.dragging { background: rgba(211,87,254,0.04); }
+.panel-divider-h:hover::before { background: rgba(211,87,254,0.3); }
+.panel-divider-h:hover::after { background: rgba(211,87,254,0.25); }
+.panel-divider-h.dragging::before { background: var(--accent); }
+.panel-divider-h.dragging::after { background: rgba(211,87,254,0.4); }
 
 .chat-info-panel.collapsed {
   width: 0;
