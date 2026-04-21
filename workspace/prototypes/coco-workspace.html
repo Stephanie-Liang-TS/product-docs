@@ -1211,7 +1211,6 @@ body {
 
 /* Enhanced Input Area */
 .chat-input-enhanced {
-  border-top: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
 }
@@ -1418,6 +1417,33 @@ body {
   border-radius: 2px;
 }
 .panel-divider:hover, .panel-divider.dragging { background: rgba(211,87,254,0.04); }
+
+/* Horizontal draggable divider */
+.panel-divider-h {
+  height: 5px;
+  cursor: row-resize;
+  background: transparent;
+  position: relative;
+  flex-shrink: 0;
+  z-index: 10;
+  transition: background 0.15s;
+}
+.panel-divider-h::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 2px;
+  height: 1px;
+  background: var(--border-light);
+  transition: background 0.15s, height 0.15s, top 0.15s;
+}
+.panel-divider-h:hover::after, .panel-divider-h.dragging::after {
+  height: 3px;
+  top: 1px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.panel-divider-h:hover, .panel-divider-h.dragging { background: rgba(211,87,254,0.04); }
 
 .chat-info-panel.collapsed {
   width: 0;
@@ -2466,6 +2492,7 @@ body {
               <span></span><span></span><span></span>
               <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">代码助手 正在输入...</span>
             </div>
+            <div class="panel-divider-h" id="dividerBottom" onmousedown="startDragH(event)"></div>
             <!-- Enhanced Input Area -->
             <div class="chat-input-enhanced">
               <!-- Task Category Chips (mode-dependent) -->
@@ -4580,6 +4607,40 @@ function stopDrag() {
   document.body.style.userSelect = '';
   document.removeEventListener('mousemove', onDrag);
   document.removeEventListener('mouseup', stopDrag);
+}
+
+// HORIZONTAL DIVIDER (chat messages / input area)
+let dragH = false;
+let dragHStartY = 0;
+let dragHStartH = 0;
+
+function startDragH(e) {
+  e.preventDefault();
+  dragH = true;
+  dragHStartY = e.clientY;
+  const el = document.querySelector('.chat-input-enhanced');
+  dragHStartH = el.offsetHeight;
+  document.getElementById('dividerBottom').classList.add('dragging');
+  document.body.style.cursor = 'row-resize';
+  document.body.style.userSelect = 'none';
+  document.addEventListener('mousemove', onDragH);
+  document.addEventListener('mouseup', stopDragH);
+}
+function onDragH(e) {
+  if (!dragH) return;
+  const dy = dragHStartY - e.clientY;
+  const el = document.querySelector('.chat-input-enhanced');
+  const nw = Math.max(80, Math.min(500, dragHStartH + dy));
+  el.style.height = nw + 'px';
+  el.style.flexShrink = '0';
+}
+function stopDragH() {
+  dragH = false;
+  document.getElementById('dividerBottom').classList.remove('dragging');
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+  document.removeEventListener('mousemove', onDragH);
+  document.removeEventListener('mouseup', stopDragH);
 }
 
 // ================================================================
