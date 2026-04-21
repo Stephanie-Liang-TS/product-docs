@@ -3123,13 +3123,27 @@ body {
       <div class="module-view" id="module-agents">
         <div class="tasks-header">
           <h2>Agent 管理</h2>
+          <button class="btn btn-primary" onclick="openModal('agentShopModal')">+ 购买 Agent</button>
         </div>
-        <div class="section-title">活跃 Agents</div>
+
+        <!-- Weekly summary banner -->
+        <div class="glass-card" style="margin-bottom:24px;padding:16px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+          <div style="font-size:14px;font-weight:700;">📊 本周使用概览</div>
+          <div style="display:flex;gap:20px;flex:1;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:var(--accent);" id="weeklyTasks">47</div><div style="font-size:11px;color:var(--text-muted);">任务执行</div></div>
+            <div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#6c5ce7;" id="weeklyCredits">680</div><div style="font-size:11px;color:var(--text-muted);">消耗积分</div></div>
+            <div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#00b894;" id="weeklyAccuracy">96.2%</div><div style="font-size:11px;color:var(--text-muted);">平均准确率</div></div>
+            <div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#fdcb6e;" id="weeklyUptime">99.8%</div><div style="font-size:11px;color:var(--text-muted);">在线率</div></div>
+          </div>
+        </div>
+
+        <div class="section-title">已购买 · 使用中</div>
         <div class="agent-grid" id="agentGrid">
           <!-- populated by JS -->
         </div>
         <div style="margin-top:32px;">
-          <div class="section-title">Agent 市场</div>
+          <div class="section-title">可购买 Agent</div>
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">浏览 Zylos / OpenClaw 等框架的 Agent，购买后即可使用</p>
           <div class="agent-grid" id="agentMarketplace">
             <!-- populated by JS -->
           </div>
@@ -3845,16 +3859,17 @@ const teamData = [
 ];
 
 const agentsData = [
-  { name: 'COCO Agent', role: '协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', status: 'online', tasksCompleted: 142, accuracy: 96.5, responseTime: '120ms', description: '核心协作 Agent，负责任务协调、消息汇总和团队效率优化' },
-  { name: 'Code Bot', role: '代码助手', avatar: '⚡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', status: 'online', tasksCompleted: 89, accuracy: 94.2, responseTime: '85ms', description: '代码审查、自动修复、性能监控和部署自动化' },
-  { name: 'Design AI', role: '设计助手', avatar: '🎨', color: 'linear-gradient(135deg,#e17055,#d63031)', status: 'idle', tasksCompleted: 56, accuracy: 91.8, responseTime: '200ms', description: '设计规范检查、配色生成、响应式布局建议' },
-  { name: 'Data Agent', role: '数据分析', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', status: 'busy', tasksCompleted: 203, accuracy: 98.1, responseTime: '150ms', description: '数据分析、报表生成、异常检测和趋势预测' }
+  { name: 'COCO Agent', role: '协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', status: 'online', framework: 'COCO', plan: 'Pro · $29/月', tasksCompleted: 142, weeklyTasks: 18, weeklyCredits: 210, accuracy: 96.5, responseTime: '120ms', description: '核心协作 Agent，负责任务协调、消息汇总和团队效率优化', purchasedAt: '2026-03-15' },
+  { name: '代码助手', role: 'Zylos 代码开发', avatar: '🤖', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', status: 'online', framework: 'Zylos', plan: 'Pro · $29/月', tasksCompleted: 89, weeklyTasks: 15, weeklyCredits: 260, accuracy: 94.2, responseTime: '85ms', description: '全栈代码生成、代码审查、Bug 修复、自动化重构', purchasedAt: '2026-03-15' },
+  { name: '测试 Agent', role: 'Zylos 测试', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', status: 'online', framework: 'Zylos', plan: 'Pro · $29/月', tasksCompleted: 56, weeklyTasks: 8, weeklyCredits: 120, accuracy: 91.8, responseTime: '200ms', description: '自动化测试、回归测试、性能测试报告生成', purchasedAt: '2026-04-01' },
+  { name: '数据分析师', role: 'OpenClaw 数据', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', status: 'busy', framework: 'OpenClaw', plan: 'Pro · $19/月', tasksCompleted: 203, weeklyTasks: 6, weeklyCredits: 90, accuracy: 98.1, responseTime: '150ms', description: '数据分析、报表生成、异常检测和趋势预测', purchasedAt: '2026-03-20' }
 ];
 
 const marketplaceAgents = [
-  { name: 'Security Bot', role: '安全监控', avatar: '🛡️', color: 'linear-gradient(135deg,#636e72,#2d3436)', description: '实时安全监控和漏洞扫描' },
-  { name: 'QA Agent', role: '质量保障', avatar: '🧪', color: 'linear-gradient(135deg,#00b894,#00cec9)', description: '自动化测试和质量报告' },
-  { name: 'PM Assistant', role: '项目管理', avatar: '📋', color: 'linear-gradient(135deg,#e84393,#fd79a8)', description: '项目跟踪和进度管理' }
+  { name: 'Zylos 运维助手', role: '运维自动化', avatar: '🔧', color: 'linear-gradient(135deg,#636e72,#b2bec3)', framework: 'Zylos', price: '$29/月', description: '部署监控、日志分析、告警处理' },
+  { name: 'Skill Builder', role: 'OpenClaw Skill 开发', avatar: '🦀', color: 'linear-gradient(135deg,#00b894,#55efc4)', framework: 'OpenClaw', price: '$19/月', description: 'Skill 构建、MCP 协议、API 集成' },
+  { name: 'Skill Hub', role: 'OpenClaw 技能市场', avatar: '🔗', color: 'linear-gradient(135deg,#55efc4,#00b894)', framework: 'OpenClaw', price: '$19/月', description: '技能搜索、安装、编排' },
+  { name: 'Security Bot', role: '安全监控', avatar: '🛡️', color: 'linear-gradient(135deg,#636e72,#2d3436)', framework: 'Zylos', price: '$29/月', description: '实时安全监控和漏洞扫描' }
 ];
 
 const toolsInstalled = [
@@ -5004,10 +5019,19 @@ function renderAgents() {
             <p>${agent.role}</p>
           </div>
         </div>
+        <div style="display:flex;gap:6px;margin-bottom:12px;">
+          <span class="digital-badge worker">${agent.framework}</span>
+          <span style="font-size:11px;color:var(--text-muted);">${agent.plan}</span>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">📊 本周使用</div>
         <div class="agent-kpis">
           <div class="agent-kpi">
-            <div class="agent-kpi-value">${agent.tasksCompleted}</div>
-            <div class="agent-kpi-label">完成任务</div>
+            <div class="agent-kpi-value">${agent.weeklyTasks}</div>
+            <div class="agent-kpi-label">本周任务</div>
+          </div>
+          <div class="agent-kpi">
+            <div class="agent-kpi-value">${agent.weeklyCredits}</div>
+            <div class="agent-kpi-label">消耗积分</div>
           </div>
           <div class="agent-kpi">
             <div class="agent-kpi-value">${agent.accuracy}%</div>
@@ -5015,16 +5039,19 @@ function renderAgents() {
           </div>
           <div class="agent-kpi">
             <div class="agent-kpi-value">${agent.responseTime}</div>
-            <div class="agent-kpi-label">响应时间</div>
+            <div class="agent-kpi-label">响应</div>
           </div>
         </div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">${agent.description}</p>
-        <button class="btn btn-sm btn-secondary" onclick="openAgentConfig('${agent.name}')">配置</button>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">${agent.description}</p>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm btn-secondary" onclick="openAgentConfig('${agent.name}')">配置</button>
+          <button class="btn btn-sm" style="border:1.5px solid #e74c3c;color:#e74c3c;background:transparent;border-radius:8px;padding:4px 12px;font-size:12px;cursor:pointer;" onclick="unbindAgent('${agent.name}')">移除</button>
+        </div>
       </div>
     `;
   });
 
-  // Marketplace
+  // Marketplace — purchasable agents
   const market = document.getElementById('agentMarketplace');
   market.innerHTML = '';
   marketplaceAgents.forEach(agent => {
@@ -5037,11 +5064,29 @@ function renderAgents() {
             <p>${agent.role}</p>
           </div>
         </div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">${agent.description}</p>
-        <button class="btn btn-sm btn-primary" onclick="addAgent('${agent.name}')">+ 添加</button>
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <span class="digital-badge worker">${agent.framework}</span>
+          <span style="font-size:12px;font-weight:700;color:var(--accent);">${agent.price}</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">${agent.description}</p>
+        <button class="btn btn-sm btn-primary" onclick="purchaseAgent('${agent.name}')">购买</button>
       </div>
     `;
   });
+}
+
+function unbindAgent(name) {
+  if (confirm('确定要移除「' + name + '」吗？移除后可在市场重新购买。')) {
+    const idx = agentsData.findIndex(a => a.name === name);
+    if (idx >= 0) agentsData.splice(idx, 1);
+    renderAgents();
+    showToast('已移除「' + name + '」');
+  }
+}
+
+function purchaseAgent(name) {
+  showToast('正在购买「' + name + '」...');
+  setTimeout(() => showToast('✅ 已购买「' + name + '」，可在已购列表中查看'), 1200);
 }
 
 function openAgentConfig(name) {
