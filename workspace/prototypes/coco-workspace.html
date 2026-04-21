@@ -612,6 +612,46 @@ body {
   animation: chatModalScaleIn 0.25s ease;
 }
 @keyframes chatModalScaleIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes successBounce { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes obMsgIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+/* Onboarding interactive cards embedded in chat */
+.ob-card {
+  margin-top: 10px;
+  max-width: 420px;
+}
+.ob-card-inner {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  padding: 16px;
+}
+.ob-card-inner input[type="text"] {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-glass);
+  outline: none;
+}
+.ob-card-inner input[type="text"]:focus { border-color: var(--accent); }
+.ob-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1.5px solid var(--border-glass);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-body);
+  background: transparent;
+}
+.ob-chip:hover { border-color: rgba(211,87,254,0.3); }
+.ob-chip.selected {
+  border-color: var(--accent);
+  background: rgba(211,87,254,0.06);
+  color: var(--accent);
+}
 .chat-modal-close {
   position: absolute;
   top: 14px;
@@ -2365,170 +2405,10 @@ body {
 
       <!-- ======================== CHAT MODULE ======================== -->
       <div class="module-view active" id="module-chat" style="position:relative;">
-        <!-- Walkthrough Overlay -->
-        <div class="chat-walkthrough" id="chatWalkthrough">
-          <div class="wt-progress" id="wtProgress"></div>
+        <!-- Restart onboarding button -->
+        <button class="wt-restart-btn" id="wtRestartBtn" style="display:none;" onclick="restartOnboarding()">↻ 重新体验引导</button>
 
-          <!-- Step 0: Welcome Empty State -->
-          <div class="wt-step active" id="wtStep0">
-            <span class="wt-icon">💬</span>
-            <div class="wt-title">欢迎来到 COCO Workspace</div>
-            <div class="wt-desc">这是你的 AI 协作工作区。<br>让我们一起完成初始设置，只需要几步就能开始使用。</div>
-            <button class="wt-btn wt-btn-primary" onclick="wtNext()">开始设置</button>
-          </div>
-
-          <!-- Step 1: Add Bot -->
-          <div class="wt-step" id="wtStep1">
-            <div class="wt-title">选择你的 AI 助手</div>
-            <div class="wt-desc">从 Agent 市场选择你需要的 AI 助手，它们将帮助你和团队提升效率。</div>
-            <div class="wt-bot-grid" id="wtBotGrid">
-              <div class="wt-bot-card" data-bot="coco" onclick="wtToggleBot(this)">
-                <div class="bot-avatar" style="background:linear-gradient(135deg,#d357fe,#96bbff)">🐙</div>
-                <div class="bot-info"><h4>COCO Agent</h4><p>全能协作助手，任务协调、消息汇总、团队效率优化</p></div>
-                <span class="bot-check">✓</span>
-              </div>
-              <div class="wt-bot-card" data-bot="code" onclick="wtToggleBot(this)">
-                <div class="bot-avatar" style="background:linear-gradient(135deg,#fdcb6e,#f39c12)">⚡</div>
-                <div class="bot-info"><h4>代码助手</h4><p>代码审查、自动修复、API 文档生成、性能监控</p></div>
-                <span class="bot-check">✓</span>
-              </div>
-              <div class="wt-bot-card" data-bot="design" onclick="wtToggleBot(this)">
-                <div class="bot-avatar" style="background:linear-gradient(135deg,#e17055,#d63031)">🎨</div>
-                <div class="bot-info"><h4>Design AI</h4><p>设计规范检查、配色生成、响应式布局建议</p></div>
-                <span class="bot-check">✓</span>
-              </div>
-              <div class="wt-bot-card" data-bot="data" onclick="wtToggleBot(this)">
-                <div class="bot-avatar" style="background:linear-gradient(135deg,#0984e3,#74b9ff)">📊</div>
-                <div class="bot-info"><h4>Data Agent</h4><p>数据分析、报表生成、异常检测和趋势预测</p></div>
-                <span class="bot-check">✓</span>
-              </div>
-            </div>
-            <button class="wt-btn wt-btn-primary" onclick="wtNext()">添加选中的助手</button>
-            <button class="wt-btn wt-btn-secondary" onclick="wtNext()">跳过</button>
-          </div>
-
-          <!-- Step 2: Create Group -->
-          <div class="wt-step" id="wtStep2">
-            <div class="wt-title">创建你的第一个群聊</div>
-            <div class="wt-desc">群聊是团队协作的核心空间，人类和 AI 在同一个对话中协作。</div>
-            <div class="wt-form">
-              <label>群聊名称</label>
-              <input type="text" id="wtGroupName" value="产品开发群" placeholder="输入群聊名称...">
-              <label>群聊描述</label>
-              <textarea id="wtGroupDesc" placeholder="简单描述这个群聊的用途...">COCO Workspace 产品团队日常沟通频道</textarea>
-              <label>可见性</label>
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <div class="wt-visibility-opt selected" id="wtVisPublic" onclick="wtSelectVisibility('public')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--accent);border-radius:10px;cursor:pointer;background:rgba(211,87,254,0.04);transition:all .2s;">
-                  <span style="font-size:16px;margin-top:1px;">🌐</span>
-                  <div><div style="font-size:13px;font-weight:600;color:var(--text-main);">公开群</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">工作区内所有人可搜索/加入</div></div>
-                </div>
-                <div class="wt-visibility-opt" id="wtVisPrivate" onclick="wtSelectVisibility('private')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;background:transparent;transition:all .2s;">
-                  <span style="font-size:16px;margin-top:1px;">🔒</span>
-                  <div><div style="font-size:13px;font-weight:600;color:var(--text-main);">私有群</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">仅邀请制</div></div>
-                </div>
-              </div>
-            </div>
-            <div style="margin-top:8px;">
-              <button class="wt-btn wt-btn-primary" onclick="wtNext()">创建群聊</button>
-            </div>
-          </div>
-
-          <!-- Step 3: Invite Members -->
-          <div class="wt-step" id="wtStep3">
-            <div class="wt-title">邀请团队成员</div>
-            <div class="wt-desc">选择要加入群聊的成员和 AI Agent。</div>
-
-            <!-- Human Members Section -->
-            <div style="margin-bottom:6px;">
-              <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">👤 团队成员</div>
-            </div>
-            <div class="wt-member-list" id="wtMemberList">
-              <div class="wt-member-item selected" data-member="stephanie" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
-                <span class="member-name">Stephanie</span>
-                <span class="member-role">产品负责人</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item" data-member="alex" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#00cec9,#55efc4)">A</div>
-                <span class="member-name">Alex</span>
-                <span class="member-role">全栈工程师</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item" data-member="maya" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#fd79a8,#e84393)">M</div>
-                <span class="member-name">Maya</span>
-                <span class="member-role">UI/UX 设计师</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item" data-member="zhangwei" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#636e72,#b2bec3)">张</div>
-                <span class="member-name">张伟</span>
-                <span class="member-role">前端工程师</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item" data-member="chenmh" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7)">陈</div>
-                <span class="member-name">陈明辉</span>
-                <span class="member-role">后端工程师</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item" data-member="lisiqi" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#fab1a0,#e17055)">李</div>
-                <span class="member-name">李思琪</span>
-                <span class="member-role">交互设计师</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-            </div>
-
-            <!-- AI Agent Section -->
-            <div style="margin-top:16px;margin-bottom:6px;">
-              <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">🤖 AI Agent</div>
-            </div>
-            <div class="wt-member-list" id="wtAgentList">
-              <div class="wt-member-item selected" data-agent="code-assistant" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#d357fe,#96bbff);font-size:16px;">🤖</div>
-                <span class="member-name">代码助手</span>
-                <span class="member-role" style="color:var(--accent);">Claude Sonnet</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item selected" data-agent="design-ai" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#fd79a8,#fab1a0);font-size:16px;">🎨</div>
-                <span class="member-name">Design AI</span>
-                <span class="member-role" style="color:var(--accent);">Claude Sonnet</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <div class="wt-member-item" data-agent="test-bot" onclick="wtToggleMember(this)">
-                <div class="avatar" style="background:linear-gradient(135deg,#00cec9,#55efc4);font-size:16px;">🧪</div>
-                <span class="member-name">测试 Agent</span>
-                <span class="member-role" style="color:var(--accent);">Claude Sonnet</span>
-                <span class="wt-member-check">✓</span>
-              </div>
-              <!-- Add from market -->
-              <div class="wt-member-item" style="border-style:dashed;opacity:0.7;" onclick="openAgentMarket()">
-                <div class="avatar" style="background:var(--accent-bg);color:var(--accent);font-size:18px;font-weight:700;">+</div>
-                <span class="member-name" style="color:var(--accent);">从 Agent 市场添加</span>
-                <span class="member-role">浏览更多 AI Agent</span>
-                <span class="wt-member-check" style="display:none;"></span>
-              </div>
-            </div>
-
-            <button class="wt-btn wt-btn-primary" onclick="wtFinish()">邀请并开始使用</button>
-          </div>
-
-          <!-- Step 4: Done -->
-          <div class="wt-step" id="wtStep4">
-            <span class="wt-icon">🎉</span>
-            <div class="wt-title">设置完成！</div>
-            <div class="wt-desc">你的工作区已准备就绪。<br>AI 助手已加入群聊，团队成员已收到邀请。</div>
-            <button class="wt-btn wt-btn-primary" onclick="wtEnterChat()">进入对话</button>
-          </div>
-        </div>
-
-        <!-- Restart walkthrough button (shown after walkthrough completes) -->
-        <button class="wt-restart-btn" id="wtRestartBtn" style="display:none;" onclick="wtRestart()">↻ 重新体验引导</button>
-
-        <div class="chat-layout" id="chatLayoutMain" style="display:none;">
+        <div class="chat-layout" id="chatLayoutMain">
           <!-- Left: Conversation List -->
           <div class="conv-list">
             <div class="conv-tabs">
@@ -4378,107 +4258,255 @@ function initAllModules() {
   renderAgents();
   renderToolbox();
   renderAdmin();
-  initWalkthrough();
+  startOnboardingChat();
 }
 
 // ================================================================
-// CHAT WALKTHROUGH (User Journey)
+// CONVERSATIONAL ONBOARDING (Chat-based User Journey)
 // ================================================================
-let wtStep = 0;
-const WT_TOTAL_STEPS = 5;
+let obStep = 0;
+let obComplete = false;
 
-function initWalkthrough() {
-  renderWtProgress();
+function cocoMsgHTML(text, cardHTML) {
+  return `<div class="chat-msg chat-msg-agent ob-msg" style="animation:obMsgIn .4s ease both;">
+    <div class="avatar" style="background:linear-gradient(135deg,#d357fe,#96bbff);font-size:18px;">🐙</div>
+    <div style="min-width:0;flex:1;">
+      <div class="chat-msg-name">COCO Agent <span class="badge badge-agent" style="font-size:10px;">AI</span></div>
+      <div class="chat-msg-content">${text}</div>
+      ${cardHTML ? '<div class="ob-card">' + cardHTML + '</div>' : ''}
+      <div class="chat-msg-time">刚刚</div>
+    </div>
+  </div>`;
 }
 
-function renderWtProgress() {
-  const container = document.getElementById('wtProgress');
-  let html = '';
-  for (let i = 0; i < WT_TOTAL_STEPS; i++) {
-    const cls = i === wtStep ? 'active' : (i < wtStep ? 'done' : '');
-    html += '<div class="wt-progress-dot ' + cls + '"></div>';
-  }
-  container.innerHTML = html;
+function appendObMsg(html, delay) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const container = document.getElementById('chatMessages');
+      // Show typing indicator briefly
+      const typing = document.getElementById('typingIndicator');
+      if (typing) { typing.style.display = 'flex'; typing.querySelector('span:last-of-type').textContent = 'COCO Agent 正在输入...'; }
+      setTimeout(() => {
+        if (typing) typing.style.display = 'none';
+        container.insertAdjacentHTML('beforeend', html);
+        container.scrollTop = container.scrollHeight;
+        resolve();
+      }, 600);
+    }, delay || 0);
+  });
 }
 
-function wtNext() {
-  // Hide current step
-  document.getElementById('wtStep' + wtStep).classList.remove('active');
-  wtStep++;
-  // Show next step
-  const nextStep = document.getElementById('wtStep' + wtStep);
-  if (nextStep) {
-    nextStep.classList.add('active');
-    // Step 1: auto-select COCO Agent and Code Bot
-    if (wtStep === 1) {
-      const cards = document.querySelectorAll('.wt-bot-card[data-bot="coco"], .wt-bot-card[data-bot="code"]');
-      cards.forEach(c => c.classList.add('selected'));
-    }
-  }
-  renderWtProgress();
+function startOnboardingChat() {
+  obStep = 0;
+  obComplete = false;
+  // Clear existing messages for onboarding channel
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = '';
+  // Step 0: Welcome
+  appendObMsg(cocoMsgHTML(
+    '你好！ 欢迎来到 <strong>COCO Workspace</strong> 🎉<br>我是 COCO Agent，你的工作区助手。让我帮你完成初始设置 — 只需要几步。<br><br>首先，给你的工作区起个名字吧：',
+    `<div class="ob-card-inner">
+      <input type="text" id="obWorkspaceName" value="COCO Team" placeholder="工作区名称..." class="ob-input" style="width:100%;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:14px;margin-bottom:12px;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">工作区类型</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div class="ob-type-opt selected" id="obTypeTeam" onclick="obSelectType('team')" style="flex:1;padding:10px;border:1.5px solid var(--accent);border-radius:10px;cursor:pointer;text-align:center;background:rgba(211,87,254,0.04);transition:all .2s;">
+          <div style="font-size:20px;margin-bottom:4px;">👥</div>
+          <div style="font-size:12px;font-weight:600;">团队</div>
+        </div>
+        <div class="ob-type-opt" id="obTypePersonal" onclick="obSelectType('personal')" style="flex:1;padding:10px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;text-align:center;transition:all .2s;">
+          <div style="font-size:20px;margin-bottom:4px;">👤</div>
+          <div style="font-size:12px;font-weight:600;">个人</div>
+        </div>
+        <div class="ob-type-opt" id="obTypeStartup" onclick="obSelectType('startup')" style="flex:1;padding:10px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;text-align:center;transition:all .2s;">
+          <div style="font-size:20px;margin-bottom:4px;">🚀</div>
+          <div style="font-size:12px;font-weight:600;">创业公司</div>
+        </div>
+      </div>
+      <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obNextStep1()">继续</button>
+    </div>`
+  ), 300);
 }
 
-function wtToggleBot(el) {
+function obSelectType(type) {
+  document.querySelectorAll('.ob-type-opt').forEach(el => {
+    el.classList.remove('selected');
+    el.style.borderColor = 'var(--border-glass)';
+    el.style.background = 'transparent';
+  });
+  const el = document.getElementById('obType' + type.charAt(0).toUpperCase() + type.slice(1));
+  if (el) { el.classList.add('selected'); el.style.borderColor = 'var(--accent)'; el.style.background = 'rgba(211,87,254,0.04)'; }
+}
+
+function obNextStep1() {
+  obStep = 1;
+  const name = document.getElementById('obWorkspaceName')?.value || 'COCO Team';
+  // Disable the previous card
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  // User "reply"
+  const container = document.getElementById('chatMessages');
+  container.insertAdjacentHTML('beforeend', `<div class="chat-msg ob-msg" style="animation:obMsgIn .3s ease both;">
+    <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+    <div style="min-width:0;flex:1;">
+      <div class="chat-msg-name">Stephanie</div>
+      <div class="chat-msg-content">工作区名称：<strong>${name}</strong></div>
+      <div class="chat-msg-time">刚刚</div>
+    </div>
+  </div>`);
+  container.scrollTop = container.scrollHeight;
+  // Update workspace name in settings
+  const settingInput = document.getElementById('settingWorkspaceName');
+  if (settingInput) settingInput.value = name;
+
+  // Step 1: Choose AI Agents
+  appendObMsg(cocoMsgHTML(
+    '好的！<strong>' + name + '</strong> 工作区已创建 ✅<br><br>接下来，选择你想在工作区中使用的 AI Agent。你可以随时在 Agent 市场中添加更多：',
+    `<div class="ob-card-inner">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🤖 选择 AI Agent</div>
+      <div id="obAgentList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        ${allAgents.slice(0, 4).map(a => {
+          const isSub = workspaceAgents.includes(a.id);
+          return '<div class="ob-agent-item'+(isSub?' selected':'')+'" data-agent="'+a.id+'" onclick="obToggleAgent(this)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid '+(isSub?'var(--accent)':'var(--border-glass)')+';border-radius:10px;cursor:pointer;transition:all .15s;'+(isSub?'background:rgba(211,87,254,0.04)':'')+'"><div style="width:36px;height:36px;border-radius:10px;background:'+a.color+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+a.emoji+'</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-heading);">'+a.name+(a.tag?' <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--accent-bg);color:var(--accent);font-weight:600;">'+a.tag+'</span>':'')+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+a.desc+'</div></div><div style="font-size:11px;color:'+(isSub?'var(--accent)':'var(--text-muted)')+';font-weight:600;white-space:nowrap;">'+(isSub?'已订阅 ✓':'免费试用')+'</div></div>';
+        }).join('')}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px dashed var(--border-glass);border-radius:10px;cursor:pointer;color:var(--accent);font-size:12px;font-weight:500;margin-bottom:14px;" onclick="openAgentMarket()">
+        <span style="font-size:16px;">+</span> 浏览 Agent 市场 — 更多 AI Agent 等你发现
+      </div>
+      <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obNextStep2()">继续</button>
+    </div>`
+  ), 200);
+}
+
+function obToggleAgent(el) {
   el.classList.toggle('selected');
+  const isSel = el.classList.contains('selected');
+  el.style.borderColor = isSel ? 'var(--accent)' : 'var(--border-glass)';
+  el.style.background = isSel ? 'rgba(211,87,254,0.04)' : 'transparent';
+  const statusEl = el.querySelector('div:last-child');
+  if (statusEl) { statusEl.style.color = isSel ? 'var(--accent)' : 'var(--text-muted)'; statusEl.textContent = isSel ? '已选 ✓' : '免费试用'; }
 }
 
-function wtSelectType(type) {
-  document.getElementById('wtTypeGroup').classList.toggle('wt-btn-primary', type === 'group');
-  document.getElementById('wtTypeGroup').classList.toggle('wt-btn-secondary', type !== 'group');
-  document.getElementById('wtTypeChannel').classList.toggle('wt-btn-primary', type === 'channel');
-  document.getElementById('wtTypeChannel').classList.toggle('wt-btn-secondary', type !== 'channel');
+function obNextStep2() {
+  obStep = 2;
+  // Collect selected agents
+  const selected = [];
+  document.querySelectorAll('#obAgentList .ob-agent-item.selected').forEach(el => selected.push(el.dataset.agent));
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  const container = document.getElementById('chatMessages');
+  const names = selected.map(id => { const a = allAgents.find(x => x.id === id); return a ? a.name : id; });
+  container.insertAdjacentHTML('beforeend', `<div class="chat-msg ob-msg" style="animation:obMsgIn .3s ease both;">
+    <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+    <div style="min-width:0;flex:1;">
+      <div class="chat-msg-name">Stephanie</div>
+      <div class="chat-msg-content">选择了：${names.join('、')}</div>
+      <div class="chat-msg-time">刚刚</div>
+    </div>
+  </div>`);
+  container.scrollTop = container.scrollHeight;
+
+  // Step 2: Create group + invite members
+  appendObMsg(cocoMsgHTML(
+    'Agent 已添加 ✅<br><br>现在来创建你的第一个群聊，邀请团队成员和 AI Agent 一起协作：',
+    `<div class="ob-card-inner">
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">群聊名称</div>
+        <input type="text" id="obGroupName" value="产品开发群" placeholder="群聊名称..." style="width:100%;padding:10px 14px;border:1px solid var(--border-glass);border-radius:10px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">可见性</div>
+        <div style="display:flex;gap:8px;">
+          <div id="obVisPublic" onclick="obSelectVis('public')" style="flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1.5px solid var(--accent);border-radius:8px;cursor:pointer;background:rgba(211,87,254,0.04);transition:all .2s;">
+            <span style="font-size:14px;">🌐</span><div><div style="font-size:11px;font-weight:600;">公开群</div></div>
+          </div>
+          <div id="obVisPrivate" onclick="obSelectVis('private')" style="flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1.5px solid var(--border-glass);border-radius:8px;cursor:pointer;transition:all .2s;">
+            <span style="font-size:14px;">🔒</span><div><div style="font-size:11px;font-weight:600;">私有群</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">👤 邀请成员</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obMemberChips">
+          <div class="ob-chip selected" data-m="stephanie" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">S</span> Stephanie</div>
+          <div class="ob-chip" data-m="alex" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">A</span> Alex</div>
+          <div class="ob-chip" data-m="maya" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">M</span> Maya</div>
+          <div class="ob-chip" data-m="zhangwei" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">张</span> 张伟</div>
+          <div class="ob-chip" data-m="chenmh" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">陈</span> 陈明辉</div>
+          <div class="ob-chip" data-m="lisiqi" onclick="this.classList.toggle('selected')"><span style="font-size:12px;">李</span> 李思琪</div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">🤖 添加 Agent</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="obAgentChips">
+          ${allAgents.filter(a => workspaceAgents.includes(a.id) || selected.includes(a.id)).map(a =>
+            '<div class="ob-chip selected" data-a="'+a.id+'" onclick="this.classList.toggle(\'selected\')"><span style="font-size:14px;">'+a.emoji+'</span> '+a.name+'</div>'
+          ).join('')}
+          <div class="ob-chip" style="border-style:dashed;color:var(--accent);" onclick="openAgentMarket()">+ 更多</div>
+        </div>
+      </div>
+      <button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;" onclick="obFinish()">创建群聊并完成设置</button>
+    </div>`
+  ), 200);
 }
-function wtSelectVisibility(vis) {
-  const pub = document.getElementById('wtVisPublic');
-  const priv = document.getElementById('wtVisPrivate');
+
+function obSelectVis(vis) {
+  const pub = document.getElementById('obVisPublic');
+  const priv = document.getElementById('obVisPrivate');
   if (vis === 'public') {
-    pub.classList.add('selected'); pub.style.borderColor = 'var(--accent)'; pub.style.background = 'rgba(211,87,254,0.04)';
-    priv.classList.remove('selected'); priv.style.borderColor = 'var(--border-glass)'; priv.style.background = 'transparent';
+    pub.style.borderColor = 'var(--accent)'; pub.style.background = 'rgba(211,87,254,0.04)';
+    priv.style.borderColor = 'var(--border-glass)'; priv.style.background = 'transparent';
   } else {
-    priv.classList.add('selected'); priv.style.borderColor = 'var(--accent)'; priv.style.background = 'rgba(211,87,254,0.04)';
-    pub.classList.remove('selected'); pub.style.borderColor = 'var(--border-glass)'; pub.style.background = 'transparent';
+    priv.style.borderColor = 'var(--accent)'; priv.style.background = 'rgba(211,87,254,0.04)';
+    pub.style.borderColor = 'var(--border-glass)'; pub.style.background = 'transparent';
   }
 }
 
-function wtToggleMember(el) {
-  el.classList.toggle('selected');
-}
+function obFinish() {
+  obStep = 3;
+  obComplete = true;
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  const groupName = document.getElementById('obGroupName')?.value || '产品开发群';
+  const container = document.getElementById('chatMessages');
+  container.insertAdjacentHTML('beforeend', `<div class="chat-msg ob-msg" style="animation:obMsgIn .3s ease both;">
+    <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+    <div style="min-width:0;flex:1;">
+      <div class="chat-msg-name">Stephanie</div>
+      <div class="chat-msg-content">创建群聊「${groupName}」</div>
+      <div class="chat-msg-time">刚刚</div>
+    </div>
+  </div>`);
+  container.scrollTop = container.scrollHeight;
 
-function wtFinish() {
-  document.getElementById('wtStep' + wtStep).classList.remove('active');
-  wtStep = 4;
-  document.getElementById('wtStep4').classList.add('active');
-  renderWtProgress();
-}
+  // Final success message
+  appendObMsg(cocoMsgHTML(
+    '🎉 <strong>设置完成！</strong>你的工作区已准备就绪。<br><br>' +
+    '✅ 工作区已创建<br>✅ AI Agent 已加入<br>✅ 「' + groupName + '」群聊已建立<br>✅ 团队成员已邀请<br><br>' +
+    '你可以直接在下方输入框开始对话，或者通过左侧边栏探索更多功能。有什么需要随时 @我！',
+    `<div class="ob-card-inner" style="text-align:center;padding:8px 0;">
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="wt-btn wt-btn-primary" style="padding:8px 20px;font-size:13px;" onclick="obDismiss()">开始对话</button>
+        <button class="wt-btn wt-btn-secondary" style="padding:8px 20px;font-size:13px;" onclick="switchModule('agents')">探索 Agent</button>
+      </div>
+    </div>`
+  ), 200);
 
-function wtEnterChat() {
-  const wt = document.getElementById('chatWalkthrough');
-  wt.classList.add('hidden');
-  setTimeout(() => { wt.style.display = 'none'; }, 400);
-  document.getElementById('chatLayoutMain').style.display = 'flex';
   document.getElementById('wtRestartBtn').style.display = 'block';
-  // Trigger chat animations
-  renderChat();
+}
+
+function obDismiss() {
+  // Fade out the final card
+  document.querySelectorAll('.ob-card').forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
   showToast('工作区设置完成！欢迎使用 COCO Workspace');
 }
 
-function wtRestart() {
-  wtStep = 0;
-  // Reset all steps
-  document.querySelectorAll('.wt-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('wtStep0').classList.add('active');
-  // Reset selections
-  document.querySelectorAll('.wt-bot-card').forEach(c => c.classList.remove('selected'));
-  document.querySelectorAll('.wt-member-item').forEach(m => m.classList.remove('selected'));
-  document.querySelector('.wt-member-item[data-member="stephanie"]').classList.add('selected');
-  // Show walkthrough
-  const wt = document.getElementById('chatWalkthrough');
-  wt.style.display = 'flex';
-  wt.classList.remove('hidden');
-  document.getElementById('chatLayoutMain').style.display = 'none';
+function restartOnboarding() {
+  obStep = 0;
+  obComplete = false;
   document.getElementById('wtRestartBtn').style.display = 'none';
-  renderWtProgress();
+  startOnboardingChat();
 }
+
+// Keep these for compatibility with other features
+function wtToggleMember(el) { el.classList.toggle('selected'); }
+function wtToggleBot(el) { el.classList.toggle('selected'); }
 
 // (octopus mouse proximity removed)
 
@@ -4802,18 +4830,25 @@ function openNewConvMenu(btn) {
   }, 10);
 }
 
+// ================================================================
+// AGENT MARKETPLACE — Product-level Agents + Credits System
+// ================================================================
 const allAgents = [
-  { id:'coco', name:'COCO Agent', emoji:'🐙', color:'linear-gradient(135deg,#d357fe,#96bbff)', desc:'全能协作助手，任务协调、消息汇总', features:['智能任务分配与跟踪','多群消息自动汇总','会议纪要生成','跨团队协调'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础任务协调','每日 50 条消息']},{plan:'专业版',price:'¥99/月',features:['无限消息','高级汇总','优先响应'],recommended:true},{plan:'企业版',price:'¥299/月',features:['自定义训练','API 接入','专属支持']}] },
-  { id:'code', name:'代码助手', emoji:'⚡', color:'linear-gradient(135deg,#fdcb6e,#f39c12)', desc:'代码审查、自动修复、API 文档生成', features:['实时代码审查与建议','自动 Bug 修复','API 文档自动生成','多语言支持'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础代码补全','每日 20 次审查']},{plan:'专业版',price:'¥149/月',features:['无限审查','自动修复','Claude Sonnet'],recommended:true},{plan:'企业版',price:'¥399/月',features:['Claude Opus','私有部署','团队分析']}] },
-  { id:'design', name:'Design AI', emoji:'🎨', color:'linear-gradient(135deg,#e17055,#d63031)', desc:'设计规范检查、配色生成、布局建议', features:['设计规范一致性检查','智能配色方案生成','布局优化建议','设计稿标注'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础配色建议','每日 10 次检查']},{plan:'专业版',price:'¥129/月',features:['无限检查','Figma 集成','设计系统同步'],recommended:true},{plan:'企业版',price:'¥349/月',features:['自定义规范','品牌资产管理','团队协作']}] },
-  { id:'data', name:'Data Agent', emoji:'📊', color:'linear-gradient(135deg,#0984e3,#74b9ff)', desc:'数据分析、报表生成、异常检测', features:['自动数据清洗与分析','实时异常检测告警','可视化报表生成','自然语言查询'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础图表','每日 5 次查询']},{plan:'专业版',price:'¥199/月',features:['高级分析','实时告警','数据源集成'],recommended:true},{plan:'企业版',price:'¥499/月',features:['自定义模型','数据湖对接','SLA 保障']}] },
-  { id:'qa', name:'QA Bot', emoji:'🧪', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'自动化测试、Bug 追踪、质量报告', features:['自动生成测试用例','回归测试自动执行','Bug 智能分类追踪','质量趋势报告'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础测试','每日 10 个用例']},{plan:'专业版',price:'¥129/月',features:['无限用例','CI 集成','自动回归'],recommended:true},{plan:'企业版',price:'¥349/月',features:['性能测试','安全测试','定制报告']}] },
-  { id:'doc', name:'文档助手', emoji:'📝', color:'linear-gradient(135deg,#636e72,#b2bec3)', desc:'文档生成、知识库管理、搜索问答', features:['智能文档生成','知识库自动构建','语义搜索问答','多格式导出'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础文档','5 篇/月']},{plan:'专业版',price:'¥79/月',features:['无限文档','知识库','团队共享'],recommended:true},{plan:'企业版',price:'¥249/月',features:['私有知识库','API 接入','权限管理']}] },
-  { id:'security', name:'安全卫士', emoji:'🛡️', color:'linear-gradient(135deg,#e84393,#fd79a8)', desc:'漏洞扫描、安全审计、合规检查', features:['自动漏洞扫描','依赖安全检查','合规性审计','安全报告生成'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础扫描','每周 1 次']},{plan:'专业版',price:'¥199/月',features:['实时扫描','合规检查','告警推送'],recommended:true},{plan:'企业版',price:'¥499/月',features:['渗透测试','SOC2 审计','专属顾问']}] },
-  { id:'devops', name:'DevOps Agent', emoji:'🚀', color:'linear-gradient(135deg,#a29bfe,#6c5ce7)', desc:'CI/CD 管理、部署监控、日志分析', features:['CI/CD 流水线管理','智能部署策略','实时日志分析','故障自动诊断'], pricing:[{plan:'免费版',price:'¥0/月',features:['基础监控','每日 100 条日志']},{plan:'专业版',price:'¥169/月',features:['无限日志','自动部署','告警'],recommended:true},{plan:'企业版',price:'¥449/月',features:['多集群','混合云','7x24 支持']}] },
+  { id:'coco', name:'COCO Agent', emoji:'🐙', color:'linear-gradient(135deg,#d357fe,#96bbff)', desc:'工作区内置协作 Agent，任务协调、消息汇总、会议纪要', tag:'内置', features:['智能任务分配与跟踪','多群消息自动汇总','会议纪要生成','跨团队工作流协调'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['基础任务协调','每日 50 条消息','单群支持']},{plan:'Pro',price:'$29',period:'/月',credits:290,features:['无限消息','多群汇总','优先响应','自定义指令'],recommended:true},{plan:'Enterprise',price:'$99',period:'/月',credits:990,features:['自定义训练','API 接入','SSO 集成','专属客户经理']}] },
+  { id:'zylos', name:'Zylos', emoji:'⚡', color:'linear-gradient(135deg,#6c5ce7,#a29bfe)', desc:'全能 AI 伙伴 — 编程、自动化、浏览器操作、定时任务、数据分析', tag:'热门', features:['全栈编程 & 代码审查','浏览器自动化 & 数据抓取','定时任务 & 工作流编排','文件处理 & 数据分析','多平台接入（Lark/TG/Web）'], pricing:[{plan:'Air',price:'$9.9',period:'/月',credits:100,features:['基础对话','每日 20 次工具调用','社区支持']},{plan:'Pro',price:'$29',period:'/月',credits:290,features:['无限工具调用','浏览器自动化','定时任务','含 $10 额度/月'],recommended:true},{plan:'Enterprise',price:'联系销售',period:'',credits:0,features:['私有部署','自定义模型','SLA 保障','专属技术支持'],isEnterprise:true}] },
+  { id:'openclaw', name:'OpenClaw', emoji:'🦀', color:'linear-gradient(135deg,#00b894,#55efc4)', desc:'开源技能生态 Agent — MCP 协议、Skill 市场、社区共建', tag:'开源', features:['MCP 协议原生支持','开源 Skill 市场接入','社区驱动 Skill 共建','跨 Agent 技能编排','Webhook & API 集成'], pricing:[{plan:'Community',price:'$0',period:'/月',credits:0,features:['社区 Skill 访问','每日 50 次调用','GitHub 集成']},{plan:'Pro',price:'$19',period:'/月',credits:190,features:['无限 Skill 调用','私有 Skill 仓库','优先更新','技术支持'],recommended:true},{plan:'Team',price:'$49',period:'/月',credits:490,features:['团队 Skill 共享','管理后台','使用分析','API 配额 ×5']}] },
+  { id:'mindflow', name:'MindFlow', emoji:'🧠', color:'linear-gradient(135deg,#fdcb6e,#f39c12)', desc:'AI 会议助手 — 实时纪要、行动项提取、智能头脑风暴', tag:'效率', features:['实时会议纪要生成','行动项自动提取与跟踪','结构化头脑风暴引导','会议洞察报告'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['每月 5 场会议','基础纪要','文字版']},{plan:'Pro',price:'$15',period:'/月',credits:150,features:['无限会议','智能摘要','行动项追踪','日历集成'],recommended:true},{plan:'Business',price:'$39',period:'/月',credits:390,features:['团队分析','CRM 集成','自定义模板','API 接入']}] },
+  { id:'datapilot', name:'DataPilot', emoji:'📊', color:'linear-gradient(135deg,#0984e3,#74b9ff)', desc:'数据分析 Agent — 自然语言查询、可视化报表、异常检测', tag:'分析', features:['自然语言数据查询','自动可视化报表','实时异常检测 & 告警','多数据源集成'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['基础图表','每日 5 次查询','CSV 导入']},{plan:'Pro',price:'$25',period:'/月',credits:250,features:['无限查询','高级图表','实时监控','数据源集成'],recommended:true},{plan:'Enterprise',price:'$79',period:'/月',credits:790,features:['数据湖对接','自定义模型','SLA 保障','权限管理']}] },
+  { id:'guardbot', name:'GuardBot', emoji:'🛡️', color:'linear-gradient(135deg,#e84393,#fd79a8)', desc:'安全合规 Agent — 漏洞扫描、代码审计、合规检查', tag:'安全', features:['自动漏洞扫描','依赖安全检查','合规性审计报告','安全告警实时推送'], pricing:[{plan:'Free',price:'$0',period:'/月',credits:0,features:['基础扫描','每周 1 次','社区规则']},{plan:'Pro',price:'$35',period:'/月',credits:350,features:['实时扫描','合规检查','告警推送','自定义规则'],recommended:true},{plan:'Enterprise',price:'$99',period:'/月',credits:990,features:['渗透测试','SOC2 审计','7×24 专属顾问','私有部署']}] },
 ];
-let workspaceAgents = ['coco', 'code'];
-let groupAgents = { 'product-dev': ['coco', 'code'] };
+let workspaceAgents = ['coco', 'zylos'];
+let groupAgents = { 'product-dev': ['coco', 'zylos'] };
+
+// Credits system state
+let userCredits = 2580;
+let useCredits = true;
+
+function formatCredits(n) { return n.toLocaleString(); }
 
 function openAgentMarket() {
   const overlay = document.createElement('div');
@@ -4826,106 +4861,211 @@ function openAgentMarket() {
     let statusHTML = '';
     if (inGrp) statusHTML = '<span class="amc-status" style="background:rgba(0,206,201,0.12);color:var(--success);">已在群中</span>';
     else if (inWS) statusHTML = '<span class="amc-status" style="background:var(--accent-bg);color:var(--accent);cursor:pointer;" onclick="event.stopPropagation();addAgentToGroup(\''+a.id+'\',this)">加入群聊</span>';
-    else statusHTML = '<span class="amc-status" style="background:rgba(0,0,0,0.04);color:var(--text-body);cursor:pointer;" onclick="event.stopPropagation();openAgentDetail(\''+a.id+'\')">查看</span>';
-    return `<div class="agent-market-card${inGrp?' added':''}" data-agent="${a.id}" onclick="openAgentDetail('${a.id}')" style="cursor:pointer;"><div class="amc-avatar" style="background:${a.color}">${a.emoji}</div><div><div class="amc-name">${a.name}</div><div class="amc-desc">${a.desc}</div></div>${statusHTML}</div>`;
+    else statusHTML = '<span class="amc-status" style="background:rgba(0,0,0,0.04);color:var(--text-body);cursor:pointer;" onclick="event.stopPropagation();openAgentDetail(\''+a.id+'\')">订阅</span>';
+    const tagHTML = a.tag ? '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--accent-bg);color:var(--accent);font-weight:600;margin-left:6px;">'+a.tag+'</span>' : '';
+    return `<div class="agent-market-card${inGrp?' added':''}" data-agent="${a.id}" onclick="openAgentDetail('${a.id}')" style="cursor:pointer;">
+      <div class="amc-avatar" style="background:${a.color}">${a.emoji}</div>
+      <div style="flex:1;min-width:0;"><div class="amc-name">${a.name}${tagHTML}</div><div class="amc-desc">${a.desc}</div></div>
+      ${statusHTML}
+    </div>`;
   }).join('');
   overlay.innerHTML = `<div class="chat-modal" style="position:relative;" id="agentMarketModal">
     <button class="chat-modal-close" onclick="this.closest('.chat-modal-overlay').remove()">&times;</button>
-    <div class="chat-modal-title">Agent 市场</div>
-    <div class="chat-modal-desc">浏览和添加 AI Agent 到工作区或当前群聊</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="chat-modal-title">Agent 市场</div>
+      <div style="display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(211,87,254,0.08),rgba(150,187,255,0.08));padding:6px 12px;border-radius:10px;cursor:pointer;" onclick="showCreditsPanel()">
+        <span style="font-size:14px;">💎</span>
+        <span style="font-size:13px;font-weight:700;color:var(--accent);">${formatCredits(userCredits)}</span>
+        <span style="font-size:11px;color:var(--text-muted);">积分</span>
+      </div>
+    </div>
+    <div class="chat-modal-desc">订阅 AI Agent 产品，用积分抵扣或直接支付</div>
     <div style="margin-bottom:14px;"><input type="text" placeholder="搜索 Agent..." style="width:100%;padding:8px 14px;border:1px solid var(--border-glass);border-radius:8px;font-size:13px;" oninput="filterAgentMarket(this.value)"></div>
     <div class="agent-market-grid" id="agentMarketGrid">${cardsHTML}</div>
   </div>`;
   document.body.appendChild(overlay);
 }
+
+function showCreditsPanel() {
+  const modal = document.getElementById('agentMarketModal');
+  if (!modal) return;
+  modal.innerHTML = '<button class="chat-modal-close" onclick="this.closest(\'.chat-modal-overlay\').remove()">&times;</button>'
+    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;cursor:pointer;color:var(--accent);font-size:13px;" onclick="backToMarket()">← 返回市场</div>'
+    +'<div style="text-align:center;padding:10px 0 20px;">'
+    +'<div style="font-size:40px;margin-bottom:8px;">💎</div>'
+    +'<div style="font-size:32px;font-weight:800;color:var(--text-heading);">'+formatCredits(userCredits)+'</div>'
+    +'<div style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">可用积分</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:20px;">'
+    +'<div style="flex:1;background:var(--bg-glass);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">本月获得</div><div style="font-size:16px;font-weight:700;color:var(--success);">+580</div></div>'
+    +'<div style="flex:1;background:var(--bg-glass);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">本月消耗</div><div style="font-size:16px;font-weight:700;color:var(--text-main);">-320</div></div>'
+    +'<div style="flex:1;background:var(--bg-glass);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">订阅返积分</div><div style="font-size:16px;font-weight:700;color:var(--accent);">+290</div></div>'
+    +'</div>'
+    +'<div style="font-size:12px;font-weight:600;color:var(--text-main);margin-bottom:10px;text-align:left;">充值积分</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:16px;">'
+    +[{amt:500,price:'$5'},{amt:2000,price:'$18',save:'10%'},{amt:5000,price:'$40',save:'20%'}].map(p =>
+      '<div style="flex:1;border:1.5px solid var(--border-glass);border-radius:12px;padding:12px;cursor:pointer;transition:all .15s;text-align:center;" onclick="this.style.borderColor=\'var(--accent)\';this.style.background=\'rgba(211,87,254,0.04)\'">'
+      +(p.save?'<div style="font-size:9px;color:var(--accent);font-weight:700;margin-bottom:2px;">省 '+p.save+'</div>':'<div style="height:13px;"></div>')
+      +'<div style="font-size:18px;font-weight:700;color:var(--text-heading);">'+p.amt.toLocaleString()+'</div>'
+      +'<div style="font-size:11px;color:var(--text-muted);">积分</div>'
+      +'<div style="font-size:13px;font-weight:600;color:var(--accent);margin-top:6px;">'+p.price+'</div></div>'
+    ).join('')
+    +'</div>'
+    +'<button class="wt-btn wt-btn-primary" style="width:100%;padding:12px;" onclick="showToast(\'充值功能即将上线\')">充值</button>'
+    +'<div style="font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.5;">积分可用于抵扣 Agent 订阅费用（10 积分 = $0.1）<br>Pro 及以上方案每月返还等额积分</div>'
+    +'</div>';
+}
+
 function openAgentDetail(id) {
   const a = allAgents.find(x => x.id === id);
   if (!a) return;
   const inWS = workspaceAgents.includes(a.id);
   const inGrp = (groupAgents[currentChannel]||[]).includes(a.id);
-  const featuresHTML = (a.features||[]).map(f => '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text-body);"><span style="color:var(--accent);">✓</span> '+f+'</div>').join('');
+  const featuresHTML = (a.features||[]).map(f => '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--text-body);"><span style="color:var(--accent);">✓</span> '+f+'</div>').join('');
+  const tagHTML = a.tag ? '<span style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--accent-bg);color:var(--accent);font-weight:600;">'+a.tag+'</span>' : '';
   const pricingHTML = (a.pricing||[]).map(p => {
     const isRec = p.recommended;
+    const isEnt = p.isEnterprise;
+    let btnText = '选择方案';
+    let btnAction = "selectPlan('"+a.id+"','"+p.plan+"',"+(!isEnt?(p.price.replace('$','')):0)+","+(p.credits||0)+")";
+    if (inGrp) { btnText = '已在群中'; btnAction = ''; }
+    else if (inWS) { btnText = '已订阅'; btnAction = ''; }
+    if (isEnt) btnText = inWS ? '已订阅' : '联系销售';
     return '<div style="flex:1;padding:14px;border:1.5px solid '+(isRec?'var(--accent)':'var(--border-glass)')+';border-radius:12px;background:'+(isRec?'rgba(211,87,254,0.04)':'transparent')+';position:relative;">'
       +(isRec?'<div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:10px;padding:2px 10px;border-radius:10px;font-weight:600;">推荐</div>':'')
       +'<div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;">'+p.plan+'</div>'
-      +'<div style="font-size:20px;font-weight:700;color:var(--text-main);margin-bottom:10px;">'+p.price+'</div>'
+      +'<div style="font-size:20px;font-weight:700;color:var(--text-main);">'+p.price+'<span style="font-size:12px;font-weight:400;color:var(--text-muted);">'+p.period+'</span></div>'
+      +(p.credits?'<div style="font-size:10px;color:var(--accent);margin-top:2px;margin-bottom:8px;">每月返 '+p.credits+' 积分</div>':'<div style="height:20px;"></div>')
       +p.features.map(f=>'<div style="font-size:11px;color:var(--text-body);padding:2px 0;">✓ '+f+'</div>').join('')
-      +'<button class="wt-btn '+(isRec?'wt-btn-primary':'wt-btn-secondary')+'" style="width:100%;margin-top:10px;padding:8px;font-size:12px;" onclick="purchaseAgent(\''+a.id+'\',\''+p.plan+'\')">'+(inWS||inGrp?(inGrp?'已在群中':'加入群聊'):'选择方案')+'</button>'
+      +'<button class="wt-btn '+(isRec?'wt-btn-primary':'wt-btn-secondary')+'" style="width:100%;margin-top:10px;padding:8px;font-size:12px;"'
+      +(btnAction?' onclick="'+btnAction+'"':'')
+      +(inWS||inGrp?' disabled style="width:100%;margin-top:10px;padding:8px;font-size:12px;opacity:0.6;cursor:default;"':'')
+      +'>'+btnText+'</button>'
       +'</div>';
   }).join('');
-  let actionBtn = '';
-  if (inGrp) actionBtn = '<button class="wt-btn wt-btn-secondary" style="width:100%;padding:10px;margin-top:16px;cursor:default;" disabled>已在群中</button>';
-  else if (inWS) actionBtn = '<button class="wt-btn wt-btn-primary" style="width:100%;padding:10px;margin-top:16px;" onclick="purchaseAgent(\''+a.id+'\',\'current\')">加入群聊</button>';
-  // Replace the modal content with detail view
   const modal = document.getElementById('agentMarketModal');
   if (!modal) { openAgentMarket(); return; }
   modal.innerHTML = '<button class="chat-modal-close" onclick="this.closest(\'.chat-modal-overlay\').remove()">&times;</button>'
     +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;cursor:pointer;color:var(--accent);font-size:13px;" onclick="backToMarket()">← 返回市场</div>'
     +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">'
     +'<div style="width:56px;height:56px;border-radius:16px;background:'+a.color+';display:flex;align-items:center;justify-content:center;font-size:28px;">'+a.emoji+'</div>'
-    +'<div><div style="font-size:18px;font-weight:700;color:var(--text-main);">'+a.name+'</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px;">'+a.desc+'</div></div>'
+    +'<div><div style="font-size:18px;font-weight:700;color:var(--text-main);">'+a.name+' '+tagHTML+'</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px;">'+a.desc+'</div></div>'
     +'</div>'
-    +'<div style="margin-bottom:18px;"><div style="font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:8px;">核心能力</div>'+featuresHTML+'</div>'
-    +'<div style="margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:12px;">定价方案</div><div style="display:flex;gap:10px;">'+pricingHTML+'</div></div>'
-    +actionBtn;
+    +'<div style="margin-bottom:16px;"><div style="font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:8px;">核心能力</div>'+featuresHTML+'</div>'
+    +'<div><div style="font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:12px;">订阅方案</div><div style="display:flex;gap:10px;">'+pricingHTML+'</div></div>';
 }
+
+function selectPlan(agentId, planName, priceNum, credits) {
+  const a = allAgents.find(x => x.id === agentId);
+  if (!a) return;
+  const p = a.pricing.find(x => x.plan === planName);
+  if (!p) return;
+  if (p.isEnterprise) { showToast('企业版请联系 sales@coco.xyz'); return; }
+  if (priceNum === 0) {
+    // Free plan — directly add
+    if (!workspaceAgents.includes(agentId)) workspaceAgents.push(agentId);
+    if (!groupAgents[currentChannel]) groupAgents[currentChannel] = [];
+    if (!groupAgents[currentChannel].includes(agentId)) groupAgents[currentChannel].push(agentId);
+    addAgentToWtList(a);
+    document.querySelector('.chat-modal-overlay')?.remove();
+    showToast(a.name + ' (Free) 已添加');
+    return;
+  }
+  // Show checkout with credits
+  const priceCents = Math.round(priceNum * 100);
+  const maxCreditDeduct = Math.min(userCredits, priceCents);
+  const creditDeductDollars = (maxCreditDeduct / 100).toFixed(2);
+  const remainDollars = ((priceCents - maxCreditDeduct) / 100).toFixed(2);
+  const modal = document.getElementById('agentMarketModal');
+  if (!modal) return;
+  modal.innerHTML = '<button class="chat-modal-close" onclick="this.closest(\'.chat-modal-overlay\').remove()">&times;</button>'
+    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;cursor:pointer;color:var(--accent);font-size:13px;" onclick="openAgentDetail(\''+agentId+'\')">← 返回</div>'
+    +'<div style="text-align:center;padding:10px 0;">'
+    +'<div style="width:56px;height:56px;border-radius:16px;background:'+a.color+';display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:12px;">'+a.emoji+'</div>'
+    +'<div style="font-size:18px;font-weight:700;color:var(--text-heading);margin-bottom:2px;">订阅 '+a.name+'</div>'
+    +'<div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">'+planName+' · '+p.price+p.period+'</div>'
+    +'</div>'
+    // Order summary
+    +'<div style="background:var(--bg-glass);border-radius:12px;padding:16px;margin-bottom:16px;">'
+    +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;"><span style="color:var(--text-muted);">订阅费用</span><span style="color:var(--text-main);font-weight:600;">$'+priceNum+'/月</span></div>'
+    +(credits?'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;"><span style="color:var(--text-muted);">每月返积分</span><span style="color:var(--accent);font-weight:600;">+'+credits+' 💎</span></div>':'')
+    +'<div style="border-top:1px solid var(--border-glass);margin:10px 0;"></div>'
+    // Credits toggle
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
+    +'<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:14px;">💎</span><span style="font-size:13px;font-weight:500;color:var(--text-main);">积分抵扣</span><span style="font-size:11px;color:var(--text-muted);">(余额 '+formatCredits(userCredits)+')</span></div>'
+    +'<div id="creditToggle" style="width:40px;height:22px;border-radius:11px;background:var(--accent);cursor:pointer;position:relative;transition:background .2s;" onclick="toggleCredits('+priceCents+','+maxCreditDeduct+')">'
+    +'<div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:20px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,0.15);"></div></div>'
+    +'</div>'
+    +'<div id="creditDeductRow" style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:var(--accent);">积分抵扣 (-'+maxCreditDeduct+' 💎)</span><span style="color:var(--accent);font-weight:600;">-$'+creditDeductDollars+'</span></div>'
+    +'<div style="border-top:1px solid var(--border-glass);margin:10px 0;"></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;"><span style="color:var(--text-heading);">应付金额</span><span style="color:var(--text-heading);" id="finalPrice">$'+remainDollars+'</span></div>'
+    +'</div>'
+    // Payment method
+    +'<div style="margin-bottom:16px;">'
+    +'<div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;">支付方式</div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<div style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--accent);border-radius:10px;cursor:pointer;background:rgba(211,87,254,0.04);"><div style="width:28px;height:18px;background:linear-gradient(135deg,#635bff,#a259ff);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;">Stripe</div><span style="font-size:12px;font-weight:500;">信用卡 •••• 4242</span></div>'
+    +'<div onclick="this.style.borderColor=\'var(--accent)\';this.previousElementSibling.style.borderColor=\'var(--border-glass)\';this.previousElementSibling.style.background=\'transparent\';this.style.background=\'rgba(211,87,254,0.04)\'" style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border-glass);border-radius:10px;cursor:pointer;"><div style="width:28px;height:18px;background:linear-gradient(135deg,#00457C,#0070BA);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;">PP</div><span style="font-size:12px;font-weight:500;">PayPal</span></div>'
+    +'</div></div>'
+    +'<button class="wt-btn wt-btn-primary" style="width:100%;padding:12px;font-size:14px;" onclick="confirmSubscription(\''+agentId+'\',\''+planName+'\','+maxCreditDeduct+')">确认订阅</button>'
+    +'<div style="font-size:11px;color:var(--text-muted);margin-top:10px;text-align:center;">订阅后可随时在设置中取消 · 按月计费 · 随时退订</div>';
+}
+
+function toggleCredits(priceCents, maxDeduct) {
+  useCredits = !useCredits;
+  const toggle = document.getElementById('creditToggle');
+  const deductRow = document.getElementById('creditDeductRow');
+  const finalPrice = document.getElementById('finalPrice');
+  if (!toggle) return;
+  const circle = toggle.firstElementChild;
+  if (useCredits) {
+    toggle.style.background = 'var(--accent)';
+    circle.style.left = '20px';
+    deductRow.style.display = 'flex';
+    finalPrice.textContent = '$' + ((priceCents - maxDeduct) / 100).toFixed(2);
+  } else {
+    toggle.style.background = 'var(--border-glass)';
+    circle.style.left = '2px';
+    deductRow.style.display = 'none';
+    finalPrice.textContent = '$' + (priceCents / 100).toFixed(2);
+  }
+}
+
+function confirmSubscription(agentId, planName, creditDeduct) {
+  const a = allAgents.find(x => x.id === agentId);
+  if (!a) return;
+  if (useCredits && creditDeduct > 0) userCredits -= creditDeduct;
+  const p = a.pricing.find(x => x.plan === planName);
+  if (p && p.credits) userCredits += p.credits;
+  if (!workspaceAgents.includes(agentId)) workspaceAgents.push(agentId);
+  if (!groupAgents[currentChannel]) groupAgents[currentChannel] = [];
+  if (!groupAgents[currentChannel].includes(agentId)) groupAgents[currentChannel].push(agentId);
+  addAgentToWtList(a);
+  const modal = document.getElementById('agentMarketModal');
+  if (!modal) return;
+  modal.innerHTML = '<button class="chat-modal-close" onclick="this.closest(\'.chat-modal-overlay\').remove()">&times;</button>'
+    +'<div style="text-align:center;padding:30px 0;">'
+    +'<div style="font-size:52px;margin-bottom:14px;animation:successBounce .5s ease;">🎉</div>'
+    +'<div style="font-size:20px;font-weight:700;color:var(--text-heading);margin-bottom:4px;">订阅成功！</div>'
+    +'<div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">'+a.name+' · '+planName+' 方案已激活</div>'
+    +'<div style="background:var(--bg-glass);border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;">'
+    +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text-muted);">Agent</span><span style="font-weight:600;">'+a.name+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text-muted);">方案</span><span style="font-weight:600;">'+planName+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text-muted);">已加入</span><span style="font-weight:600;">工作区 + 当前群聊</span></div>'
+    +(p&&p.credits?'<div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-muted);">返还积分</span><span style="color:var(--accent);font-weight:600;">+'+p.credits+' 💎</span></div>':'')
+    +'</div>'
+    +'<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--text-muted);margin-bottom:20px;">💎 当前积分余额：<span style="font-weight:700;color:var(--accent);">'+formatCredits(userCredits)+'</span></div>'
+    +'<button class="wt-btn wt-btn-primary" style="padding:10px 32px;font-size:13px;" onclick="this.closest(\'.chat-modal-overlay\').remove()">开始使用</button>'
+    +'</div>';
+  showToast(a.name + ' 订阅成功');
+}
+
 function backToMarket() {
   const overlay = document.querySelector('.chat-modal-overlay');
   if (overlay) overlay.remove();
   openAgentMarket();
 }
-function purchaseAgent(id, plan) {
-  const a = allAgents.find(x => x.id === id);
-  if (!a) return;
-  const inWS = workspaceAgents.includes(a.id);
-  if (plan === 'current' && inWS) {
-    // Already in workspace, just add to group
-    if (!groupAgents[currentChannel]) groupAgents[currentChannel] = [];
-    groupAgents[currentChannel].push(id);
-    addAgentToWtList(a);
-    document.querySelector('.chat-modal-overlay')?.remove();
-    showToast(a.name + ' 已加入群聊');
-    return;
-  }
-  // Show purchase confirmation
-  const modal = document.getElementById('agentMarketModal');
-  if (!modal) return;
-  modal.innerHTML = '<button class="chat-modal-close" onclick="this.closest(\'.chat-modal-overlay\').remove()">&times;</button>'
-    +'<div style="text-align:center;padding:20px 0;">'
-    +'<div style="width:64px;height:64px;border-radius:18px;background:'+a.color+';display:inline-flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:14px;">'+a.emoji+'</div>'
-    +'<div style="font-size:18px;font-weight:700;color:var(--text-main);margin-bottom:4px;">确认添加 '+a.name+'</div>'
-    +'<div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">'+plan+' 方案</div>'
-    +'<div style="background:var(--bg-glass);border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;">'
-    +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text-muted);">Agent</span><span style="color:var(--text-main);font-weight:600;">'+a.name+'</span></div>'
-    +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--text-muted);">方案</span><span style="color:var(--text-main);font-weight:600;">'+plan+'</span></div>'
-    +'<div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-muted);">添加到</span><span style="color:var(--text-main);font-weight:600;">当前群聊 + 工作区</span></div>'
-    +'</div>'
-    +'<button class="wt-btn wt-btn-primary" style="width:100%;padding:12px;font-size:14px;" onclick="confirmPurchase(\''+id+'\')">确认添加</button>'
-    +'<div style="font-size:11px;color:var(--text-muted);margin-top:10px;">添加后可随时在设置中管理或移除</div>'
-    +'</div>';
-}
-function confirmPurchase(id) {
-  const a = allAgents.find(x => x.id === id);
-  if (!a) return;
-  if (!workspaceAgents.includes(id)) workspaceAgents.push(id);
-  if (!groupAgents[currentChannel]) groupAgents[currentChannel] = [];
-  if (!groupAgents[currentChannel].includes(id)) groupAgents[currentChannel].push(id);
-  addAgentToWtList(a);
-  // Show success state
-  const modal = document.getElementById('agentMarketModal');
-  if (!modal) return;
-  modal.innerHTML = '<button class="chat-modal-close" onclick="this.closest(\'.chat-modal-overlay\').remove()">&times;</button>'
-    +'<div style="text-align:center;padding:40px 0;">'
-    +'<div style="font-size:48px;margin-bottom:14px;">🎉</div>'
-    +'<div style="font-size:18px;font-weight:700;color:var(--text-main);margin-bottom:6px;">添加成功！</div>'
-    +'<div style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">'+a.name+' 已加入工作区和当前群聊</div>'
-    +'<button class="wt-btn wt-btn-primary" style="padding:10px 32px;font-size:13px;" onclick="this.closest(\'.chat-modal-overlay\').remove()">完成</button>'
-    +'</div>';
-  showToast(a.name + ' 已添加并加入群聊');
-}
+function purchaseAgent(id, plan) { selectPlan(id, plan, 0, 0); }
 function addAgentToWtList(a) {
-  // Add agent to walkthrough Step 3 agent list if visible
   const agentList = document.getElementById('wtAgentList');
   if (!agentList) return;
   const marketBtn = agentList.querySelector('[style*="dashed"]');
@@ -4935,7 +5075,7 @@ function addAgentToWtList(a) {
   newItem.onclick = function() { wtToggleMember(this); };
   newItem.innerHTML = '<div class="avatar" style="background:'+a.color+';font-size:16px;">'+a.emoji+'</div>'
     +'<span class="member-name">'+a.name+'</span>'
-    +'<span class="member-role" style="color:var(--accent);">Claude Sonnet</span>'
+    +'<span class="member-role" style="color:var(--accent);">已订阅</span>'
     +'<span class="wt-member-check">✓</span>';
   if (marketBtn) agentList.insertBefore(newItem, marketBtn);
   else agentList.appendChild(newItem);
