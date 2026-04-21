@@ -1215,6 +1215,7 @@ body {
 .chat-input-enhanced {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .chat-category-chips {
   display: flex;
@@ -4616,16 +4617,27 @@ let dragH = false;
 let dragHStartY = 0;
 let dragHStartH = 0;
 
+function getAvailableH() {
+  const container = document.querySelector('.chat-main');
+  const header = document.querySelector('.chat-header');
+  const divider = document.getElementById('dividerBottom');
+  const typing = document.getElementById('typingIndicator');
+  const typingH = typing && typing.style.display !== 'none' ? typing.offsetHeight : 0;
+  return container.offsetHeight - header.offsetHeight - divider.offsetHeight - typingH;
+}
+
 function startDragH(e) {
   e.preventDefault();
   dragH = true;
   dragHStartY = e.clientY;
-  const inputArea = document.querySelector('.chat-input-enhanced');
   const msgArea = document.querySelector('.chat-messages');
-  dragHStartH = inputArea.offsetHeight;
-  // Lock messages area current height so flex doesn't fight
+  dragHStartH = msgArea.offsetHeight;
+  // Lock both areas to pixel heights
+  const inputArea = document.querySelector('.chat-input-enhanced');
   msgArea.style.flex = 'none';
   msgArea.style.height = msgArea.offsetHeight + 'px';
+  inputArea.style.flex = 'none';
+  inputArea.style.height = inputArea.offsetHeight + 'px';
   document.getElementById('dividerBottom').classList.add('dragging');
   document.body.style.cursor = 'row-resize';
   document.body.style.userSelect = 'none';
@@ -4634,18 +4646,14 @@ function startDragH(e) {
 }
 function onDragH(e) {
   if (!dragH) return;
-  const dy = dragHStartY - e.clientY;
-  const inputArea = document.querySelector('.chat-input-enhanced');
+  const available = getAvailableH();
+  const dy = e.clientY - dragHStartY; // positive = mouse moves down = messages grow
   const msgArea = document.querySelector('.chat-messages');
-  const container = document.querySelector('.chat-main');
-  const header = document.querySelector('.chat-header');
-  const divider = document.getElementById('dividerBottom');
-  const available = container.offsetHeight - header.offsetHeight - divider.offsetHeight;
-  const newInputH = Math.max(80, Math.min(available - 100, dragHStartH + dy));
-  const newMsgH = available - newInputH;
-  inputArea.style.height = newInputH + 'px';
-  inputArea.style.flexShrink = '0';
+  const inputArea = document.querySelector('.chat-input-enhanced');
+  const newMsgH = Math.max(100, Math.min(available - 80, dragHStartH + dy));
+  const newInputH = available - newMsgH;
   msgArea.style.height = newMsgH + 'px';
+  inputArea.style.height = newInputH + 'px';
 }
 function stopDragH() {
   dragH = false;
