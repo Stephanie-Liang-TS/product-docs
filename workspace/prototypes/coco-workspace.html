@@ -294,6 +294,24 @@ body {
   background: var(--accent);
   border-radius: 0 4px 4px 0;
 }
+.nav-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding: 8px 14px 2px;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.nav-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 6px 14px;
+}
+.sidebar.collapsed .nav-group-label { display: none; }
+.sidebar.collapsed .nav-divider { margin: 4px 8px; }
 .nav-icon {
   width: 22px;
   height: 22px;
@@ -2975,6 +2993,7 @@ body {
       <span class="sidebar-brand">COCO</span>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-group-label">工作区</div>
       <div class="nav-item active" data-module="chat" onclick="switchModule('chat')">
         <span class="nav-icon">💬</span>
         <span class="nav-label">对话</span>
@@ -2987,10 +3006,14 @@ body {
         <span class="nav-icon">📁</span>
         <span class="nav-label">项目</span>
       </div>
+      <div class="nav-divider"></div>
+      <div class="nav-group-label">团队</div>
       <div class="nav-item" data-module="team" onclick="switchModule('team')">
         <span class="nav-icon">👥</span>
         <span class="nav-label">通讯录</span>
       </div>
+      <div class="nav-divider"></div>
+      <div class="nav-group-label">AI & 工具</div>
       <div class="nav-item" data-module="agents" onclick="switchModule('agents')">
         <span class="nav-icon">🤖</span>
         <span class="nav-label">Agent管理</span>
@@ -3003,6 +3026,8 @@ body {
         <span class="nav-icon">🧰</span>
         <span class="nav-label">工具箱</span>
       </div>
+      <div class="nav-divider"></div>
+      <div class="nav-group-label">系统</div>
       <div class="nav-item" data-module="admin" onclick="switchModule('admin')">
         <span class="nav-icon">📊</span>
         <span class="nav-label">管理后台</span>
@@ -3370,6 +3395,17 @@ body {
           <div class="chart-bars" id="chartBars">
             <!-- populated by JS -->
           </div>
+        </div>
+        <div class="glass-card" style="margin-bottom:28px;">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;">模型使用分布</h3>
+          <table class="admin-table" id="modelUsageTable">
+            <thead>
+              <tr><th style="text-align:left;">模型</th><th>调用次数</th><th>Token 消耗</th><th>成本</th></tr>
+            </thead>
+            <tbody id="modelUsageBody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
         </div>
         <div class="glass-card" style="margin-bottom:28px;">
           <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;">席位管理</h3>
@@ -4121,48 +4157,78 @@ const toolsCategoryMap = {
   }
 };
 
-// Skills data
-const installedSkills = [
-  { name: '腾讯ima', desc: 'ima笔记与知识库管理（读取、写入、检索、上传文件）', icon: '🐧', bgColor: 'rgba(0,0,0,0.06)', enabled: false, badge: null },
-  { name: 'agent-browser', desc: '基于 Vercel agent-browser CLI 的浏览器自动化插件，首次使用时自动安装', icon: 'A', bgColor: 'rgba(162,89,255,0.08)', enabled: true, badge: '套件' },
-  { name: 'playwright-cli', desc: 'Automates browser interactions for web testing, form filling, screenshots, and data extraction', icon: 'P', bgColor: 'rgba(46,204,113,0.08)', enabled: true, badge: '套件' },
-  { name: 'find-skills', desc: '帮助发现和安装 AI Agent 技能，支持从 Vercel Skills 和 ClawHub 两个技能仓库搜索和安装', icon: 'F', bgColor: 'rgba(52,152,219,0.08)', enabled: true, badge: null },
-  { name: 'code-review', desc: '代码审查助手，自动分析 PR 并提供改进建议', icon: '🔍', bgColor: 'rgba(241,196,15,0.08)', enabled: true, badge: null },
-  { name: 'doc-writer', desc: '自动生成 API 文档、README 和技术文档', icon: '📄', bgColor: 'rgba(231,76,60,0.08)', enabled: true, badge: null }
-];
+// Skills data — mode-dependent
+const installedSkillsByMode = {
+  code: [
+    { name: 'agent-browser', desc: '基于 Vercel agent-browser CLI 的浏览器自动化插件，首次使用时自动安装', icon: 'A', bgColor: 'rgba(162,89,255,0.08)', enabled: true, badge: '套件' },
+    { name: 'playwright-cli', desc: 'Automates browser interactions for web testing, form filling, screenshots, and data extraction', icon: 'P', bgColor: 'rgba(46,204,113,0.08)', enabled: true, badge: '套件' },
+    { name: 'find-skills', desc: '帮助发现和安装 AI Agent 技能，支持从 Vercel Skills 和 ClawHub 两个技能仓库搜索和安装', icon: 'F', bgColor: 'rgba(52,152,219,0.08)', enabled: true, badge: null },
+    { name: 'code-review', desc: '代码审查助手，自动分析 PR 并提供改进建议', icon: '🔍', bgColor: 'rgba(241,196,15,0.08)', enabled: true, badge: null },
+    { name: 'doc-writer', desc: '自动生成 API 文档、README 和技术文档', icon: '📄', bgColor: 'rgba(231,76,60,0.08)', enabled: true, badge: null },
+    { name: 'git-assistant', desc: 'Git 工作流自动化，智能 commit message、分支管理、冲突解决', icon: '🔀', bgColor: 'rgba(36,41,46,0.08)', enabled: true, badge: null }
+  ],
+  office: [
+    { name: '腾讯ima', desc: 'ima笔记与知识库管理（读取、写入、检索、上传文件）', icon: '🐧', bgColor: 'rgba(0,0,0,0.06)', enabled: false, badge: null },
+    { name: '日程助手', desc: '智能日程管理、会议安排、时间冲突检测和提醒', icon: '📅', bgColor: 'rgba(66,133,244,0.08)', enabled: true, badge: null },
+    { name: '邮件摘要', desc: '自动汇总邮件要点、提取待办事项、智能分类', icon: '📧', bgColor: 'rgba(234,67,53,0.08)', enabled: true, badge: null },
+    { name: '会议纪要', desc: '会议录音转写、自动生成会议纪要和行动项', icon: '🎙️', bgColor: 'rgba(52,168,83,0.08)', enabled: true, badge: '套件' },
+    { name: '翻译助手', desc: '多语言互译，支持专业术语和语境理解', icon: '🌐', bgColor: 'rgba(52,73,94,0.08)', enabled: true, badge: null },
+    { name: '文档排版', desc: '文档格式化、模板应用、PDF 导出', icon: '📑', bgColor: 'rgba(155,89,182,0.08)', enabled: true, badge: null }
+  ]
+};
 
 let showAllSkills = false;
 let currentSkillsTab = 'recommend';
 let currentSkillCategory = 'all';
 let skillSearchQuery = '';
 
-const marketplaceSkills = {
-  recommend: [
-    { name: '腾讯文档', desc: '腾讯文档操作（创建、查询、编辑多种在线文档）', icon: '📄', bgColor: 'rgba(0,168,84,0.08)', category: 'collab' },
-    { name: '腾讯会议', desc: '腾讯会议管理（预约、录制、转写、纪要）', icon: '🎥', bgColor: 'rgba(0,168,84,0.08)', category: 'collab' },
-    { name: 'NeoData金融搜索', desc: '全球多市场金融搜索服务，自然语言查询股票、基金、宏观、外汇等数据', icon: '📈', bgColor: 'rgba(52,152,219,0.08)', category: 'finance' },
-    { name: 'cnb.cool', desc: 'CNB 平台全功能操作（仓库、Issue、PR、流水线、制品库）', icon: '🔗', bgColor: 'rgba(108,92,231,0.08)', category: 'dev' },
-    { name: '品牌设计风格专家', desc: '54 个知名网站设计系统模板，一键复用品牌级 UI 风格', icon: '🎨', bgColor: 'rgba(231,76,60,0.08)', category: 'content' },
-    { name: 'TAPD', desc: 'TAPD 项目管理操作（需求、缺陷、任务、迭代、Wiki、评论）', icon: '📋', bgColor: 'rgba(52,152,219,0.08)', category: 'dev' },
-    { name: '数据分析大师', desc: '智能数据分析、图表生成和报告撰写', icon: '📊', bgColor: 'rgba(155,89,182,0.08)', category: 'data' },
-    { name: 'SEO 优化器', desc: '网站 SEO 分析、关键词研究、内容优化建议', icon: '🔎', bgColor: 'rgba(46,204,113,0.08)', category: 'business' },
-    { name: '学习路径规划', desc: '个性化学习路径生成、进度追踪、资源推荐', icon: '📚', bgColor: 'rgba(241,196,15,0.08)', category: 'learning' },
-    { name: '翻译助手', desc: '多语言互译，支持专业术语和语境理解', icon: '🌐', bgColor: 'rgba(52,73,94,0.08)', category: 'productivity' }
-  ],
-  skillhub: [
-    { name: 'API Tester', desc: 'REST / GraphQL API 测试、Mock 数据生成', icon: '🧪', bgColor: 'rgba(231,76,60,0.08)', category: 'dev' },
-    { name: 'DB Explorer', desc: '数据库查询可视化、Schema 分析', icon: '🗄️', bgColor: 'rgba(52,152,219,0.08)', category: 'dev' },
-    { name: 'CI/CD Pipeline', desc: '构建部署流水线配置与监控', icon: '🚀', bgColor: 'rgba(46,204,113,0.08)', category: 'dev' },
-    { name: '合同审查', desc: '合同条款分析、风险识别和修改建议', icon: '📑', bgColor: 'rgba(241,196,15,0.08)', category: 'business' },
-    { name: '投资组合分析', desc: '投资组合风险评估、收益分析、调仓建议', icon: '💰', bgColor: 'rgba(241,196,15,0.08)', category: 'finance' },
-    { name: '内容日历', desc: '社交媒体内容规划、排期和分析', icon: '📅', bgColor: 'rgba(155,89,182,0.08)', category: 'content' }
-  ],
-  suites: [
-    { name: 'Zylos 全栈开发套件', desc: '代码生成 + 测试 + 部署 + 监控一站式开发工具链', icon: '⚡', bgColor: 'rgba(108,92,231,0.08)', category: 'dev' },
-    { name: 'OpenClaw 数据套件', desc: '数据采集 + 清洗 + 分析 + 可视化完整数据工具链', icon: '🦀', bgColor: 'rgba(0,184,148,0.08)', category: 'data' },
-    { name: '企业协作套件', desc: '文档 + 任务 + 会议 + 审批，企业协作全覆盖', icon: '🏢', bgColor: 'rgba(52,152,219,0.08)', category: 'collab' },
-    { name: '营销自动化套件', desc: '内容创作 + 分发 + 数据分析 + A/B 测试', icon: '📣', bgColor: 'rgba(231,76,60,0.08)', category: 'business' }
-  ]
+const marketplaceSkillsByMode = {
+  code: {
+    recommend: [
+      { name: 'cnb.cool', desc: 'CNB 平台全功能操作（仓库、Issue、PR、流水线、制品库）', icon: '🔗', bgColor: 'rgba(108,92,231,0.08)', category: 'dev' },
+      { name: 'TAPD', desc: 'TAPD 项目管理操作（需求、缺陷、任务、迭代、Wiki、评论）', icon: '📋', bgColor: 'rgba(52,152,219,0.08)', category: 'dev' },
+      { name: '品牌设计风格专家', desc: '54 个知名网站设计系统模板，一键复用品牌级 UI 风格', icon: '🎨', bgColor: 'rgba(231,76,60,0.08)', category: 'content' },
+      { name: '数据分析大师', desc: '智能数据分析、图表生成和报告撰写', icon: '📊', bgColor: 'rgba(155,89,182,0.08)', category: 'data' },
+      { name: 'SEO 优化器', desc: '网站 SEO 分析、关键词研究、内容优化建议', icon: '🔎', bgColor: 'rgba(46,204,113,0.08)', category: 'business' },
+      { name: 'NeoData金融搜索', desc: '全球多市场金融搜索服务，自然语言查询股票、基金等数据', icon: '📈', bgColor: 'rgba(52,152,219,0.08)', category: 'finance' }
+    ],
+    skillhub: [
+      { name: 'API Tester', desc: 'REST / GraphQL API 测试、Mock 数据生成', icon: '🧪', bgColor: 'rgba(231,76,60,0.08)', category: 'dev' },
+      { name: 'DB Explorer', desc: '数据库查询可视化、Schema 分析', icon: '🗄️', bgColor: 'rgba(52,152,219,0.08)', category: 'dev' },
+      { name: 'CI/CD Pipeline', desc: '构建部署流水线配置与监控', icon: '🚀', bgColor: 'rgba(46,204,113,0.08)', category: 'dev' },
+      { name: 'Docker Manager', desc: '容器管理、镜像构建、日志查看', icon: '🐳', bgColor: 'rgba(0,150,214,0.08)', category: 'dev' },
+      { name: 'K8s Dashboard', desc: 'Kubernetes 集群监控和部署管理', icon: '☸️', bgColor: 'rgba(50,108,229,0.08)', category: 'dev' },
+      { name: '性能分析器', desc: '应用性能分析、瓶颈检测、优化建议', icon: '⚡', bgColor: 'rgba(241,196,15,0.08)', category: 'dev' }
+    ],
+    suites: [
+      { name: 'Zylos 全栈开发套件', desc: '代码生成 + 测试 + 部署 + 监控一站式开发工具链', icon: '⚡', bgColor: 'rgba(108,92,231,0.08)', category: 'dev' },
+      { name: 'OpenClaw 数据套件', desc: '数据采集 + 清洗 + 分析 + 可视化完整数据工具链', icon: '🦀', bgColor: 'rgba(0,184,148,0.08)', category: 'data' },
+      { name: '安全审计套件', desc: '漏洞扫描 + 依赖检查 + 合规审计', icon: '🛡️', bgColor: 'rgba(52,73,94,0.08)', category: 'dev' }
+    ]
+  },
+  office: {
+    recommend: [
+      { name: '腾讯文档', desc: '腾讯文档操作（创建、查询、编辑多种在线文档）', icon: '📄', bgColor: 'rgba(0,168,84,0.08)', category: 'collab' },
+      { name: '腾讯会议', desc: '腾讯会议管理（预约、录制、转写、纪要）', icon: '🎥', bgColor: 'rgba(0,168,84,0.08)', category: 'collab' },
+      { name: '学习路径规划', desc: '个性化学习路径生成、进度追踪、资源推荐', icon: '📚', bgColor: 'rgba(241,196,15,0.08)', category: 'learning' },
+      { name: '智能客服', desc: '客户问题自动分类、话术推荐、满意度分析', icon: '🎧', bgColor: 'rgba(0,184,148,0.08)', category: 'business' },
+      { name: '报告生成器', desc: '周报/月报/汇报材料自动生成', icon: '📊', bgColor: 'rgba(155,89,182,0.08)', category: 'productivity' },
+      { name: '费用报销', desc: '发票识别、报销单填写、审批流转', icon: '💳', bgColor: 'rgba(52,152,219,0.08)', category: 'productivity' }
+    ],
+    skillhub: [
+      { name: '合同审查', desc: '合同条款分析、风险识别和修改建议', icon: '📑', bgColor: 'rgba(241,196,15,0.08)', category: 'business' },
+      { name: '投资组合分析', desc: '投资组合风险评估、收益分析、调仓建议', icon: '💰', bgColor: 'rgba(241,196,15,0.08)', category: 'finance' },
+      { name: '内容日历', desc: '社交媒体内容规划、排期和分析', icon: '📅', bgColor: 'rgba(155,89,182,0.08)', category: 'content' },
+      { name: '客户画像', desc: 'CRM 数据分析、客户分群、价值评估', icon: '👤', bgColor: 'rgba(231,76,60,0.08)', category: 'business' },
+      { name: '知识图谱', desc: '企业知识库构建、关联分析、智能问答', icon: '🧠', bgColor: 'rgba(108,92,231,0.08)', category: 'learning' },
+      { name: '多语言客服', desc: '多语言实时翻译客服、自动回复模板', icon: '🌍', bgColor: 'rgba(52,73,94,0.08)', category: 'collab' }
+    ],
+    suites: [
+      { name: '企业协作套件', desc: '文档 + 任务 + 会议 + 审批，企业协作全覆盖', icon: '🏢', bgColor: 'rgba(52,152,219,0.08)', category: 'collab' },
+      { name: '营销自动化套件', desc: '内容创作 + 分发 + 数据分析 + A/B 测试', icon: '📣', bgColor: 'rgba(231,76,60,0.08)', category: 'business' },
+      { name: '财务管理套件', desc: '记账 + 报表 + 税务 + 审计一站式财务工具', icon: '💼', bgColor: 'rgba(241,196,15,0.08)', category: 'finance' }
+    ]
+  }
 };
 
 const adminStats = [
@@ -4180,6 +4246,13 @@ const chartData = [
   { label: '周五', value: 75 },
   { label: '周六', value: 40 },
   { label: '周日', value: 30 }
+];
+
+const modelUsageData = [
+  { model: 'Claude Sonnet', calls: 89, tokens: '1.2M', cost: '$52' },
+  { model: 'GPT-4 Turbo', calls: 45, tokens: '0.8M', cost: '$38' },
+  { model: 'Gemini 1.5 Pro', calls: 22, tokens: '0.5M', cost: '$18' },
+  { model: 'Llama 3 (本地)', calls: 38, tokens: '0.6M', cost: '$0' }
 ];
 
 const seatData = [
@@ -4205,6 +4278,7 @@ const cmdkCommands = [
   { icon: '📁', label: '打开项目', module: 'projects', shortcut: '' },
   { icon: '👥', label: '打开通讯录', module: 'team', shortcut: '' },
   { icon: '🤖', label: 'Agent 管理', module: 'agents', shortcut: '' },
+  { icon: '🧩', label: '打开技能', module: 'skills', shortcut: '' },
   { icon: '🧰', label: '打开工具箱', module: 'toolbox', shortcut: '' },
   { icon: '📊', label: '管理后台', module: 'admin', shortcut: '' },
   { icon: '⚙️', label: '打开设置', module: 'settings', shortcut: '' },
@@ -4322,6 +4396,8 @@ function switchMode(mode) {
   const tags = document.getElementById('chatInputTags');
   if (tags) tags.innerHTML = '';
   renderCategoryChips();
+  renderSkills();
+  switchToolboxCategory(mode === 'code' ? 'dev' : 'office');
   showToast(mode === 'code' ? '已切换到代码开发模式' : '已切换到日常办公模式');
 }
 
@@ -5504,12 +5580,13 @@ function renderSkills() {
 function renderInstalledSkills() {
   const grid = document.getElementById('installedSkillGrid');
   grid.innerHTML = '';
-  let skills = installedSkills;
+  const modeKey = currentMode === 'office' ? 'office' : 'code';
+  let skills = installedSkillsByMode[modeKey] || [];
   if (skillSearchQuery) {
     skills = skills.filter(s => s.name.toLowerCase().includes(skillSearchQuery) || s.desc.toLowerCase().includes(skillSearchQuery));
   }
   const display = showAllSkills ? skills : skills.slice(0, 4);
-  document.getElementById('installedSkillCount').textContent = installedSkills.length;
+  document.getElementById('installedSkillCount').textContent = (installedSkillsByMode[modeKey] || []).length;
   const showMoreBtn = document.getElementById('skillsShowMore');
   showMoreBtn.textContent = showAllSkills ? '收起' : '显示更多';
   showMoreBtn.style.display = skills.length > 4 ? 'block' : 'none';
@@ -5535,7 +5612,9 @@ function renderInstalledSkills() {
 function renderMarketplaceSkills() {
   const grid = document.getElementById('skillMarketGrid');
   grid.innerHTML = '';
-  const skills = marketplaceSkills[currentSkillsTab] || [];
+  const modeKey = currentMode === 'office' ? 'office' : 'code';
+  const modeSkills = marketplaceSkillsByMode[modeKey] || {};
+  const skills = modeSkills[currentSkillsTab] || [];
   let filtered = skills;
   if (currentSkillCategory !== 'all') {
     filtered = skills.filter(s => s.category === currentSkillCategory);
@@ -5614,6 +5693,20 @@ function renderAdmin() {
         <div class="chart-bar" data-height="${(d.value / maxVal) * 100}%" style="height:4px"></div>
         <div class="chart-bar-label">${d.label}</div>
       </div>
+    `;
+  });
+
+  // Model Usage Table
+  const modelTbody = document.getElementById('modelUsageBody');
+  modelTbody.innerHTML = '';
+  modelUsageData.forEach(row => {
+    modelTbody.innerHTML += `
+      <tr>
+        <td style="font-weight:600;">${row.model}</td>
+        <td style="text-align:center;">${row.calls}</td>
+        <td style="text-align:center;">${row.tokens}</td>
+        <td style="text-align:center;font-weight:600;">${row.cost}</td>
+      </tr>
     `;
   });
 
