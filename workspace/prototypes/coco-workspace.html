@@ -4591,14 +4591,16 @@ function onDrag(e) {
   const dx = e.clientX - dragStartX;
   if (dragTarget === 'left') {
     const el = document.querySelector('.conv-list');
-    const nw = Math.max(160, Math.min(400, dragStartW + dx));
+    const nw = Math.max(0, Math.min(400, dragStartW + dx));
     el.style.width = nw + 'px';
+    if (nw < 60) { el.style.opacity = '0'; el.style.overflow = 'hidden'; el.style.padding = '0'; }
+    else { el.style.opacity = '1'; el.style.overflow = ''; el.style.padding = ''; }
   } else {
     const el = document.getElementById('chatInfoPanel');
     const nw = Math.max(0, Math.min(420, dragStartW - dx));
     el.style.width = nw + 'px';
-    if (nw < 80) { el.style.opacity = '0'; el.style.overflow = 'hidden'; }
-    else { el.style.opacity = '1'; el.style.overflow = ''; }
+    if (nw < 60) { el.style.opacity = '0'; el.style.overflow = 'hidden'; el.style.padding = '0'; }
+    else { el.style.opacity = '1'; el.style.overflow = ''; el.style.padding = ''; }
   }
 }
 function stopDrag() {
