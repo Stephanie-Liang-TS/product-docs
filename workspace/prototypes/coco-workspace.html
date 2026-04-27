@@ -9651,7 +9651,7 @@ function toggleAutoMenu(btn) {
     <div class="toolbar-dropdown-divider"></div>
     <div class="toolbar-dropdown-label">内置模型</div>` +
     modelList.map(m => `<div class="toolbar-dropdown-item${m.checked?' active':''}" onclick="selectModel('${m.name}',this)"><span class="tdi-icon">${m.icon}</span><div>${m.name}</div>${m.checked?'<span class="tdi-check">✓</span>':''}</div>`).join('') +
-    `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('自定义模型配置即将上线')"><span class="tdi-icon">+</span><div>配置自定义模型</div></div>`;
+    '';
   positionDropdown(dd, btn);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
@@ -9679,8 +9679,8 @@ function toggleSkillsPanel(btn) {
   dd.className = 'toolbar-dropdown';
   dd.style.minWidth = '280px';
   dd.innerHTML = `<div style="padding:6px 10px;"><input type="text" placeholder="搜索技能" style="width:100%;padding:6px 10px;border:1px solid var(--border-glass);border-radius:6px;font-size:12px;outline:none;" oninput="filterSkills(this.value)"></div>` +
-    skills.map(s => `<div class="toolbar-dropdown-item skill-item"><span class="tdi-icon">${s.icon}</span><div style="flex:1;overflow:hidden;"><div style="font-size:13px;font-weight:500;">${s.name}</div><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.desc}</div></div></div>`).join('') +
-    `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="showToast('技能导入即将上线')"><span class="tdi-icon">📦</span><div>导入技能</div></div>`;
+    skills.map(s => `<div class="toolbar-dropdown-item skill-item" onclick="referenceSkill('${s.icon}','${s.name}')"><span class="tdi-icon">${s.icon}</span><div style="flex:1;overflow:hidden;"><div style="font-size:13px;font-weight:500;">${s.name}</div><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.desc}</div></div></div>`).join('') +
+    `<div class="toolbar-dropdown-divider"></div><div class="toolbar-dropdown-item" onclick="document.getElementById('skillFileInput').click()"><span class="tdi-icon">📦</span><div>导入技能</div></div><input type="file" id="skillFileInput" style="display:none" accept=".json,.yaml,.yml,.js,.ts,.zip" onchange="handleSkillImport(this)">`;
   positionDropdown(dd, btn);
   dd.onclick = (e) => e.stopPropagation();
   setTimeout(() => document.addEventListener('click', function cl() { dd.remove(); document.removeEventListener('click', cl); }), 10);
@@ -9690,6 +9690,30 @@ function filterSkills(q) {
   document.querySelectorAll('.skill-item').forEach(s => {
     s.style.display = s.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
+}
+function referenceSkill(icon, name) {
+  const tags = document.getElementById('chatInputTags');
+  // Don't add duplicate
+  if (tags.querySelector(`[data-skill="${name}"]`)) return;
+  const tag = document.createElement('span');
+  tag.className = 'chat-input-tag';
+  tag.dataset.skill = name;
+  tag.innerHTML = `<span class="chip-icon" style="font-size:11px;">🛠</span> ${name} <span class="tag-close" onclick="this.parentElement.remove()">&times;</span>`;
+  tag.style.background = 'var(--bg-glass)';
+  tag.style.color = 'var(--text-body)';
+  tag.style.border = '1px solid var(--border-glass)';
+  tags.appendChild(tag);
+  // Close dropdown
+  document.querySelectorAll('.toolbar-dropdown').forEach(d => d.remove());
+  document.getElementById('chatInput').focus();
+}
+function handleSkillImport(input) {
+  if (!input.files.length) return;
+  const f = input.files[0];
+  showToast('已导入技能文件: ' + f.name);
+  // Close dropdown
+  document.querySelectorAll('.toolbar-dropdown').forEach(d => d.remove());
+  input.value = '';
 }
 function toggleModeInfo(el, modeName) {
   const existing = document.querySelector('.mode-info-tooltip');
