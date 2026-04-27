@@ -5894,21 +5894,31 @@ function updateChatHeader() {
     const chipsEl = document.getElementById('chatCategoryChips');
     const promptsEl = document.getElementById('chatPromptTemplates');
     const tagsEl = document.getElementById('chatInputTags');
+    const toolbarLeft = document.querySelector('.chat-toolbar-left');
+    const mdToolbar = document.getElementById('mdToolbarBtns');
     if (isPersonalDM) {
       if (chipsEl) chipsEl.style.display = 'none';
       if (promptsEl) promptsEl.style.display = 'none';
       if (tagsEl) tagsEl.innerHTML = '';
+      if (toolbarLeft) toolbarLeft.style.display = 'none';
+      if (mdToolbar) mdToolbar.style.display = 'none';
       selectedCategory = null;
     } else {
-      // Agent DM — keep skill bar
+      // Agent DM — keep skill bar & toolbar
       if (chipsEl) chipsEl.style.display = '';
+      if (toolbarLeft) toolbarLeft.style.display = '';
+      if (mdToolbar) mdToolbar.style.display = '';
     }
   } else {
     if (inputArea) inputArea.style.display = '';
     if (toggleBtn) toggleBtn.style.display = '';
-    // Restore skill category chips for non-DM
+    // Restore all elements for non-DM
     const chipsEl2 = document.getElementById('chatCategoryChips');
+    const toolbarLeft2 = document.querySelector('.chat-toolbar-left');
+    const mdToolbar2 = document.getElementById('mdToolbarBtns');
     if (chipsEl2) chipsEl2.style.display = '';
+    if (toolbarLeft2) toolbarLeft2.style.display = '';
+    if (mdToolbar2) mdToolbar2.style.display = '';
   }
 }
 
