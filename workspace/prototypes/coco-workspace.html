@@ -3851,6 +3851,223 @@ body {
   border-color: rgba(0,184,148,0.12);
 }
 
+/* B2B Trigger type badges */
+.b2b-trigger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.b2b-trigger-badge.manual {
+  background: rgba(108,92,231,0.1);
+  color: #6c5ce7;
+}
+.b2b-trigger-badge.auto {
+  background: rgba(253,203,110,0.2);
+  color: #d4a017;
+}
+.b2b-trigger-badge.cron {
+  background: rgba(0,206,201,0.12);
+  color: #00a8a3;
+}
+
+/* B2B Observer banner trigger info */
+.b2b-observer-trigger {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 10px;
+  margin-top: 6px;
+  background: rgba(0,0,0,0.02);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-body);
+  line-height: 1.4;
+}
+.b2b-observer-trigger-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Collaboration rules section in agent card */
+.collab-rules-card {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+.collab-rules-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+.collab-rules-toggle:hover { color: #6c5ce7; }
+.collab-rules-toggle .collab-arrow {
+  font-size: 10px;
+  transition: transform var(--transition-fast);
+  display: inline-block;
+}
+.collab-rules-toggle .collab-arrow.expanded { transform: rotate(90deg); }
+.collab-rules-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+.collab-rules-body.expanded {
+  max-height: 600px;
+  padding-top: 8px;
+}
+.collab-rules-section {
+  margin-bottom: 10px;
+}
+.collab-rules-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+.collab-agent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.collab-agent-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(108,92,231,0.08);
+  color: #6c5ce7;
+  border: 1px solid rgba(108,92,231,0.12);
+}
+.collab-trigger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 12px;
+  color: var(--text-body);
+}
+.collab-trigger-row .trigger-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.collab-trigger-row .trigger-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+.collab-trigger-row .trigger-locked {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.collab-cron-value {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: #00a8a3;
+  background: rgba(0,206,201,0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.collab-event-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 3px;
+}
+.collab-event-chip {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(253,203,110,0.15);
+  color: #d4a017;
+  font-weight: 500;
+}
+
+/* @ Agent mention dropdown for B2B initiation */
+.b2b-agent-mention-menu {
+  position: fixed;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 9999;
+  min-width: 200px;
+}
+.b2b-agent-mention-header {
+  padding: 6px 12px;
+  font-size: 11px;
+  color: #6c5ce7;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.b2b-agent-mention-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-body);
+  transition: background 0.15s;
+}
+.b2b-agent-mention-item:hover {
+  background: rgba(108,92,231,0.06);
+}
+.b2b-agent-mention-item .mention-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.b2b-agent-mention-item .mention-framework {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+/* B2B system message in Bot DM */
+.b2b-system-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin: 8px 0;
+  background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(211,87,254,0.04));
+  border: 1px solid rgba(108,92,231,0.12);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #6c5ce7;
+  animation: slideDown 0.3s ease;
+}
+
 /* Agent collaboration tab in agent details */
 .b2b-collab-list {
   display: flex;
@@ -4142,12 +4359,14 @@ body {
                 </div>
                 <!-- @ mention dropdown -->
                 <div class="mention-menu" id="mentionMenu" style="display:none;"></div>
+                <!-- @ Agent mention dropdown for B2B initiation -->
+                <div class="b2b-agent-mention-menu" id="b2bAgentMentionMenu" style="display:none;"></div>
                 <div class="chat-input-wrap">
                   <div class="chat-input-tags" id="chatInputTags">
                     <!-- Selected category tag appears here -->
                   </div>
                   <div style="display:flex;align-items:flex-end;gap:8px;width:100%;">
-                    <textarea class="chat-input" id="chatInput" placeholder="输入消息... (Shift+Enter 换行)" rows="1" onkeydown="handleChatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+                    <textarea class="chat-input" id="chatInput" placeholder="输入消息... (Shift+Enter 换行)" rows="1" onkeydown="handleChatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';checkB2BAtMention(this)"></textarea>
                     <button class="chat-send-btn" onclick="sendChatMessage()">↑</button>
                   </div>
                 </div>
@@ -4835,8 +5054,8 @@ const conversationsData = [
   { id: 'ch-code-review', name: 'Code Review', avatar: '🔍', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '08:45', preview: 'Code Bot: PR #132 审查报告', unread: 1, model: null, publisher: 'Code Bot', subscribers: 8 },
   { id: 'ch-announcements', name: '产品公告', avatar: '📢', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '09:00', preview: 'Stephanie: v3.2 发布计划', unread: 0, model: null, publisher: 'Stephanie', subscribers: 15 },
   // Bot-to-Bot collaboration conversations
-  { id: 'b2b-zylos-databot', name: 'Zylos ↔ DataBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '11:20', preview: 'DataBot: 数据清洗完成，已输出 3 张报表', unread: 1, model: null, b2b: { agent1: { name: 'COCO Agent', avatar: '🐙', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析师', avatar: '📊', framework: 'OpenClaw', status: 'busy' }, permRole: 'owner', viewers: 3, autoRun: true } },
-  { id: 'b2b-codebot-testbot', name: 'CodeBot ↔ TestBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '10:05', preview: 'TestBot: 47/50 用例通过，3 个回归问题', unread: 0, model: null, b2b: { agent1: { name: '代码助手', avatar: '🤖', framework: 'Zylos', status: 'online' }, agent2: { name: '测试 Agent', avatar: '🧪', framework: 'Zylos', status: 'online' }, permRole: 'owner', viewers: 4, autoRun: false } },
+  { id: 'b2b-zylos-databot', name: 'Zylos ↔ DataBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '11:20', preview: 'DataBot: 数据清洗完成，已输出 3 张报表', unread: 1, model: null, trigger: 'manual', triggerDetail: '你指示 COCO Agent 联系数据分析师获取用户行为数据', b2b: { agent1: { name: 'COCO Agent', avatar: '🐙', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析师', avatar: '📊', framework: 'OpenClaw', status: 'busy' }, permRole: 'owner', viewers: 3, autoRun: true } },
+  { id: 'b2b-codebot-testbot', name: 'CodeBot ↔ TestBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '10:05', preview: 'TestBot: 47/50 用例通过，3 个回归问题', unread: 0, model: null, trigger: 'auto', triggerDetail: '代码助手在提交代码后自动联系了测试 Agent 进行回归测试', b2b: { agent1: { name: '代码助手', avatar: '🤖', framework: 'Zylos', status: 'online' }, agent2: { name: '测试 Agent', avatar: '🧪', framework: 'Zylos', status: 'online' }, permRole: 'owner', viewers: 4, autoRun: false } },
 ];
 
 const conversationsCodeData = [...conversationsData];
@@ -4854,8 +5073,8 @@ const conversationsOfficeData = [
   { id: 'ch-content-ideas', name: '选题推荐', avatar: '💡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '09:00', preview: '内容助手: 今日热门话题 TOP 5', unread: 1, model: null, publisher: '内容助手', subscribers: 6 },
   { id: 'ch-team-updates', name: '团队公告', avatar: '📢', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '09:30', preview: 'Stephanie: 本周工作安排', unread: 0, model: null, publisher: 'Stephanie', subscribers: 15 },
   // Bot-to-Bot collaboration conversations (office mode)
-  { id: 'b2b-zylos-databot', name: 'Zylos ↔ DataBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '11:20', preview: 'DataBot: 数据清洗完成，已输出 3 张报表', unread: 1, model: null, b2b: { agent1: { name: 'COCO Agent', avatar: '🐙', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析 Agent', avatar: '📊', framework: 'OpenClaw', status: 'busy' }, permRole: 'owner', viewers: 3, autoRun: true } },
-  { id: 'b2b-content-data', name: '内容助手 ↔ 数据分析', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '09:45', preview: '内容助手: 基于数据分析结果生成了 5 篇选题', unread: 0, model: null, b2b: { agent1: { name: '内容助手', avatar: '✍️', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析 Agent', avatar: '📊', framework: 'OpenClaw', status: 'online' }, permRole: 'owner', viewers: 2, autoRun: true } },
+  { id: 'b2b-zylos-databot', name: 'Zylos ↔ DataBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '11:20', preview: 'DataBot: 数据清洗完成，已输出 3 张报表', unread: 1, model: null, trigger: 'manual', triggerDetail: '你指示 COCO Agent 联系数据分析 Agent 获取用户数据', b2b: { agent1: { name: 'COCO Agent', avatar: '🐙', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析 Agent', avatar: '📊', framework: 'OpenClaw', status: 'busy' }, permRole: 'owner', viewers: 3, autoRun: true } },
+  { id: 'b2b-content-data', name: '内容助手 ↔ 数据分析', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '09:45', preview: '内容助手: 基于数据分析结果生成了 5 篇选题', unread: 0, model: null, trigger: 'cron', triggerDetail: '每周一 9:00 自动执行内容选题分析流程', b2b: { agent1: { name: '内容助手', avatar: '✍️', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析 Agent', avatar: '📊', framework: 'OpenClaw', status: 'online' }, permRole: 'owner', viewers: 2, autoRun: true } },
 ];
 
 // Info panel data per channel
@@ -5087,6 +5306,7 @@ const channelInfoData = {
   // ===== Bot-to-Bot Collaboration Info =====
   'b2b-zylos-databot': {
     title: 'Agent 协作', isB2B: true,
+    trigger: 'manual', triggerDetail: '你指示 COCO Agent 联系数据分析师获取用户行为数据',
     groupName: 'COCO Agent ↔ 数据分析师',
     description: 'COCO Agent 协调数据分析任务，数据分析师执行数据清洗、统计和报表生成。自动化数据处理流水线。',
     agents: [
@@ -5107,6 +5327,7 @@ const channelInfoData = {
   },
   'b2b-codebot-testbot': {
     title: 'Agent 协作', isB2B: true,
+    trigger: 'auto', triggerDetail: '代码助手在提交代码后自动联系了测试 Agent 进行回归测试',
     groupName: '代码助手 ↔ 测试 Agent',
     description: '代码助手提交代码变更后，测试 Agent 自动运行测试套件并反馈结果。CI/CD 协作流水线。',
     agents: [
@@ -5127,6 +5348,7 @@ const channelInfoData = {
   },
   'b2b-content-data': {
     title: 'Agent 协作', isB2B: true,
+    trigger: 'cron', triggerDetail: '每周一 9:00 自动执行内容选题分析流程',
     groupName: '内容助手 ↔ 数据分析 Agent',
     description: '数据分析 Agent 提供用户行为和热点趋势数据，内容助手基于数据自动生成内容选题和文案。',
     agents: [
@@ -5602,10 +5824,34 @@ const teamData = [
 ];
 
 const agentsData = [
-  { name: 'COCO Agent', role: '协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', status: 'online', framework: 'COCO', plan: 'Pro · $29/月', tasksCompleted: 142, weeklyTasks: 18, weeklyCredits: 210, accuracy: 96.5, responseTime: '120ms', description: '核心协作 Agent，负责任务协调、消息汇总和团队效率优化', purchasedAt: '2026-03-15' },
-  { name: '代码助手', role: 'Zylos 代码开发', avatar: '🤖', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', status: 'online', framework: 'Zylos', plan: 'Pro · $29/月', tasksCompleted: 89, weeklyTasks: 15, weeklyCredits: 260, accuracy: 94.2, responseTime: '85ms', description: '全栈代码生成、代码审查、Bug 修复、自动化重构', purchasedAt: '2026-03-15' },
-  { name: '测试 Agent', role: 'Zylos 测试', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', status: 'online', framework: 'Zylos', plan: 'Pro · $29/月', tasksCompleted: 56, weeklyTasks: 8, weeklyCredits: 120, accuracy: 91.8, responseTime: '200ms', description: '自动化测试、回归测试、性能测试报告生成', purchasedAt: '2026-04-01' },
-  { name: '数据分析师', role: 'OpenClaw 数据', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', status: 'busy', framework: 'OpenClaw', plan: 'Pro · $19/月', tasksCompleted: 203, weeklyTasks: 6, weeklyCredits: 90, accuracy: 98.1, responseTime: '150ms', description: '数据分析、报表生成、异常检测和趋势预测', purchasedAt: '2026-03-20' }
+  { name: 'COCO Agent', role: '协作助手', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', status: 'online', framework: 'COCO', plan: 'Pro · $29/月', tasksCompleted: 142, weeklyTasks: 18, weeklyCredits: 210, accuracy: 96.5, responseTime: '120ms', description: '核心协作 Agent，负责任务协调、消息汇总和团队效率优化', purchasedAt: '2026-03-15',
+    collabRules: {
+      allowedAgents: ['数据分析师', '测试 Agent', '代码助手'],
+      triggers: { manual: true, auto: true, cron: false, events: [] },
+      cronSchedule: null
+    }
+  },
+  { name: '代码助手', role: 'Zylos 代码开发', avatar: '🤖', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', status: 'online', framework: 'Zylos', plan: 'Pro · $29/月', tasksCompleted: 89, weeklyTasks: 15, weeklyCredits: 260, accuracy: 94.2, responseTime: '85ms', description: '全栈代码生成、代码审查、Bug 修复、自动化重构', purchasedAt: '2026-03-15',
+    collabRules: {
+      allowedAgents: ['测试 Agent', 'COCO Agent'],
+      triggers: { manual: true, auto: true, cron: false, events: ['代码提交', 'PR 合并'] },
+      cronSchedule: null
+    }
+  },
+  { name: '测试 Agent', role: 'Zylos 测试', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', status: 'online', framework: 'Zylos', plan: 'Pro · $29/月', tasksCompleted: 56, weeklyTasks: 8, weeklyCredits: 120, accuracy: 91.8, responseTime: '200ms', description: '自动化测试、回归测试、性能测试报告生成', purchasedAt: '2026-04-01',
+    collabRules: {
+      allowedAgents: ['代码助手', 'COCO Agent'],
+      triggers: { manual: true, auto: false, cron: true, events: ['CI 失败', '新版本发布'] },
+      cronSchedule: '每日 22:00'
+    }
+  },
+  { name: '数据分析师', role: 'OpenClaw 数据', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', status: 'busy', framework: 'OpenClaw', plan: 'Pro · $19/月', tasksCompleted: 203, weeklyTasks: 6, weeklyCredits: 90, accuracy: 98.1, responseTime: '150ms', description: '数据分析、报表生成、异常检测和趋势预测', purchasedAt: '2026-03-20',
+    collabRules: {
+      allowedAgents: ['COCO Agent', '内容助手'],
+      triggers: { manual: true, auto: true, cron: true, events: ['新订单', '数据异常'] },
+      cronSchedule: '每周一 09:00'
+    }
+  }
 ];
 
 const marketplaceAgents = [
@@ -6019,10 +6265,13 @@ function renderConversationList() {
       : conv.tag === 'Agent 协作' ? '<span class="conv-item-tag b2b">Agent 协作</span><span class="conv-item-b2b-lock">🔒</span>' : '';
     const unreadHTML = conv.unread > 0 ? `<span class="conv-item-unread">${conv.unread}</span>` : '';
 
-    // Bot-to-Bot: dual avatar
+    // Bot-to-Bot: dual avatar + trigger badge
     if (conv.type === 'b2b' && conv.b2b) {
       const a1 = conv.b2b.agent1;
       const a2 = conv.b2b.agent2;
+      const triggerBadge = conv.trigger === 'manual' ? '<span class="b2b-trigger-badge manual">&#x1F5E3; 指令触发</span>'
+        : conv.trigger === 'auto' ? '<span class="b2b-trigger-badge auto">&#x26A1; 自动触发</span>'
+        : conv.trigger === 'cron' ? '<span class="b2b-trigger-badge cron">&#x23F0; 定时触发</span>' : '';
       return `
         <div class="conv-item${activeClass}" data-conv="${conv.id}" onclick="switchChannel('${conv.id}')">
           <div class="conv-item-avatar b2b-avatar" style="background:linear-gradient(135deg, rgba(108,92,231,0.12), rgba(211,87,254,0.08));font-size:14px;display:flex;gap:1px;align-items:center;justify-content:center;">${a1.avatar}<span style="font-size:8px;opacity:0.5;">↔</span>${a2.avatar}</div>
@@ -6030,6 +6279,7 @@ function renderConversationList() {
             <div class="conv-item-top">
               <span class="conv-item-name" style="font-size:12.5px;">${conv.name}</span>
               ${tagHTML}
+              ${triggerBadge}
               <span class="conv-item-time">${conv.time}</span>
             </div>
             <div class="conv-item-preview">${conv.preview}</div>
@@ -6100,10 +6350,17 @@ function renderB2BChat(container, conv) {
 
   let html = '';
 
-  // Observer banner
-  html += `<div class="b2b-observer-banner">
-    <span class="b2b-observer-badge">旁观者</span>
-    <span>你正在查看 ${a1.name} 与 ${a2.name} 之间的 Agent 协作对话</span>
+  // Observer banner with trigger info
+  const triggerIcon = conv.trigger === 'manual' ? '\u{1F5E3}' : conv.trigger === 'auto' ? '\u26A1' : conv.trigger === 'cron' ? '\u23F0' : '';
+  const triggerLabel = conv.trigger === 'manual' ? '由你发起' : conv.trigger === 'auto' ? '自动触发' : conv.trigger === 'cron' ? '定时触发' : '';
+  const triggerDetailText = conv.triggerDetail || '';
+  const triggerInfoHTML = conv.trigger ? `<div class="b2b-observer-trigger"><span class="b2b-observer-trigger-icon">${triggerIcon}</span><span><strong>${triggerLabel}</strong> — ${triggerDetailText}</span></div>` : '';
+  html += `<div class="b2b-observer-banner" style="flex-direction:column;align-items:flex-start;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="b2b-observer-badge">旁观者</span>
+      <span>你正在查看 ${a1.name} 与 ${a2.name} 之间的 Agent 协作对话</span>
+    </div>
+    ${triggerInfoHTML}
   </div>`;
 
   // Messages
@@ -6823,6 +7080,15 @@ function sendChatMessage() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
+
+  // Check for B2B @ mention forwarding in Agent DMs
+  closeB2BAgentMenu();
+  if (handleB2BForwarding(text)) {
+    input.value = '';
+    input.style.height = 'auto';
+    return;
+  }
+
   input.value = '';
 
   const now = new Date();
@@ -7143,6 +7409,194 @@ function insertMention(name) {
   input.value += '@' + name + ' ';
   input.focus();
   closeMentionMenu();
+}
+
+// ---- @ Agent Mention for B2B Initiation ----
+function checkB2BAtMention(textarea) {
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  // Only show B2B agent mention in Agent DM chats
+  if (!conv || conv.type !== 'dm' || conv.tag !== 'Agent') {
+    closeB2BAgentMenu();
+    return;
+  }
+  const text = textarea.value;
+  const cursorPos = textarea.selectionStart;
+  // Check if there's an @ near the cursor
+  const beforeCursor = text.substring(0, cursorPos);
+  const atMatch = beforeCursor.match(/@([^\s]*)$/);
+  if (atMatch) {
+    showB2BAgentMenu(atMatch[1]);
+  } else {
+    closeB2BAgentMenu();
+  }
+}
+
+function showB2BAgentMenu(filter) {
+  const menu = document.getElementById('b2bAgentMentionMenu');
+  if (menu.parentElement !== document.body) document.body.appendChild(menu);
+  // Get available agents (exclude the current conversation's agent)
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  const currentAgentName = conv?.name || '';
+  const availableAgents = agentsData.filter(a => a.name !== currentAgentName);
+  const filtered = filter ? availableAgents.filter(a => a.name.toLowerCase().includes(filter.toLowerCase())) : availableAgents;
+
+  if (filtered.length === 0) {
+    closeB2BAgentMenu();
+    return;
+  }
+
+  menu.innerHTML = '<div class="b2b-agent-mention-header">🤖↔🤖 选择 Agent 发起协作</div>' +
+    filtered.map(a => `<div class="b2b-agent-mention-item" onclick="insertB2BAgentMention('${a.name}')">
+      <div class="mention-avatar" style="background:${a.color}">${a.avatar}</div>
+      <span>${a.name}</span>
+      <span class="mention-framework">${a.framework}</span>
+    </div>`).join('');
+
+  const inputArea = document.querySelector('.chat-input-container');
+  const rect = inputArea.getBoundingClientRect();
+  menu.style.left = rect.left + 'px';
+  menu.style.width = Math.min(rect.width, 280) + 'px';
+  menu.style.top = 'auto';
+  menu.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+  menu.style.display = 'block';
+  setTimeout(() => document.addEventListener('click', closeB2BAgentMenuOnClick, { once: true }), 0);
+}
+
+function closeB2BAgentMenu() {
+  const menu = document.getElementById('b2bAgentMentionMenu');
+  if (menu) menu.style.display = 'none';
+}
+
+function closeB2BAgentMenuOnClick() {
+  closeB2BAgentMenu();
+}
+
+function insertB2BAgentMention(name) {
+  const input = document.getElementById('chatInput');
+  const text = input.value;
+  const cursorPos = input.selectionStart;
+  const beforeCursor = text.substring(0, cursorPos);
+  const afterCursor = text.substring(cursorPos);
+  // Replace the @partial with @name
+  const newBefore = beforeCursor.replace(/@[^\s]*$/, '@' + name + ' ');
+  input.value = newBefore + afterCursor;
+  input.focus();
+  input.selectionStart = input.selectionEnd = newBefore.length;
+  closeB2BAgentMenu();
+}
+
+function handleB2BForwarding(text) {
+  // Detect @AgentName pattern at start of message
+  const atMatch = text.match(/^@(.+?)\s+([\s\S]+)$/);
+  if (!atMatch) return false;
+
+  const targetName = atMatch[1].trim();
+  const taskText = atMatch[2].trim();
+  const targetAgent = agentsData.find(a => a.name === targetName);
+  if (!targetAgent) return false;
+
+  // Current conversation must be an Agent DM
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  if (!conv || conv.type !== 'dm' || conv.tag !== 'Agent') return false;
+
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+  const currentAgent = agentsData.find(a => a.name === conv.name);
+
+  // Add a system message to current chat
+  if (!channelMessages[currentChannel]) channelMessages[currentChannel] = [];
+  channelMessages[currentChannel].push({
+    name: 'Stephanie',
+    avatar: 'S',
+    color: 'linear-gradient(135deg,#f093fb,#f5576c)',
+    text: '@' + targetName + ' ' + taskText,
+    time: timeStr,
+    isAgent: false,
+    status: 'sent',
+    sentAt: Date.now()
+  });
+
+  // Add B2B system notification
+  channelMessages[currentChannel].push({
+    name: '系统',
+    avatar: '📡',
+    color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)',
+    text: '<div class="b2b-system-msg">📡 已将任务转发给 ' + targetName + '，协作对话已创建</div>',
+    time: timeStr,
+    isAgent: true,
+    model: null,
+    isSystem: true
+  });
+
+  renderChat();
+
+  // Create new B2B conversation
+  const b2bId = 'b2b-' + conv.id + '-' + targetName.replace(/\s/g, '').toLowerCase() + '-' + Date.now();
+  const newConv = {
+    id: b2bId,
+    name: (conv.name || 'Agent') + ' ↔ ' + targetName,
+    avatar: '',
+    type: 'b2b',
+    tag: 'Agent 协作',
+    time: timeStr,
+    preview: conv.name + ': 转发用户指令 — ' + taskText.substring(0, 30) + (taskText.length > 30 ? '...' : ''),
+    unread: 0,
+    model: null,
+    trigger: 'manual',
+    triggerDetail: '你指示 ' + (conv.name || 'Agent') + ' 联系 ' + targetName + ' 执行任务',
+    b2b: {
+      agent1: { name: conv.name || 'Agent', avatar: conv.avatar || '🤖', framework: currentAgent?.framework || 'Agent', status: 'online' },
+      agent2: { name: targetName, avatar: targetAgent.avatar, framework: targetAgent.framework, status: targetAgent.status || 'online' },
+      permRole: 'owner',
+      viewers: 1,
+      autoRun: true
+    }
+  };
+
+  conversationsData.push(newConv);
+
+  // Add channel info
+  channelInfoData[b2bId] = {
+    title: 'Agent 协作', isB2B: true,
+    groupName: newConv.name,
+    description: '由用户指令触发的 Agent 协作对话',
+    agents: [
+      { name: conv.name || 'Agent', avatar: conv.avatar || '🤖', color: conv.color || '#d357fe', framework: currentAgent?.framework || 'Agent', status: 'online' },
+      { name: targetName, avatar: targetAgent.avatar, color: targetAgent.color?.replace('linear-gradient(135deg,', '').replace(')', '').split(',')[0] || '#6c5ce7', framework: targetAgent.framework, status: targetAgent.status || 'online' }
+    ],
+    permissions: {
+      currentRole: 'owner',
+      roles: [
+        { role: 'owner', label: '创建者', user: 'Stephanie', abilities: '完整读写、干预对话、修改指令、暂停/删除' }
+      ]
+    },
+    createdAt: new Date().toISOString().slice(0, 10),
+    status: 'running'
+  };
+
+  // Add initial messages to the B2B conversation
+  channelMessages[b2bId] = [
+    { name: conv.name || 'Agent', avatar: conv.avatar || '🤖', color: conv.color || 'linear-gradient(135deg,#d357fe,#96bbff)', model: currentAgent?.framework || 'Agent', text: '收到用户指令，转发任务给 ' + targetName + '：\n\n' + taskText, time: timeStr, isAgent: true, b2bAgent: 1 }
+  ];
+
+  // Simulate agent response after delay
+  setTimeout(() => {
+    channelMessages[b2bId].push({
+      name: targetName,
+      avatar: targetAgent.avatar,
+      color: targetAgent.color || 'linear-gradient(135deg,#0984e3,#74b9ff)',
+      model: targetAgent.framework,
+      text: '收到任务，正在处理中...',
+      time: timeStr,
+      isAgent: true,
+      b2bAgent: 2
+    });
+    // Re-render if viewing B2B conversation
+    if (currentChannel === b2bId) renderChat();
+  }, 1200);
+
+  renderConversationList();
+  return true;
 }
 
 // ---- Markdown Toolbar ----
@@ -8118,34 +8572,121 @@ function sendInvite() {
 // ================================================================
 
 function getAgentCollabSection(agentName) {
+  const agent = agentsData.find(a => a.name === agentName);
+
   // Find all B2B conversations this agent participates in
   const b2bConvs = conversationsData.filter(c => {
     if (c.type !== 'b2b' || !c.b2b) return false;
     return c.b2b.agent1?.name === agentName || c.b2b.agent2?.name === agentName;
   });
-  if (b2bConvs.length === 0) return '';
 
-  const items = b2bConvs.map(c => {
-    const b = c.b2b;
-    const partner = b.agent1?.name === agentName ? b.agent2 : b.agent1;
-    const info = channelInfoData[c.id];
-    const status = info?.status || 'running';
-    const statusClass = status === 'running' ? 'active' : status === 'paused' ? 'paused' : 'completed';
-    const statusLabel = status === 'running' ? '运行中' : status === 'paused' ? '已暂停' : '已完成';
-    return `<div class="b2b-collab-item" onclick="switchModule('chat');setTimeout(()=>switchChannel('${c.id}'),100)">
-      <span class="b2b-collab-item-icon">${partner?.avatar || '🤖'}</span>
-      <div class="b2b-collab-item-info">
-        <div class="b2b-collab-item-name">↔ ${partner?.name || 'Agent'}</div>
-        <div class="b2b-collab-item-preview">${c.preview}</div>
+  // Collaboration rules section
+  const rules = agent?.collabRules;
+  let rulesHTML = '';
+  if (rules) {
+    const uid = agentName.replace(/\s/g, '_');
+    // Allowed agents chips
+    const chipsHTML = rules.allowedAgents.map(name => {
+      const a = agentsData.find(x => x.name === name);
+      return `<span class="collab-agent-chip">${a?.avatar || '🤖'} ${name}</span>`;
+    }).join('');
+
+    // Trigger rows
+    const cronVal = rules.cronSchedule ? `<span class="collab-cron-value">${rules.cronSchedule}</span>` : '<span class="trigger-locked">未配置</span>';
+    const eventsHTML = rules.triggers.events && rules.triggers.events.length > 0
+      ? `<div class="collab-event-chips">${rules.triggers.events.map(e => `<span class="collab-event-chip">${e}</span>`).join('')}</div>`
+      : '<span style="font-size:10px;color:var(--text-muted);font-style:italic;">未配置</span>';
+
+    rulesHTML = `<div class="collab-rules-card">
+      <div class="collab-rules-toggle" onclick="toggleCollabRules('${uid}')">
+        <span class="collab-arrow" id="collabArrow_${uid}">&#9654;</span>
+        &#x2699;&#xFE0F; 协作规则
       </div>
-      <span class="b2b-collab-item-status ${statusClass}">${statusLabel}</span>
+      <div class="collab-rules-body" id="collabBody_${uid}">
+        <div class="collab-rules-section">
+          <div class="collab-rules-section-title">可通信 Agent 列表</div>
+          <div class="collab-agent-chips">${chipsHTML}</div>
+        </div>
+        <div class="collab-rules-section">
+          <div class="collab-rules-section-title">触发条件</div>
+          <div class="collab-trigger-row">
+            <div class="trigger-label">
+              <span>&#x1F5E3; 用户指令</span>
+              <span class="trigger-locked">(始终开启)</span>
+            </div>
+            <label class="toggle-switch" style="transform:scale(0.75);pointer-events:none;opacity:0.5;">
+              <input type="checkbox" checked disabled>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="collab-trigger-row">
+            <div>
+              <div class="trigger-label">&#x26A1; 自主触发</div>
+              <div class="trigger-desc">Agent 在执行任务时可自主联系其他 Agent</div>
+            </div>
+            <label class="toggle-switch" style="transform:scale(0.75);">
+              <input type="checkbox" ${rules.triggers.auto ? 'checked' : ''} onchange="showToast(this.checked ? '已启用自主触发' : '已关闭自主触发')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="collab-trigger-row">
+            <div>
+              <div class="trigger-label">&#x23F0; 定时触发 ${rules.triggers.cron ? cronVal : ''}</div>
+              <div class="trigger-desc">按设定时间自动执行协作任务</div>
+            </div>
+            <label class="toggle-switch" style="transform:scale(0.75);">
+              <input type="checkbox" ${rules.triggers.cron ? 'checked' : ''} onchange="showToast(this.checked ? '已启用定时触发' : '已关闭定时触发')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="collab-trigger-row" style="flex-direction:column;align-items:flex-start;gap:3px;">
+            <div class="trigger-label">&#x1F4E1; 事件触发</div>
+            ${eventsHTML}
+          </div>
+        </div>
+      </div>
     </div>`;
-  }).join('');
+  }
 
-  return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light);">
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px;display:flex;align-items:center;gap:4px;">🤖↔🤖 协作对话 (${b2bConvs.length})</div>
-    <div class="b2b-collab-list">${items}</div>
-  </div>`;
+  // B2B conversations list
+  let convsHTML = '';
+  if (b2bConvs.length > 0) {
+    const items = b2bConvs.map(c => {
+      const b = c.b2b;
+      const partner = b.agent1?.name === agentName ? b.agent2 : b.agent1;
+      const info = channelInfoData[c.id];
+      const status = info?.status || 'running';
+      const statusClass = status === 'running' ? 'active' : status === 'paused' ? 'paused' : 'completed';
+      const statusLabel = status === 'running' ? '运行中' : status === 'paused' ? '已暂停' : '已完成';
+      const trigBadge = c.trigger === 'manual' ? '<span class="b2b-trigger-badge manual" style="margin-left:4px;">&#x1F5E3;</span>'
+        : c.trigger === 'auto' ? '<span class="b2b-trigger-badge auto" style="margin-left:4px;">&#x26A1;</span>'
+        : c.trigger === 'cron' ? '<span class="b2b-trigger-badge cron" style="margin-left:4px;">&#x23F0;</span>' : '';
+      return `<div class="b2b-collab-item" onclick="switchModule('chat');setTimeout(()=>switchChannel('${c.id}'),100)">
+        <span class="b2b-collab-item-icon">${partner?.avatar || '🤖'}</span>
+        <div class="b2b-collab-item-info">
+          <div class="b2b-collab-item-name">↔ ${partner?.name || 'Agent'}${trigBadge}</div>
+          <div class="b2b-collab-item-preview">${c.preview}</div>
+        </div>
+        <span class="b2b-collab-item-status ${statusClass}">${statusLabel}</span>
+      </div>`;
+    }).join('');
+
+    convsHTML = `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light);">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px;display:flex;align-items:center;gap:4px;">🤖↔🤖 协作对话 (${b2bConvs.length})</div>
+      <div class="b2b-collab-list">${items}</div>
+    </div>`;
+  }
+
+  return rulesHTML + convsHTML;
+}
+
+function toggleCollabRules(uid) {
+  const body = document.getElementById('collabBody_' + uid);
+  const arrow = document.getElementById('collabArrow_' + uid);
+  if (body && arrow) {
+    body.classList.toggle('expanded');
+    arrow.classList.toggle('expanded');
+  }
 }
 
 function renderAgents() {
