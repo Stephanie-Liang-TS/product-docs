@@ -6611,19 +6611,17 @@ function updateChatHeader() {
     const viewers = perm.roles?.length || b2b.viewers || 0;
     const roleLabel = perm.currentRole === 'owner' ? '创建者' : perm.currentRole === 'admin' ? '管理员' : '成员';
 
-    // Replace header content
+    // Replace header content — short names only, no framework tags
     document.getElementById('chatHeaderName').innerHTML = `
       <div class="b2b-chat-header-agents">
         <span class="b2b-agent-pill">
           <span class="b2b-agent-status ${a1.status || 'online'}"></span>
           ${a1.name || 'Agent 1'}
-          <span class="b2b-agent-framework">${a1.framework || ''}</span>
         </span>
         <span class="b2b-header-arrow">↔</span>
         <span class="b2b-agent-pill">
           <span class="b2b-agent-status ${a2.status || 'online'}"></span>
           ${a2.name || 'Agent 2'}
-          <span class="b2b-agent-framework">${a2.framework || ''}</span>
         </span>
       </div>`;
     modelEl.style.display = 'none';
@@ -6631,14 +6629,9 @@ function updateChatHeader() {
     const searchBtn = document.getElementById('msgSearchToggle');
     if (searchBtn) searchBtn.style.display = 'none';
 
-    // Add permission badge area to header spacer
+    // Permission badges removed per Stephanie's request
     const spacer = headerEl.querySelector('.chat-header-spacer');
-    if (spacer) {
-      spacer.innerHTML = `<div class="b2b-perm-area" style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-        <span class="b2b-perm-badge">🔒 你的角色: ${roleLabel}</span>
-        <span class="b2b-perm-viewers">👁 ${viewers} 人可见</span>
-      </div>`;
-    }
+    if (spacer) spacer.innerHTML = '';
 
     // Hide regular input, show command mode input
     if (inputArea) inputArea.style.display = 'none';
