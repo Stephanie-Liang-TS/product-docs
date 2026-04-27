@@ -5889,14 +5889,20 @@ function updateChatHeader() {
     if (inputArea) inputArea.style.display = '';
     if (toggleBtn) toggleBtn.style.display = 'none';
     if (infoPanel) infoPanel.classList.add('collapsed');
-    // Hide skill category chips & prompt templates in DM
+    // Hide skill category chips only for personal DM (not Agent DM)
+    const isPersonalDM = !conv.tag; // Agent DMs have tag:'Agent'
     const chipsEl = document.getElementById('chatCategoryChips');
     const promptsEl = document.getElementById('chatPromptTemplates');
     const tagsEl = document.getElementById('chatInputTags');
-    if (chipsEl) chipsEl.style.display = 'none';
-    if (promptsEl) promptsEl.style.display = 'none';
-    if (tagsEl) tagsEl.innerHTML = '';
-    selectedCategory = null;
+    if (isPersonalDM) {
+      if (chipsEl) chipsEl.style.display = 'none';
+      if (promptsEl) promptsEl.style.display = 'none';
+      if (tagsEl) tagsEl.innerHTML = '';
+      selectedCategory = null;
+    } else {
+      // Agent DM — keep skill bar
+      if (chipsEl) chipsEl.style.display = '';
+    }
   } else {
     if (inputArea) inputArea.style.display = '';
     if (toggleBtn) toggleBtn.style.display = '';
