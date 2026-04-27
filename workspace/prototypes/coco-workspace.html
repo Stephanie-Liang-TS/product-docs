@@ -5896,29 +5896,55 @@ function updateChatHeader() {
     const tagsEl = document.getElementById('chatInputTags');
     const toolbarLeft = document.querySelector('.chat-toolbar-left');
     const mdToolbar = document.getElementById('mdToolbarBtns');
+    const toolbar = document.querySelector('.chat-input-toolbar');
+    const sendBtn = document.querySelector('.chat-send-btn');
+    const inputWrap = document.querySelector('.chat-input-wrap');
     if (isPersonalDM) {
       if (chipsEl) chipsEl.style.display = 'none';
       if (promptsEl) promptsEl.style.display = 'none';
       if (tagsEl) tagsEl.innerHTML = '';
-      if (toolbarLeft) toolbarLeft.style.display = 'none';
+      if (toolbar) toolbar.style.display = 'none';
       if (mdToolbar) mdToolbar.style.display = 'none';
       selectedCategory = null;
+      // Move send button inline with input
+      if (sendBtn && inputWrap) {
+        inputWrap.style.display = 'flex';
+        inputWrap.style.alignItems = 'flex-end';
+        inputWrap.style.gap = '8px';
+        inputWrap.appendChild(sendBtn);
+      }
     } else {
       // Agent DM — keep skill bar & toolbar
       if (chipsEl) chipsEl.style.display = '';
-      if (toolbarLeft) toolbarLeft.style.display = '';
+      if (toolbar) toolbar.style.display = '';
       if (mdToolbar) mdToolbar.style.display = '';
+      // Move send button back to toolbar-right
+      const toolbarRight = document.querySelector('.chat-toolbar-right');
+      if (sendBtn && toolbarRight && !toolbarRight.contains(sendBtn)) {
+        toolbarRight.appendChild(sendBtn);
+        inputWrap.style.display = '';
+        inputWrap.style.alignItems = '';
+        inputWrap.style.gap = '';
+      }
     }
   } else {
     if (inputArea) inputArea.style.display = '';
     if (toggleBtn) toggleBtn.style.display = '';
     // Restore all elements for non-DM
     const chipsEl2 = document.getElementById('chatCategoryChips');
-    const toolbarLeft2 = document.querySelector('.chat-toolbar-left');
+    const toolbar2 = document.querySelector('.chat-input-toolbar');
     const mdToolbar2 = document.getElementById('mdToolbarBtns');
+    const sendBtn2 = document.querySelector('.chat-send-btn');
+    const toolbarRight2 = document.querySelector('.chat-toolbar-right');
+    const inputWrap2 = document.querySelector('.chat-input-wrap');
     if (chipsEl2) chipsEl2.style.display = '';
-    if (toolbarLeft2) toolbarLeft2.style.display = '';
+    if (toolbar2) toolbar2.style.display = '';
     if (mdToolbar2) mdToolbar2.style.display = '';
+    // Move send button back to toolbar if needed
+    if (sendBtn2 && toolbarRight2 && !toolbarRight2.contains(sendBtn2)) {
+      toolbarRight2.appendChild(sendBtn2);
+      if (inputWrap2) { inputWrap2.style.display = ''; inputWrap2.style.alignItems = ''; inputWrap2.style.gap = ''; }
+    }
   }
 }
 
