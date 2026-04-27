@@ -1707,15 +1707,15 @@ body {
 .chat-input-wrap {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 4px;
   border: 1.5px solid var(--border-light);
   border-radius: 14px;
-  padding: 10px 14px;
+  padding: 8px 10px;
   background: var(--bg-card);
-  min-height: 56px;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
+.chat-input-tags:empty { display: none; }
 .chat-input-wrap:focus-within {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(211,87,254,0.1);
