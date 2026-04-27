@@ -6970,11 +6970,97 @@ function renderB2BInfoPanel(container, info, conv) {
         <thead><tr><th>角色</th><th>用户</th><th>权限</th></tr></thead>
         <tbody>${permHTML}</tbody>
       </table>
+      <button onclick="toggleB2BInvite()" style="margin-top:10px;width:100%;padding:8px 0;border:1.5px dashed rgba(108,92,231,0.3);border-radius:8px;background:transparent;color:#6c5ce7;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:var(--font-mono);" onmouseover="this.style.borderColor='#6c5ce7';this.style.background='rgba(108,92,231,0.04)'" onmouseout="this.style.borderColor='rgba(108,92,231,0.3)';this.style.background='transparent'">+ 邀请成员 / Bot</button>
+      <div id="b2bInvitePanel" style="display:none;margin-top:10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:10px;padding:12px;animation:chatModalScaleIn 0.2s ease;">
+        <div style="font-size:11px;font-weight:600;color:var(--text-heading);margin-bottom:8px;">邀请到此协作对话</div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <button class="b2b-invite-tab active" onclick="switchB2BInviteTab('people',this)" style="flex:1;padding:6px;border:1px solid var(--border-light);border-radius:6px;background:rgba(108,92,231,0.08);color:#6c5ce7;font-size:11px;font-weight:500;cursor:pointer;">👤 成员</button>
+          <button class="b2b-invite-tab" onclick="switchB2BInviteTab('bot',this)" style="flex:1;padding:6px;border:1px solid var(--border-light);border-radius:6px;background:transparent;color:var(--text-body);font-size:11px;font-weight:500;cursor:pointer;">🤖 Bot</button>
+        </div>
+        <input type="text" id="b2bInviteSearch" placeholder="搜索成员或 Bot..." oninput="filterB2BInviteList()" style="width:100%;padding:7px 10px;border:1px solid var(--border-light);border-radius:6px;font-size:12px;background:var(--bg-card);color:var(--text-body);outline:none;margin-bottom:8px;">
+        <div id="b2bInviteList" style="max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:6px;">
+          <span style="font-size:11px;color:var(--text-muted);">角色:</span>
+          <select id="b2bInviteRole" style="flex:1;padding:5px 8px;border:1px solid var(--border-light);border-radius:6px;font-size:11px;background:var(--bg-card);color:var(--text-body);">
+            <option value="admin">管理员 — 查看日志、调整配置</option>
+            <option value="member" selected>普通成员 — 仅查看输出/结果</option>
+          </select>
+        </div>
+        <button onclick="confirmB2BInvite()" style="margin-top:8px;width:100%;padding:7px;border:none;border-radius:6px;background:#6c5ce7;color:#fff;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#5b4bd5'" onmouseout="this.style.background='#6c5ce7'">确认邀请</button>
+      </div>
     </div>
     ${relatedB2B.length > 0 ? `<div class="info-section">
       <div class="info-section-label">其他协作对话</div>
       <div class="b2b-collab-list">${collabHTML}</div>
     </div>` : ''}`;
+}
+
+// B2B Invite Panel
+const b2bInvitePeople = [
+  { name: 'Alex', avatar: 'A', color: 'linear-gradient(135deg,#74b9ff,#0984e3)' },
+  { name: '张伟', avatar: '张', color: 'linear-gradient(135deg,#55efc4,#00b894)' },
+  { name: 'Tyler', avatar: 'T', color: 'linear-gradient(135deg,#fdcb6e,#e17055)' },
+  { name: 'Athan', avatar: 'AT', color: 'linear-gradient(135deg,#a29bfe,#6c5ce7)' },
+];
+const b2bInviteBots = [
+  { name: 'TestBot', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#00b894)' },
+  { name: '内容助手', avatar: '✍️', color: 'linear-gradient(135deg,#fd79a8,#e84393)' },
+  { name: 'DevOps Bot', avatar: '⚙️', color: 'linear-gradient(135deg,#636e72,#2d3436)' },
+  { name: '翻译 Bot', avatar: '🌐', color: 'linear-gradient(135deg,#74b9ff,#0984e3)' },
+];
+let b2bInviteTab = 'people';
+let b2bInviteSelected = null;
+
+function toggleB2BInvite() {
+  const p = document.getElementById('b2bInvitePanel');
+  if (!p) return;
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  if (p.style.display === 'block') { b2bInviteSelected = null; renderB2BInviteList(); }
+}
+function switchB2BInviteTab(tab, btn) {
+  b2bInviteTab = tab;
+  b2bInviteSelected = null;
+  document.querySelectorAll('.b2b-invite-tab').forEach(b => { b.style.background = 'transparent'; b.style.color = 'var(--text-body)'; });
+  btn.style.background = 'rgba(108,92,231,0.08)'; btn.style.color = '#6c5ce7';
+  renderB2BInviteList();
+}
+function renderB2BInviteList() {
+  const list = document.getElementById('b2bInviteList');
+  const search = (document.getElementById('b2bInviteSearch')?.value || '').toLowerCase();
+  const items = b2bInviteTab === 'people' ? b2bInvitePeople : b2bInviteBots;
+  const filtered = items.filter(i => i.name.toLowerCase().includes(search));
+  list.innerHTML = filtered.map((item, idx) => `
+    <div onclick="selectB2BInvite(${idx})" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;border:1.5px solid ${b2bInviteSelected === idx ? '#6c5ce7' : 'transparent'};background:${b2bInviteSelected === idx ? 'rgba(108,92,231,0.06)' : 'transparent'};transition:all 0.15s;" onmouseover="if(${b2bInviteSelected}!==${idx})this.style.background='rgba(0,0,0,0.02)'" onmouseout="if(${b2bInviteSelected}!==${idx})this.style.background='transparent'">
+      <div style="width:28px;height:28px;border-radius:50%;background:${item.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:${item.avatar.length > 2 ? '12' : '11'}px;font-weight:600;flex-shrink:0;">${item.avatar}</div>
+      <span style="font-size:12px;font-weight:500;color:var(--text-heading);">${item.name}</span>
+    </div>`).join('');
+}
+function filterB2BInviteList() { renderB2BInviteList(); }
+function selectB2BInvite(idx) { b2bInviteSelected = idx; renderB2BInviteList(); }
+function confirmB2BInvite() {
+  const items = b2bInviteTab === 'people' ? b2bInvitePeople : b2bInviteBots;
+  if (b2bInviteSelected === null || !items[b2bInviteSelected]) return;
+  const item = items[b2bInviteSelected];
+  const role = document.getElementById('b2bInviteRole')?.value || 'member';
+  const roleLabel = role === 'admin' ? '管理员' : '普通成员';
+  const roleIcon = role === 'admin' ? '🛡' : '👁';
+  // Add to permission table
+  const table = document.querySelector('.b2b-perm-table tbody');
+  if (table) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span style="font-size:10px;">${roleIcon} ${roleLabel}</span></td><td style="color:var(--accent);">${item.name}</td><td style="font-size:11px;">${role === 'admin' ? '查看日志、调整配置' : '仅查看输出/结果'}</td>`;
+    tr.style.animation = 'staggerIn 0.3s ease both';
+    table.appendChild(tr);
+  }
+  // Hide panel and show success
+  toggleB2BInvite();
+  // Add system message in chat
+  if (channelMessages[currentChannel]) {
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    channelMessages[currentChannel].push({ name: '系统', avatar: '📨', color: 'linear-gradient(135deg,#dfe6e9,#b2bec3)', text: `已邀请 ${item.name} 加入协作对话（角色: ${roleLabel}）`, time: timeStr, isAgent: false, b2bAgent: 0 });
+    renderChat();
+  }
 }
 
 function sendB2BCommand() {
