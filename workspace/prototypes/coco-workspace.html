@@ -6654,7 +6654,7 @@ function updateChatHeader() {
       </div>
       <div class="b2b-command-controls">
         <button class="b2b-ctrl-btn" onclick="showToast('协作已暂停')">⏸ 暂停协作</button>
-        <button class="b2b-ctrl-btn" onclick="showToast('重新分配功能开发中')">🔄 重新分配</button>
+        <button class="b2b-ctrl-btn" onclick="openB2BReassign()">🔄 重新分配</button>
         <div class="b2b-auto-toggle">
           <label class="toggle-switch" style="transform:scale(0.85);">
             <input type="checkbox" ${autoRunChecked} onchange="toggleB2BAutoRun(this)">
@@ -7061,6 +7061,96 @@ function confirmB2BInvite() {
     channelMessages[currentChannel].push({ name: '系统', avatar: '📨', color: 'linear-gradient(135deg,#dfe6e9,#b2bec3)', text: `已邀请 ${item.name} 加入协作对话（角色: ${roleLabel}）`, time: timeStr, isAgent: false, b2bAgent: 0 });
     renderChat();
   }
+}
+
+// B2B Reassign Panel
+const b2bReplacementAgents = [
+  { name: 'DataBot Pro', avatar: '📊', framework: 'OpenClaw', color: 'linear-gradient(135deg,#00cec9,#00b894)' },
+  { name: 'DeepAnalyst', avatar: '🧠', framework: 'Claude', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)' },
+  { name: 'CodeBot v2', avatar: '💻', framework: 'COCO', color: 'linear-gradient(135deg,#fd79a8,#e84393)' },
+  { name: 'ResearchBot', avatar: '🔬', framework: 'GPT', color: 'linear-gradient(135deg,#fdcb6e,#e17055)' },
+];
+
+function openB2BReassign() {
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  if (!conv || !conv.b2b) return;
+  const info = channelInfoData[currentChannel];
+  const a1 = conv.b2b.agent1 || info?.agents?.[0] || { name: 'Agent 1' };
+  const a2 = conv.b2b.agent2 || info?.agents?.[1] || { name: 'Agent 2' };
+
+  // Create modal overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'chat-modal-overlay';
+  overlay.id = 'b2bReassignOverlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="chat-modal" style="max-width:420px;padding:24px;">
+      <div style="font-size:16px;font-weight:700;margin-bottom:16px;">🔄 重新分配 Agent</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">选择要替换的 Agent，然后选择替代者</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-heading);margin-bottom:6px;">替换哪个 Agent？</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div onclick="selectReassignTarget(0,this)" class="reassign-target" style="flex:1;padding:10px;border:1.5px solid var(--border-light);border-radius:8px;cursor:pointer;text-align:center;transition:all 0.15s;">
+          <div style="font-size:18px;margin-bottom:4px;">${a1.avatar || '🤖'}</div>
+          <div style="font-size:12px;font-weight:500;">${a1.name}</div>
+        </div>
+        <div onclick="selectReassignTarget(1,this)" class="reassign-target" style="flex:1;padding:10px;border:1.5px solid var(--border-light);border-radius:8px;cursor:pointer;text-align:center;transition:all 0.15s;">
+          <div style="font-size:18px;margin-bottom:4px;">${a2.avatar || '🤖'}</div>
+          <div style="font-size:12px;font-weight:500;">${a2.name}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-heading);margin-bottom:6px;">替换为：</div>
+      <div id="reassignAgentList" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;margin-bottom:14px;">
+        ${b2bReplacementAgents.map((a, i) => `
+          <div onclick="selectReassignAgent(${i},this)" class="reassign-agent-item" style="display:flex;align-items:center;gap:8px;padding:8px;border:1.5px solid transparent;border-radius:8px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.02)'" onmouseout="if(!this.classList.contains('selected'))this.style.background='transparent'">
+            <div style="width:32px;height:32px;border-radius:50%;background:${a.color};display:flex;align-items:center;justify-content:center;font-size:16px;">${a.avatar}</div>
+            <div><div style="font-size:12px;font-weight:500;">${a.name}</div><div style="font-size:10px;color:var(--text-muted);">${a.framework}</div></div>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="document.getElementById('b2bReassignOverlay').remove()" style="flex:1;padding:8px;border:1px solid var(--border-light);border-radius:8px;background:transparent;color:var(--text-body);font-size:12px;cursor:pointer;">取消</button>
+        <button onclick="confirmB2BReassign()" style="flex:1;padding:8px;border:none;border-radius:8px;background:#6c5ce7;color:#fff;font-size:12px;font-weight:500;cursor:pointer;">确认替换</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+let reassignTargetIdx = null;
+let reassignAgentIdx = null;
+
+function selectReassignTarget(idx, el) {
+  reassignTargetIdx = idx;
+  document.querySelectorAll('.reassign-target').forEach(d => { d.style.borderColor = 'var(--border-light)'; d.style.background = 'transparent'; });
+  el.style.borderColor = '#6c5ce7'; el.style.background = 'rgba(108,92,231,0.06)';
+}
+function selectReassignAgent(idx, el) {
+  reassignAgentIdx = idx;
+  document.querySelectorAll('.reassign-agent-item').forEach(d => { d.classList.remove('selected'); d.style.borderColor = 'transparent'; d.style.background = 'transparent'; });
+  el.classList.add('selected'); el.style.borderColor = '#6c5ce7'; el.style.background = 'rgba(108,92,231,0.06)';
+}
+function confirmB2BReassign() {
+  if (reassignTargetIdx === null || reassignAgentIdx === null) { showToast('请先选择要替换的 Agent 和替代者'); return; }
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  const info = channelInfoData[currentChannel];
+  const oldAgent = reassignTargetIdx === 0 ? (conv.b2b.agent1 || info?.agents?.[0]) : (conv.b2b.agent2 || info?.agents?.[1]);
+  const newAgent = b2bReplacementAgents[reassignAgentIdx];
+  // Update conversation data
+  const agentKey = reassignTargetIdx === 0 ? 'agent1' : 'agent2';
+  if (conv.b2b) conv.b2b[agentKey] = { name: newAgent.name, avatar: newAgent.avatar, framework: newAgent.framework, status: 'online' };
+  if (info?.agents?.[reassignTargetIdx]) Object.assign(info.agents[reassignTargetIdx], { name: newAgent.name, avatar: newAgent.avatar, framework: newAgent.framework, status: 'online' });
+  // System message
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  if (channelMessages[currentChannel]) {
+    channelMessages[currentChannel].push({ name: '系统', avatar: '🔄', color: 'linear-gradient(135deg,#dfe6e9,#b2bec3)', text: `Agent 已重新分配：${oldAgent?.name || 'Agent'} → ${newAgent.name}（${newAgent.framework}）\n${newAgent.name} 正在接入对话...`, time: timeStr, isAgent: false, b2bAgent: 0 });
+    // New agent greeting
+    setTimeout(() => {
+      channelMessages[currentChannel].push({ name: newAgent.name, avatar: newAgent.avatar, color: newAgent.color, model: newAgent.framework, text: `已接入协作对话，正在读取上下文和历史消息... 准备就绪，可以继续任务。`, time: timeStr, isAgent: true, b2bAgent: reassignTargetIdx === 0 ? 1 : 2 });
+      renderChat();
+    }, 800);
+  }
+  document.getElementById('b2bReassignOverlay')?.remove();
+  renderChat();
+  reassignTargetIdx = null; reassignAgentIdx = null;
 }
 
 function sendB2BCommand() {
