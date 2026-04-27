@@ -6371,6 +6371,8 @@ function updateChatHeader() {
       </div>`;
     modelEl.style.display = 'none';
     if (toggleBtn) toggleBtn.style.display = '';
+    const searchBtn = document.getElementById('msgSearchToggle');
+    if (searchBtn) searchBtn.style.display = 'none';
 
     // Add permission badge area to header spacer
     const spacer = headerEl.querySelector('.chat-header-spacer');
@@ -6419,6 +6421,9 @@ function updateChatHeader() {
   // Reset spacer
   const spacer = headerEl.querySelector('.chat-header-spacer');
   if (spacer) spacer.innerHTML = '';
+  // Restore search button (hidden in B2B mode)
+  const searchBtn = document.getElementById('msgSearchToggle');
+  if (searchBtn) searchBtn.style.display = '';
 
   if (conv.model) {
     modelEl.textContent = conv.model;
