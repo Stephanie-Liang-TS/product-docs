@@ -3782,11 +3782,14 @@ body {
   font-family: inherit;
   outline: none;
   resize: none;
-  min-height: 36px;
-  max-height: 80px;
+  min-height: 20px;
+  max-height: 120px;
+  height: auto;
+  overflow-y: auto;
   background: var(--bg-card);
   color: var(--text-body);
   transition: border-color var(--transition-fast);
+  line-height: 1.4;
 }
 .b2b-command-textarea:focus {
   border-color: #6c5ce7;
@@ -6649,7 +6652,7 @@ function updateChatHeader() {
     cmdHTML.innerHTML = `
       <div class="b2b-command-label">⚡ 指令模式 — 向 Agent 发送指令</div>
       <div class="b2b-command-wrap">
-        <textarea class="b2b-command-textarea" placeholder="输入指令给 Agent（例：暂停当前任务、重新分析上周数据...）" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendB2BCommand()}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"></textarea>
+        <textarea class="b2b-command-textarea" placeholder="输入指令给 Agent..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendB2BCommand()}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"></textarea>
         <button class="b2b-command-send" onclick="sendB2BCommand()" title="发送指令">↑</button>
       </div>
       <div class="b2b-command-controls">
