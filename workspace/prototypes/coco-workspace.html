@@ -3598,6 +3598,310 @@ body {
   padding: 4px 10px; cursor: pointer; transition: all 0.2s;
 }
 .wt-restart-btn:hover { color: var(--accent); border-color: rgba(211,87,254,0.3); }
+
+/* ============================================================
+   BOT-TO-BOT (B2B) COLLABORATION
+   ============================================================ */
+/* Conversation list — B2B entry */
+.conv-item-tag.b2b {
+  background: linear-gradient(135deg, rgba(108,92,231,0.15), rgba(211,87,254,0.12));
+  color: #6c5ce7;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.conv-item-b2b-lock {
+  font-size: 10px;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+.conv-item-avatar.b2b-avatar {
+  position: relative;
+  background: linear-gradient(135deg, rgba(108,92,231,0.12), rgba(211,87,254,0.08)) !important;
+  font-size: 14px !important;
+  letter-spacing: -2px;
+}
+
+/* B2B Chat header */
+.b2b-chat-header-agents {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.b2b-agent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(108,92,231,0.08);
+  color: #6c5ce7;
+}
+.b2b-agent-pill .b2b-agent-status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.b2b-agent-pill .b2b-agent-status.online { background: var(--success); }
+.b2b-agent-pill .b2b-agent-status.busy { background: #fdcb6e; }
+.b2b-agent-framework {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  background: rgba(0,0,0,0.04);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.b2b-header-arrow {
+  font-size: 16px;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+/* Observer banner */
+.b2b-observer-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin: 0 12px;
+  background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(211,87,254,0.04));
+  border: 1px solid rgba(108,92,231,0.12);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #6c5ce7;
+  flex-shrink: 0;
+  animation: slideDown 0.2s ease;
+}
+.b2b-observer-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(108,92,231,0.12);
+  color: #6c5ce7;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Permission display in chat header */
+.b2b-perm-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.b2b-perm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(108,92,231,0.08);
+  color: #6c5ce7;
+}
+.b2b-perm-viewers {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Permission model panel in info */
+.b2b-perm-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+.b2b-perm-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.b2b-perm-table td {
+  font-size: 12px;
+  color: var(--text-body);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.b2b-perm-table tr.current-user td {
+  color: var(--accent);
+  font-weight: 600;
+}
+.b2b-perm-icon {
+  font-size: 14px;
+  margin-right: 2px;
+}
+.b2b-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.b2b-role-badge.owner { background: rgba(211,87,254,0.12); color: var(--accent); }
+.b2b-role-badge.admin { background: rgba(9,132,227,0.1); color: #0984e3; }
+.b2b-role-badge.member { background: rgba(0,0,0,0.05); color: var(--text-muted); }
+
+/* Command mode input */
+.b2b-command-input-area {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-light);
+  background: rgba(108,92,231,0.02);
+}
+.b2b-command-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6c5ce7;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.b2b-command-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.b2b-command-textarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid rgba(108,92,231,0.2);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  min-height: 36px;
+  max-height: 80px;
+  background: var(--bg-card);
+  color: var(--text-body);
+  transition: border-color var(--transition-fast);
+}
+.b2b-command-textarea:focus {
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 3px rgba(108,92,231,0.1);
+}
+.b2b-command-textarea::placeholder { color: var(--text-muted); }
+.b2b-command-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: #6c5ce7;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.b2b-command-send:hover { background: #5a4bd4; transform: scale(1.05); }
+.b2b-command-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.b2b-ctrl-btn {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-body);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.b2b-ctrl-btn:hover { border-color: #6c5ce7; color: #6c5ce7; }
+.b2b-ctrl-btn.danger { border-color: rgba(231,76,60,0.3); color: #e74c3c; }
+.b2b-ctrl-btn.danger:hover { border-color: #e74c3c; background: rgba(231,76,60,0.04); }
+.b2b-auto-toggle {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* B2B messages — distinct agent colors */
+.chat-msg-b2b-agent1 .chat-msg-content {
+  background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(150,187,255,0.06));
+  border-color: rgba(108,92,231,0.12);
+}
+.chat-msg-b2b-agent2 .chat-msg-content {
+  background: linear-gradient(135deg, rgba(0,184,148,0.06), rgba(85,239,196,0.06));
+  border-color: rgba(0,184,148,0.12);
+}
+
+/* Agent collaboration tab in agent details */
+.b2b-collab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.b2b-collab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.b2b-collab-item:hover {
+  border-color: rgba(108,92,231,0.2);
+  background: rgba(108,92,231,0.03);
+}
+.b2b-collab-item-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.b2b-collab-item-info { flex: 1; min-width: 0; }
+.b2b-collab-item-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.b2b-collab-item-preview {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.b2b-collab-item-status {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.b2b-collab-item-status.active { background: rgba(0,206,201,0.1); color: #00a8a3; }
+.b2b-collab-item-status.paused { background: rgba(253,203,110,0.15); color: #d4a017; }
+.b2b-collab-item-status.completed { background: rgba(0,0,0,0.05); color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -4530,6 +4834,9 @@ const conversationsData = [
   { id: 'ch-deploy-log', name: '部署日志', avatar: '🚀', color: 'linear-gradient(135deg,#00b894,#55efc4)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '08:30', preview: 'Code Bot: v3.2.1-rc3 已部署到 staging', unread: 2, model: null, publisher: 'Code Bot', subscribers: 12 },
   { id: 'ch-code-review', name: 'Code Review', avatar: '🔍', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '08:45', preview: 'Code Bot: PR #132 审查报告', unread: 1, model: null, publisher: 'Code Bot', subscribers: 8 },
   { id: 'ch-announcements', name: '产品公告', avatar: '📢', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '09:00', preview: 'Stephanie: v3.2 发布计划', unread: 0, model: null, publisher: 'Stephanie', subscribers: 15 },
+  // Bot-to-Bot collaboration conversations
+  { id: 'b2b-zylos-databot', name: 'Zylos ↔ DataBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '11:20', preview: 'DataBot: 数据清洗完成，已输出 3 张报表', unread: 1, model: null, b2b: { agent1: { name: 'COCO Agent', avatar: '🐙', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析师', avatar: '📊', framework: 'OpenClaw', status: 'busy' }, permRole: 'owner', viewers: 3, autoRun: true } },
+  { id: 'b2b-codebot-testbot', name: 'CodeBot ↔ TestBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '10:05', preview: 'TestBot: 47/50 用例通过，3 个回归问题', unread: 0, model: null, b2b: { agent1: { name: '代码助手', avatar: '🤖', framework: 'Zylos', status: 'online' }, agent2: { name: '测试 Agent', avatar: '🧪', framework: 'Zylos', status: 'online' }, permRole: 'owner', viewers: 4, autoRun: false } },
 ];
 
 const conversationsCodeData = [...conversationsData];
@@ -4546,6 +4853,9 @@ const conversationsOfficeData = [
   { id: 'ch-auto-report', name: '自动日报', avatar: '📊', color: 'linear-gradient(135deg,#00b894,#55efc4)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '08:00', preview: '数据分析 Agent: 昨日数据日报', unread: 0, model: null, publisher: '数据分析 Agent', subscribers: 10 },
   { id: 'ch-content-ideas', name: '选题推荐', avatar: '💡', color: 'linear-gradient(135deg,#fdcb6e,#f39c12)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '09:00', preview: '内容助手: 今日热门话题 TOP 5', unread: 1, model: null, publisher: '内容助手', subscribers: 6 },
   { id: 'ch-team-updates', name: '团队公告', avatar: '📢', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', tag: '频道', type: 'channel', channelType: 'broadcast', time: '09:30', preview: 'Stephanie: 本周工作安排', unread: 0, model: null, publisher: 'Stephanie', subscribers: 15 },
+  // Bot-to-Bot collaboration conversations (office mode)
+  { id: 'b2b-zylos-databot', name: 'Zylos ↔ DataBot', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '11:20', preview: 'DataBot: 数据清洗完成，已输出 3 张报表', unread: 1, model: null, b2b: { agent1: { name: 'COCO Agent', avatar: '🐙', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析 Agent', avatar: '📊', framework: 'OpenClaw', status: 'busy' }, permRole: 'owner', viewers: 3, autoRun: true } },
+  { id: 'b2b-content-data', name: '内容助手 ↔ 数据分析', avatar: '', type: 'b2b', tag: 'Agent 协作', time: '09:45', preview: '内容助手: 基于数据分析结果生成了 5 篇选题', unread: 0, model: null, b2b: { agent1: { name: '内容助手', avatar: '✍️', framework: 'COCO', status: 'online' }, agent2: { name: '数据分析 Agent', avatar: '📊', framework: 'OpenClaw', status: 'online' }, permRole: 'owner', viewers: 2, autoRun: true } },
 ];
 
 // Info panel data per channel
@@ -4773,6 +5083,65 @@ const channelInfoData = {
       { name: 'Maya', avatar: 'M', color: '#fd79a8' },
       { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', isAgent: true }
     ]
+  },
+  // ===== Bot-to-Bot Collaboration Info =====
+  'b2b-zylos-databot': {
+    title: 'Agent 协作', isB2B: true,
+    groupName: 'COCO Agent ↔ 数据分析师',
+    description: 'COCO Agent 协调数据分析任务，数据分析师执行数据清洗、统计和报表生成。自动化数据处理流水线。',
+    agents: [
+      { name: 'COCO Agent', avatar: '🐙', color: '#d357fe', framework: 'COCO', status: 'online' },
+      { name: '数据分析师', avatar: '📊', color: '#0984e3', framework: 'OpenClaw', status: 'busy' }
+    ],
+    permissions: {
+      currentRole: 'owner',
+      roles: [
+        { role: 'owner', label: '创建者', user: 'Stephanie', abilities: '完整读写、干预对话、修改指令、暂停/删除' },
+        { role: 'admin', label: '管理员', user: 'Alex', abilities: '查看日志、调整配置、不可删除' },
+        { role: 'member', label: '普通成员', user: '张伟', abilities: '仅查看输出/结果' },
+        { role: 'member', label: '普通成员', user: '李思琪', abilities: '仅查看输出/结果' }
+      ]
+    },
+    createdAt: '2026-04-20',
+    status: 'running'
+  },
+  'b2b-codebot-testbot': {
+    title: 'Agent 协作', isB2B: true,
+    groupName: '代码助手 ↔ 测试 Agent',
+    description: '代码助手提交代码变更后，测试 Agent 自动运行测试套件并反馈结果。CI/CD 协作流水线。',
+    agents: [
+      { name: '代码助手', avatar: '🤖', color: '#6c5ce7', framework: 'Zylos', status: 'online' },
+      { name: '测试 Agent', avatar: '🧪', color: '#00cec9', framework: 'Zylos', status: 'online' }
+    ],
+    permissions: {
+      currentRole: 'owner',
+      roles: [
+        { role: 'owner', label: '创建者', user: 'Stephanie', abilities: '完整读写、干预对话、修改指令、暂停/删除' },
+        { role: 'admin', label: '管理员', user: 'Alex', abilities: '查看日志、调整配置、不可删除' },
+        { role: 'admin', label: '管理员', user: '张伟', abilities: '查看日志、调整配置、不可删除' },
+        { role: 'member', label: '普通成员', user: '陈明辉', abilities: '仅查看输出/结果' }
+      ]
+    },
+    createdAt: '2026-04-18',
+    status: 'running'
+  },
+  'b2b-content-data': {
+    title: 'Agent 协作', isB2B: true,
+    groupName: '内容助手 ↔ 数据分析 Agent',
+    description: '数据分析 Agent 提供用户行为和热点趋势数据，内容助手基于数据自动生成内容选题和文案。',
+    agents: [
+      { name: '内容助手', avatar: '✍️', color: '#d357fe', framework: 'COCO', status: 'online' },
+      { name: '数据分析 Agent', avatar: '📊', color: '#00b894', framework: 'OpenClaw', status: 'online' }
+    ],
+    permissions: {
+      currentRole: 'owner',
+      roles: [
+        { role: 'owner', label: '创建者', user: 'Stephanie', abilities: '完整读写、干预对话、修改指令、暂停/删除' },
+        { role: 'member', label: '普通成员', user: 'Maya', abilities: '仅查看输出/结果' }
+      ]
+    },
+    createdAt: '2026-04-22',
+    status: 'running'
   }
 };
 
@@ -4911,7 +5280,25 @@ const channelMessages = {
         { author: 'Maya', avatar: 'M', color: '#fd79a8', text: '内容排期已更新到共享日历，这周 5 条待发', time: '09:40' }
       ]},
     { id: 'tu2', author: 'Stephanie', avatar: 'S', color: '#f093fb', isAgent: false, time: '4/19 09:00', title: '上周工作安排 (4/19 - 4/25)', content: '📋 <b>上周重点</b><br><br>🔴 重点：产品 v3.2 QA<br>🟡 KOL 合作洽谈<br>🟢 日常运营', likes: 5, comments: [] }
-  ]}
+  ]},
+  // ===== Bot-to-Bot Collaboration Messages =====
+  'b2b-zylos-databot': [
+    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'COCO', text: '启动数据分析任务：请从 analytics_raw 数据库提取过去 7 天的用户行为数据，按以下维度聚合：\n1. DAU/WAU 趋势\n2. 功能使用频率 Top 10\n3. 用户留存漏斗\n4. 异常流量检测', time: '10:30', isAgent: true, b2bAgent: 1 },
+    { name: '数据分析师', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', model: 'OpenClaw', text: '收到任务。开始执行数据提取...\n\n<b>步骤 1/4:</b> 连接 analytics_raw 数据库 ✅\n<b>步骤 2/4:</b> 提取 7 天原始数据 (2.3M 行) ✅\n<b>步骤 3/4:</b> 数据清洗与聚合中...', time: '10:32', isAgent: true, b2bAgent: 2 },
+    { name: '数据分析师', avatar: '📊', color: 'linear-gradient(135deg,#0984e3,#74b9ff)', model: 'OpenClaw', text: '数据清洗完成。关键发现：\n\n📊 <b>DAU 趋势:</b> 日均 12,340 (+8.2% WoW)\n📊 <b>Top 功能:</b> 对话(89%)、任务看板(67%)、Agent管理(45%)\n📊 <b>7日留存:</b> 42.3% (目标 40%，达标)\n⚠️ <b>异常:</b> 4/25 凌晨 2-4 点流量激增 340%，疑似爬虫\n\n已生成 3 张报表，正在输出到共享目录...', time: '11:15', isAgent: true, b2bAgent: 2 },
+    { name: 'COCO Agent', avatar: '🐙', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'COCO', text: '报表已接收。对异常流量的处理建议：\n1. 已触发 IP 限流规则（阈值 100 req/min）\n2. 建议将可疑 IP 段加入观察名单\n3. 通知 @Security Bot 进行深度分析\n\n数据报表已同步到 #产品公告 频道。', time: '11:20', isAgent: true, b2bAgent: 1 }
+  ],
+  'b2b-codebot-testbot': [
+    { name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', model: 'Zylos · Claude', text: '提交代码变更：<code class="md-inline-code">feat/user-permissions-v2</code> 分支\n\n变更内容：\n- 重构权限模块，新增 RBAC 模型\n- 新增 6 个 API 端点\n- 修改 12 个现有接口的权限校验逻辑\n\n请运行完整测试套件。', time: '09:30', isAgent: true, b2bAgent: 1 },
+    { name: '测试 Agent', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', model: 'Zylos · Claude', text: '收到，开始执行测试...\n\n<b>测试计划:</b>\n- 单元测试: 32 个用例\n- 集成测试: 12 个用例\n- E2E 测试: 6 个场景\n\n预计耗时 3-5 分钟。', time: '09:31', isAgent: true, b2bAgent: 2 },
+    { name: '测试 Agent', avatar: '🧪', color: 'linear-gradient(135deg,#00cec9,#55efc4)', model: 'Zylos · Claude', text: '测试执行完成。结果如下：\n\n✅ 单元测试: 32/32 通过\n✅ 集成测试: 11/12 通过\n❌ E2E 测试: 4/6 通过\n\n<b>失败用例:</b>\n1. <code class="md-inline-code">test_admin_role_escalation</code> — 管理员权限提升后旧 token 未失效\n2. <code class="md-inline-code">test_concurrent_permission_update</code> — 并发更新时出现竞态条件\n3. <code class="md-inline-code">test_mobile_permission_ui</code> — 移动端权限面板溢出\n\n总计: 47/50 通过 (94%)', time: '09:58', isAgent: true, b2bAgent: 2 },
+    { name: '代码助手', avatar: '🤖', color: 'linear-gradient(135deg,#6c5ce7,#a29bfe)', model: 'Zylos · Claude', text: '收到测试报告。针对 3 个失败用例的修复方案：\n\n1. Token 失效问题 → 添加 <code class="md-inline-code">invalidateUserSessions()</code> 到权限变更回调\n2. 竞态条件 → 引入乐观锁 + 版本号机制\n3. 移动端溢出 → 调整 CSS Grid 断点\n\n正在编写修复代码...提交后请重新测试这 3 个用例。', time: '10:05', isAgent: true, b2bAgent: 1 }
+  ],
+  'b2b-content-data': [
+    { name: '数据分析 Agent', avatar: '📊', color: 'linear-gradient(135deg,#00b894,#55efc4)', model: 'OpenClaw', text: '本周社媒数据分析完成。热点趋势 TOP 5：\n\n1. 🔥 AI 办公效率提升 (热度 95)\n2. 🔥 远程协作工具测评 (热度 87)\n3. 📈 智能客服案例分享 (热度 82)\n4. 📈 数据可视化教程 (热度 78)\n5. 📈 团队管理心得 (热度 71)\n\n用户画像更新：25-35 岁职场人占比 68%，最活跃时段 12:00-13:00。', time: '09:00', isAgent: true, b2bAgent: 2 },
+    { name: '内容助手', avatar: '✍️', color: 'linear-gradient(135deg,#d357fe,#96bbff)', model: 'COCO', text: '基于数据分析结果，已生成 5 篇内容选题：\n\n1. 《用 AI 助手把日报写作时间从 30 分钟压缩到 3 分钟》— 匹配热点 #1\n2. 《远程团队如何用 COCO 实现高效协作》— 匹配热点 #2\n3. 《智能客服实战：CSAT 从 3.8 提升到 4.8 的全过程》— 匹配热点 #3\n4. 《5 分钟搭建你的数据看板》— 匹配热点 #4\n5. 《我的 AI 团队管理方法论》— 匹配热点 #5\n\n建议优先发布 #1 和 #3，匹配度最高。', time: '09:30', isAgent: true, b2bAgent: 1 },
+    { name: '数据分析 Agent', avatar: '📊', color: 'linear-gradient(135deg,#00b894,#55efc4)', model: 'OpenClaw', text: '同意优先级建议。补充 SEO 数据：\n\n- "AI 办公效率" 关键词搜索量月均 12,000，竞争度中等\n- "智能客服 CSAT" 长尾词竞争度低，转化率高\n\n建议在 #1 文章中植入关键词："AI 助手"、"办公提效"、"自动化日报"。', time: '09:45', isAgent: true, b2bAgent: 2 }
+  ]
 };
 
 const tasksData = [
@@ -5628,8 +6015,29 @@ function renderConversationList() {
     const tagHTML = conv.tag === 'Agent' ? '<span class="conv-item-tag agent">Agent</span>'
       : conv.tag === 'Connector' ? '<span class="conv-item-tag connector">Connector</span>'
       : conv.tag === '群聊' ? '<span class="conv-item-tag group">群聊</span>'
-      : conv.tag === '频道' ? '<span class="conv-item-tag ch-broadcast">📡 频道</span>' : '';
+      : conv.tag === '频道' ? '<span class="conv-item-tag ch-broadcast">📡 频道</span>'
+      : conv.tag === 'Agent 协作' ? '<span class="conv-item-tag b2b">Agent 协作</span><span class="conv-item-b2b-lock">🔒</span>' : '';
     const unreadHTML = conv.unread > 0 ? `<span class="conv-item-unread">${conv.unread}</span>` : '';
+
+    // Bot-to-Bot: dual avatar
+    if (conv.type === 'b2b' && conv.b2b) {
+      const a1 = conv.b2b.agent1;
+      const a2 = conv.b2b.agent2;
+      return `
+        <div class="conv-item${activeClass}" data-conv="${conv.id}" onclick="switchChannel('${conv.id}')">
+          <div class="conv-item-avatar b2b-avatar" style="background:linear-gradient(135deg, rgba(108,92,231,0.12), rgba(211,87,254,0.08));font-size:14px;display:flex;gap:1px;align-items:center;justify-content:center;">${a1.avatar}<span style="font-size:8px;opacity:0.5;">↔</span>${a2.avatar}</div>
+          <div class="conv-item-body">
+            <div class="conv-item-top">
+              <span class="conv-item-name" style="font-size:12.5px;">${conv.name}</span>
+              ${tagHTML}
+              <span class="conv-item-time">${conv.time}</span>
+            </div>
+            <div class="conv-item-preview">${conv.preview}</div>
+          </div>
+          ${unreadHTML}
+        </div>`;
+    }
+
     const avatarFontSize = conv.avatar.length > 1 ? '18px' : '14px';
     return `
       <div class="conv-item${activeClass}" data-conv="${conv.id}" onclick="switchChannel('${conv.id}')">
@@ -5669,11 +6077,68 @@ function renderChat() {
     return;
   }
 
+  // Bot-to-Bot → render B2B chat view
+  if (conv && conv.type === 'b2b') {
+    renderB2BChat(container, conv);
+    return;
+  }
+
   const messages = channelMessages[currentChannel] || [];
   container.innerHTML = '';
   messages.forEach((msg, i) => {
     container.innerHTML += createMessageHTML(msg, i);
   });
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderB2BChat(container, conv) {
+  const info = channelInfoData[currentChannel];
+  const messages = channelMessages[currentChannel] || [];
+  const b2b = conv.b2b || {};
+  const a1 = b2b.agent1 || info?.agents?.[0] || {};
+  const a2 = b2b.agent2 || info?.agents?.[1] || {};
+
+  let html = '';
+
+  // Observer banner
+  html += `<div class="b2b-observer-banner">
+    <span class="b2b-observer-badge">旁观者</span>
+    <span>你正在查看 ${a1.name} 与 ${a2.name} 之间的 Agent 协作对话</span>
+  </div>`;
+
+  // Messages
+  messages.forEach((msg, i) => {
+    const agentIdx = msg.b2bAgent !== undefined ? msg.b2bAgent : (msg.name === a1.name ? 1 : 2);
+    const avFS = msg.avatar.length > 1 ? '14px' : '12px';
+    const textContent = renderMarkdown(msg.text);
+
+    // Human command
+    if (agentIdx === 0) {
+      html += `
+        <div class="chat-msg" id="chatMsg${i}" style="animation-delay:${i * 0.05}s">
+          <div class="avatar" style="background:${msg.color};font-size:${avFS}">${msg.avatar}</div>
+          <div style="min-width:0;flex:1;">
+            <div class="chat-msg-name">${msg.name} <span style="font-size:10px;font-weight:500;color:#6c5ce7;background:rgba(108,92,231,0.1);padding:1px 6px;border-radius:4px;">指令</span></div>
+            <div class="chat-msg-content" style="border-color:rgba(108,92,231,0.2);background:rgba(108,92,231,0.04);">${textContent}</div>
+            <div class="chat-msg-time">${msg.time}</div>
+          </div>
+        </div>`;
+    } else {
+      const agentClass = agentIdx === 1 ? 'chat-msg-b2b-agent1' : 'chat-msg-b2b-agent2';
+      const frameworkTag = msg.model ? `<span class="b2b-agent-framework">${msg.model}</span>` : '';
+      html += `
+        <div class="chat-msg chat-msg-agent ${agentClass}" id="chatMsg${i}" style="animation-delay:${i * 0.05}s">
+          <div class="avatar" style="background:${msg.color};font-size:${avFS}">${msg.avatar}</div>
+          <div style="min-width:0;flex:1;">
+            <div class="chat-msg-name">${msg.name} ${frameworkTag} <span class="badge badge-agent" style="font-size:9px;">Agent</span></div>
+            <div class="chat-msg-content">${textContent}</div>
+            <div class="chat-msg-time">${msg.time}</div>
+          </div>
+        </div>`;
+    }
+  });
+
+  container.innerHTML = html;
   container.scrollTop = container.scrollHeight;
 }
 
@@ -5867,8 +6332,94 @@ function createMessageHTML(msg, index) {
 function updateChatHeader() {
   const conv = conversationsData.find(c => c.id === currentChannel);
   if (!conv) return;
-  document.getElementById('chatHeaderName').textContent = conv.name;
+
+  const headerEl = document.getElementById('chatHeader');
   const modelEl = document.getElementById('chatHeaderModel');
+  const toggleBtn = document.querySelector('.chat-header-toggle-info');
+  const infoPanel = document.getElementById('chatInfoPanel');
+  const inputArea = document.querySelector('.chat-input-enhanced');
+  const typingEl = document.getElementById('typingIndicator');
+
+  // Remove existing B2B command input if present
+  const existingB2BInput = document.getElementById('b2bCommandArea');
+  if (existingB2BInput) existingB2BInput.remove();
+
+  // Bot-to-Bot — custom header and command mode
+  if (conv.type === 'b2b') {
+    const b2b = conv.b2b || {};
+    const info = channelInfoData[currentChannel];
+    const a1 = b2b.agent1 || info?.agents?.[0] || {};
+    const a2 = b2b.agent2 || info?.agents?.[1] || {};
+    const perm = info?.permissions || {};
+    const viewers = perm.roles?.length || b2b.viewers || 0;
+    const roleLabel = perm.currentRole === 'owner' ? '创建者' : perm.currentRole === 'admin' ? '管理员' : '成员';
+
+    // Replace header content
+    document.getElementById('chatHeaderName').innerHTML = `
+      <div class="b2b-chat-header-agents">
+        <span class="b2b-agent-pill">
+          <span class="b2b-agent-status ${a1.status || 'online'}"></span>
+          ${a1.name || 'Agent 1'}
+          <span class="b2b-agent-framework">${a1.framework || ''}</span>
+        </span>
+        <span class="b2b-header-arrow">↔</span>
+        <span class="b2b-agent-pill">
+          <span class="b2b-agent-status ${a2.status || 'online'}"></span>
+          ${a2.name || 'Agent 2'}
+          <span class="b2b-agent-framework">${a2.framework || ''}</span>
+        </span>
+      </div>`;
+    modelEl.style.display = 'none';
+    if (toggleBtn) toggleBtn.style.display = '';
+
+    // Add permission badge area to header spacer
+    const spacer = headerEl.querySelector('.chat-header-spacer');
+    if (spacer) {
+      spacer.innerHTML = `<div class="b2b-perm-area" style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+        <span class="b2b-perm-badge">🔒 你的角色: ${roleLabel}</span>
+        <span class="b2b-perm-viewers">👁 ${viewers} 人可见</span>
+      </div>`;
+    }
+
+    // Hide regular input, show command mode input
+    if (inputArea) inputArea.style.display = 'none';
+    if (typingEl) typingEl.style.display = 'none';
+
+    // Ensure info panel is expanded for B2B
+    if (infoPanel) infoPanel.classList.remove('collapsed');
+
+    // Insert command mode input area
+    const chatMain = document.getElementById('chatMain');
+    const autoRunChecked = b2b.autoRun ? 'checked' : '';
+    const cmdHTML = document.createElement('div');
+    cmdHTML.id = 'b2bCommandArea';
+    cmdHTML.className = 'b2b-command-input-area';
+    cmdHTML.innerHTML = `
+      <div class="b2b-command-label">⚡ 指令模式 — 向 Agent 发送指令</div>
+      <div class="b2b-command-wrap">
+        <textarea class="b2b-command-textarea" placeholder="输入指令给 Agent（例：暂停当前任务、重新分析上周数据...）" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendB2BCommand()}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"></textarea>
+        <button class="b2b-command-send" onclick="sendB2BCommand()" title="发送指令">↑</button>
+      </div>
+      <div class="b2b-command-controls">
+        <button class="b2b-ctrl-btn" onclick="showToast('协作已暂停')">⏸ 暂停协作</button>
+        <button class="b2b-ctrl-btn" onclick="showToast('重新分配功能开发中')">🔄 重新分配</button>
+        <div class="b2b-auto-toggle">
+          <label class="toggle-switch" style="transform:scale(0.85);">
+            <input type="checkbox" ${autoRunChecked} onchange="toggleB2BAutoRun(this)">
+            <span class="toggle-slider"></span>
+          </label>
+          <span id="b2bAutoLabel">${b2b.autoRun ? '自动运行' : '每步确认'}</span>
+        </div>
+      </div>`;
+    chatMain.appendChild(cmdHTML);
+    return;
+  }
+
+  document.getElementById('chatHeaderName').textContent = conv.name;
+  // Reset spacer
+  const spacer = headerEl.querySelector('.chat-header-spacer');
+  if (spacer) spacer.innerHTML = '';
+
   if (conv.model) {
     modelEl.textContent = conv.model;
     modelEl.style.display = '';
@@ -5876,11 +6427,7 @@ function updateChatHeader() {
     modelEl.style.display = 'none';
   }
   // Hide info panel toggle for DM conversations
-  const toggleBtn = document.querySelector('.chat-header-toggle-info');
-  const infoPanel = document.getElementById('chatInfoPanel');
   // Hide input area for channels (broadcast = read-only)
-  const inputArea = document.querySelector('.chat-input-enhanced');
-  const typingEl = document.getElementById('typingIndicator');
   if (conv.type === 'channel') {
     if (inputArea) inputArea.style.display = 'none';
     if (typingEl) typingEl.style.display = 'none';
@@ -5930,6 +6477,12 @@ function renderInfoPanel() {
   // Broadcast channel → special info panel
   if (info && info.isChannel && info.channelType === 'broadcast') {
     renderBroadcastInfoPanel(container, info, conv);
+    return;
+  }
+
+  // Bot-to-Bot → special B2B info panel
+  if (info && info.isB2B) {
+    renderB2BInfoPanel(container, info, conv);
     return;
   }
 
@@ -6078,6 +6631,146 @@ function renderBroadcastInfoPanel(container, info, conv) {
       <div class="info-section-label">订阅者 (${(info.subscribers||[]).length})</div>
       <div class="info-members">${subsHTML}</div>
     </div>`;
+}
+
+function renderB2BInfoPanel(container, info, conv) {
+  const b2b = conv?.b2b || {};
+  const agents = info.agents || [];
+  const perm = info.permissions || {};
+  const closeBtn = `<button onclick="toggleInfoPanel()" title="收起面板" style="width:28px;height:28px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:16px;transition:all .15s;flex-shrink:0;" onmouseover="this.style.background='var(--bg-glass)';this.style.color='var(--text-heading)'" onmouseout="this.style.background='transparent';this.style.color='var(--text-muted)'">✕</button>`;
+
+  // Agent list
+  const agentsHTML = agents.map(a => {
+    const avFS = a.avatar.length > 1 ? '16px' : '13px';
+    const statusColor = a.status === 'online' ? '#00cec9' : a.status === 'busy' ? '#fdcb6e' : '#ccc';
+    const statusLabel = a.status === 'online' ? '在线' : a.status === 'busy' ? '忙碌' : '离线';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+      <div class="info-member-avatar" style="background:${a.color};font-size:${avFS}">${a.avatar}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${a.name}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${a.framework}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:${statusColor};"></span>
+        <span style="font-size:11px;color:var(--text-muted);">${statusLabel}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Permission table
+  const permHTML = (perm.roles || []).map(r => {
+    const isCurrent = r.user === 'Stephanie';
+    const rowClass = isCurrent ? ' class="current-user"' : '';
+    const roleIcon = r.role === 'owner' ? '👑' : r.role === 'admin' ? '🔧' : '👁';
+    const roleBadgeClass = r.role;
+    return `<tr${rowClass}>
+      <td><span class="b2b-role-badge ${roleBadgeClass}">${roleIcon} ${r.label}</span></td>
+      <td>${r.user}${isCurrent ? ' (你)' : ''}</td>
+      <td style="font-size:11px;color:var(--text-muted);">${r.abilities}</td>
+    </tr>`;
+  }).join('');
+
+  // Collaboration chats this agent participates in
+  const allB2BConvs = conversationsData.filter(c => c.type === 'b2b');
+  const relatedB2B = allB2BConvs.filter(c => c.id !== currentChannel);
+  const collabHTML = relatedB2B.map(c => {
+    const b = c.b2b || {};
+    return `<div class="b2b-collab-item" onclick="switchChannel('${c.id}')">
+      <span class="b2b-collab-item-icon">${(b.agent1?.avatar || '') + '↔' + (b.agent2?.avatar || '')}</span>
+      <div class="b2b-collab-item-info">
+        <div class="b2b-collab-item-name">${c.name}</div>
+        <div class="b2b-collab-item-preview">${c.preview}</div>
+      </div>
+      <span class="b2b-collab-item-status active">运行中</span>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="info-panel-title" style="margin-bottom:0;">Agent 协作</div>${closeBtn}
+    </div>
+    <div style="margin-bottom:16px;"></div>
+    <div class="info-section">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <span style="font-size:18px;">🤖↔🤖</span>
+        <div class="info-group-name" style="margin-bottom:0;">${info.groupName}</div>
+      </div>
+      <div class="info-group-desc">${info.description}</div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <span style="font-size:11px;color:var(--text-muted);">创建于 ${info.createdAt || '—'}</span>
+        <span style="font-size:11px;font-weight:600;color:#00a8a3;background:rgba(0,206,201,0.1);padding:1px 8px;border-radius:4px;">${info.status === 'running' ? '运行中' : '已暂停'}</span>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-section-label">参与 Agent (${agents.length})</div>
+      ${agentsHTML}
+    </div>
+    <div class="info-section">
+      <div class="info-section-label">权限模型</div>
+      <div style="padding:8px 10px;background:rgba(108,92,231,0.06);border-radius:8px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:600;color:#6c5ce7;margin-bottom:4px;">🔒 你的角色: ${perm.currentRole === 'owner' ? '创建者 (Owner)' : perm.currentRole === 'admin' ? '管理员 (Admin)' : '普通成员 (Member)'}</div>
+        <div style="font-size:11px;color:var(--text-muted);">完整读写、干预对话、修改指令、暂停/删除</div>
+      </div>
+      <table class="b2b-perm-table">
+        <thead><tr><th>角色</th><th>用户</th><th>权限</th></tr></thead>
+        <tbody>${permHTML}</tbody>
+      </table>
+    </div>
+    ${relatedB2B.length > 0 ? `<div class="info-section">
+      <div class="info-section-label">其他协作对话</div>
+      <div class="b2b-collab-list">${collabHTML}</div>
+    </div>` : ''}`;
+}
+
+function sendB2BCommand() {
+  const textarea = document.querySelector('.b2b-command-textarea');
+  if (!textarea) return;
+  const text = textarea.value.trim();
+  if (!text) return;
+  textarea.value = '';
+  textarea.style.height = 'auto';
+
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+  // Add command as a special message
+  if (!channelMessages[currentChannel]) channelMessages[currentChannel] = [];
+  channelMessages[currentChannel].push({
+    name: 'Stephanie',
+    avatar: 'S',
+    color: 'linear-gradient(135deg,#f093fb,#f5576c)',
+    model: '指令',
+    text: text,
+    time: timeStr,
+    isAgent: false,
+    b2bAgent: 0 // 0 = human command
+  });
+  renderChat();
+
+  // Simulate agent acknowledgment
+  setTimeout(() => {
+    const conv = conversationsData.find(c => c.id === currentChannel);
+    const a1 = conv?.b2b?.agent1 || {};
+    channelMessages[currentChannel].push({
+      name: a1.name || 'Agent',
+      avatar: a1.avatar || '🤖',
+      color: 'linear-gradient(135deg,#d357fe,#96bbff)',
+      model: a1.framework || 'Agent',
+      text: '收到指令，正在执行...',
+      time: timeStr,
+      isAgent: true,
+      b2bAgent: 1
+    });
+    renderChat();
+  }, 800);
+}
+
+function toggleB2BAutoRun(checkbox) {
+  const label = document.getElementById('b2bAutoLabel');
+  if (label) label.textContent = checkbox.checked ? '自动运行' : '每步确认';
+  const conv = conversationsData.find(c => c.id === currentChannel);
+  if (conv && conv.b2b) conv.b2b.autoRun = checkbox.checked;
+  showToast(checkbox.checked ? '已切换为自动运行模式' : '已切换为每步确认模式');
 }
 
 function setAgentMode(btn, channel, agentName) {
@@ -7418,6 +8111,38 @@ function sendInvite() {
 // ================================================================
 // AGENTS MODULE
 // ================================================================
+
+function getAgentCollabSection(agentName) {
+  // Find all B2B conversations this agent participates in
+  const b2bConvs = conversationsData.filter(c => {
+    if (c.type !== 'b2b' || !c.b2b) return false;
+    return c.b2b.agent1?.name === agentName || c.b2b.agent2?.name === agentName;
+  });
+  if (b2bConvs.length === 0) return '';
+
+  const items = b2bConvs.map(c => {
+    const b = c.b2b;
+    const partner = b.agent1?.name === agentName ? b.agent2 : b.agent1;
+    const info = channelInfoData[c.id];
+    const status = info?.status || 'running';
+    const statusClass = status === 'running' ? 'active' : status === 'paused' ? 'paused' : 'completed';
+    const statusLabel = status === 'running' ? '运行中' : status === 'paused' ? '已暂停' : '已完成';
+    return `<div class="b2b-collab-item" onclick="switchModule('chat');setTimeout(()=>switchChannel('${c.id}'),100)">
+      <span class="b2b-collab-item-icon">${partner?.avatar || '🤖'}</span>
+      <div class="b2b-collab-item-info">
+        <div class="b2b-collab-item-name">↔ ${partner?.name || 'Agent'}</div>
+        <div class="b2b-collab-item-preview">${c.preview}</div>
+      </div>
+      <span class="b2b-collab-item-status ${statusClass}">${statusLabel}</span>
+    </div>`;
+  }).join('');
+
+  return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light);">
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px;display:flex;align-items:center;gap:4px;">🤖↔🤖 协作对话 (${b2bConvs.length})</div>
+    <div class="b2b-collab-list">${items}</div>
+  </div>`;
+}
+
 function renderAgents() {
   const grid = document.getElementById('agentGrid');
   grid.innerHTML = '';
@@ -7459,7 +8184,8 @@ function renderAgents() {
           </div>
         </div>
         <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">${agent.description}</p>
-        <div style="display:flex;gap:8px;">
+        ${getAgentCollabSection(agent.name)}
+        <div style="display:flex;gap:8px;margin-top:12px;">
           <button class="btn btn-sm btn-secondary" onclick="openAgentConfig('${agent.name}')">配置</button>
           <button class="btn btn-sm" style="border:1.5px solid #e74c3c;color:#e74c3c;background:transparent;border-radius:8px;padding:4px 12px;font-size:12px;cursor:pointer;" onclick="unbindAgent('${agent.name}')">移除</button>
         </div>
