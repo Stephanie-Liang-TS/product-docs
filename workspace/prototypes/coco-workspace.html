@@ -3842,7 +3842,10 @@ body {
                   <div class="chat-input-tags" id="chatInputTags">
                     <!-- Selected category tag appears here -->
                   </div>
-                  <textarea class="chat-input" id="chatInput" placeholder="输入消息... (Shift+Enter 换行)" rows="1" onkeydown="handleChatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+                  <div style="display:flex;align-items:flex-end;gap:8px;width:100%;">
+                    <textarea class="chat-input" id="chatInput" placeholder="输入消息... (Shift+Enter 换行)" rows="1" onkeydown="handleChatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+                    <button class="chat-send-btn" onclick="sendChatMessage()">↑</button>
+                  </div>
                 </div>
                 <!-- Bottom Toolbar -->
                 <div class="chat-input-toolbar">
@@ -3856,9 +3859,6 @@ body {
                     <button class="toolbar-btn" onclick="toggleSkillsPanel(this)">
                       <span class="toolbar-icon">🛠</span> Skills
                     </button>
-                  </div>
-                  <div class="chat-toolbar-right">
-                    <button class="chat-send-btn" onclick="sendChatMessage()">↑</button>
                   </div>
                 </div>
               </div>
@@ -5520,7 +5520,7 @@ function enterWorkspace(mode) {
     initAllModules();
     // Markdown toolbar: only show in code mode
     const mdToolbar = document.getElementById('mdToolbarBtns');
-    if (mdToolbar) mdToolbar.style.display = mode === 'code' ? 'contents' : 'none';
+    if (mdToolbar) mdToolbar.style.display = mode === 'code' ? '' : 'none';
   }, 400);
 }
 
@@ -5554,7 +5554,7 @@ function switchMode(mode) {
   renderTasks();
   // Markdown toolbar: only show in code mode
   const mdToolbar = document.getElementById('mdToolbarBtns');
-  if (mdToolbar) mdToolbar.style.display = mode === 'code' ? 'contents' : 'none';
+  if (mdToolbar) mdToolbar.style.display = mode === 'code' ? '' : 'none';
   showToast(mode === 'code' ? '已切换到代码开发模式' : '已切换到日常办公模式');
 }
 
@@ -5894,11 +5894,8 @@ function updateChatHeader() {
     const chipsEl = document.getElementById('chatCategoryChips');
     const promptsEl = document.getElementById('chatPromptTemplates');
     const tagsEl = document.getElementById('chatInputTags');
-    const toolbarLeft = document.querySelector('.chat-toolbar-left');
     const mdToolbar = document.getElementById('mdToolbarBtns');
     const toolbar = document.querySelector('.chat-input-toolbar');
-    const sendBtn = document.querySelector('.chat-send-btn');
-    const inputWrap = document.querySelector('.chat-input-wrap');
     if (isPersonalDM) {
       if (chipsEl) chipsEl.style.display = 'none';
       if (promptsEl) promptsEl.style.display = 'none';
@@ -5906,26 +5903,11 @@ function updateChatHeader() {
       if (toolbar) toolbar.style.display = 'none';
       if (mdToolbar) mdToolbar.style.display = 'none';
       selectedCategory = null;
-      // Move send button inline with input
-      if (sendBtn && inputWrap) {
-        inputWrap.style.display = 'flex';
-        inputWrap.style.alignItems = 'flex-end';
-        inputWrap.style.gap = '8px';
-        inputWrap.appendChild(sendBtn);
-      }
     } else {
       // Agent DM — keep skill bar & toolbar
       if (chipsEl) chipsEl.style.display = '';
       if (toolbar) toolbar.style.display = '';
-      if (mdToolbar) mdToolbar.style.display = '';
-      // Move send button back to toolbar-right
-      const toolbarRight = document.querySelector('.chat-toolbar-right');
-      if (sendBtn && toolbarRight && !toolbarRight.contains(sendBtn)) {
-        toolbarRight.appendChild(sendBtn);
-        inputWrap.style.display = '';
-        inputWrap.style.alignItems = '';
-        inputWrap.style.gap = '';
-      }
+      if (mdToolbar) mdToolbar.style.display = currentMode === 'code' ? '' : 'none';
     }
   } else {
     if (inputArea) inputArea.style.display = '';
@@ -5934,17 +5916,9 @@ function updateChatHeader() {
     const chipsEl2 = document.getElementById('chatCategoryChips');
     const toolbar2 = document.querySelector('.chat-input-toolbar');
     const mdToolbar2 = document.getElementById('mdToolbarBtns');
-    const sendBtn2 = document.querySelector('.chat-send-btn');
-    const toolbarRight2 = document.querySelector('.chat-toolbar-right');
-    const inputWrap2 = document.querySelector('.chat-input-wrap');
     if (chipsEl2) chipsEl2.style.display = '';
     if (toolbar2) toolbar2.style.display = '';
-    if (mdToolbar2) mdToolbar2.style.display = '';
-    // Move send button back to toolbar if needed
-    if (sendBtn2 && toolbarRight2 && !toolbarRight2.contains(sendBtn2)) {
-      toolbarRight2.appendChild(sendBtn2);
-      if (inputWrap2) { inputWrap2.style.display = ''; inputWrap2.style.alignItems = ''; inputWrap2.style.gap = ''; }
-    }
+    if (mdToolbar2) mdToolbar2.style.display = currentMode === 'code' ? '' : 'none';
   }
 }
 
