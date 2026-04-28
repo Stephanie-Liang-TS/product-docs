@@ -408,7 +408,7 @@ Sprint Burndown 图表同时展示两条线：
 - Agent 成员额外显示：执行成功率、平均执行时间
 - 支持按贡献量排序
 
-### 5.4 Sprint / Phase 管理
+### 5.4 Sprint / Phase 管理 -- Sprint先暂时忽略不做
 
 #### US-3.10: 创建 Sprint
 
